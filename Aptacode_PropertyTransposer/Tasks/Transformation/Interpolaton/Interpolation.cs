@@ -4,23 +4,34 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
+namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 {
-    public abstract class Interpolation<T> : Transformation<T>
+    public class InterpolationEventArgs : BaseTaskEventArgs
     {
+        public InterpolationEventArgs()
+        {
+
+        }
+    }
+
+    public abstract class Interpolation<T> : PropertyTransformation<T>
+    {
+        public override event EventHandler<BaseTaskEventArgs> OnStarted;
+        public override event EventHandler<BaseTaskEventArgs> OnFinished;
         public Interpolation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
         {
 
         }
+
         protected abstract T Subtract(T a, T b);
         protected abstract T Divide(T a, int b);
         protected abstract T Add(T a, T b);
 
         public override void Start()
         {
-            Started();
+            OnStarted?.Invoke(this, new InterpolationEventArgs());
 
-                new TaskFactory().StartNew(() =>
+            new TaskFactory().StartNew(() =>
                 {
                     //Calculate the total difference between the start and end value
                     T currentValue = GetStartValue();
@@ -57,7 +68,7 @@ namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
 
                 }).ContinueWith((e) =>
                 {
-                    Finished();
+                    OnFinished?.Invoke(this, new InterpolationEventArgs());
                 });
         }
     }

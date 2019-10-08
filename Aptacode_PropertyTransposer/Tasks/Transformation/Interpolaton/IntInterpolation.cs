@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
+namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 {
     public class IntInterpolation : Interpolation<int>
     {

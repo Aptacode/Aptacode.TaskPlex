@@ -2,26 +2,30 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TaskCoordinator.Tasks;
 
-namespace Aptacode_PropertyTransposer
+namespace TaskCoordinator
 {
-    public class PropertyTransposer
+    public class TaskCoordinator
     {
-        public List<Transformation.Transformation> pendingTransformations;
-        public List<Transformation.Transformation> runningTransformations;
+        public TimeSpan SleepPeriod { get; set; }
+
+        public List<BaseTask> pendingTasks;
+        public List<BaseTask> runningTasks;
         private static readonly Object mutex = new Object();
         public bool IsRunning { get; set; }
 
-        public PropertyTransposer()
+        public TaskCoordinator()
         {
-            pendingTransformations = new List<Transformation.Transformation>();
-            runningTransformations = new List<Transformation.Transformation>();
+            pendingTasks = new List<BaseTask>();
+            runningTasks = new List<BaseTask>();
             IsRunning = false;
+            SleepPeriod = TimeSpan.FromMilliseconds(10);
         }
 
-        public void Apply(Transformation.Transformation transformation)
+        public void Apply(BaseTask action)
         {
-            pendingTransformations.Add(transformation);
+            pendingTasks.Add(action);
         }
 
         public void Start()
@@ -30,7 +34,7 @@ namespace Aptacode_PropertyTransposer
 
             new TaskFactory().StartNew(() =>
             {
-                TransformationCoordinator();
+                run();
             });
         }
 
@@ -39,26 +43,26 @@ namespace Aptacode_PropertyTransposer
             IsRunning = false;
         }
 
-        private void TransformationCoordinator()
+        private void run()
         {
             while (IsRunning)
             {
                 lock (mutex)
                 {
                     //Start all transformations whose target does not collide with running transformations
-                    List<Transformation.Transformation> startedTransformations = new List<Aptacode_PropertyTransposer.Transformation.Transformation>();
-                    foreach (var item in pendingTransformations)
+                    List<BaseTask> startedTasks = new List<BaseTask>();
+                    foreach (var item in pendingTasks)
                     {
-                        if (!runningTransformations.Exists(t => t.Target == item.Target && t.Property == item.Property))
+                        if (!runningTasks.Exists(t => t.CollidesWith(item)))
                         {
-                            runningTransformations.Add(item);
-                            startedTransformations.Add(item);
+                            runningTasks.Add(item);
+                            startedTasks.Add(item);
                             //Remove the transformation from the running list when it finishes.
                             item.OnFinished += (s, e) =>
                             {
                                 lock (mutex)
                                 {
-                                    runningTransformations.Remove((Transformation.Transformation)s);
+                                    runningTasks.Remove((BaseTask)s);
                                 }
                             };
                             item.Start();
@@ -66,12 +70,12 @@ namespace Aptacode_PropertyTransposer
                     }
 
                     //Remove each started transformation from the pending transformation list
-                    foreach (var item in startedTransformations)
+                    foreach (var item in startedTasks)
                     {
-                        pendingTransformations.Remove(item);
+                        pendingTasks.Remove(item);
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(SleepPeriod);
             }
         }
     }

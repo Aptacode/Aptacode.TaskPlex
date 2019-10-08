@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aptacode_PropertyTransposer_Tests.Utilites
+namespace Aptacode_TaskCoordinator.Tests.Utilites
 {
     public class ValueUpdateArgs<T> : EventArgs
     {

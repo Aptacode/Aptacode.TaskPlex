@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
+namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 {
     public class DoubleInterpolation : Interpolation<double>
     {

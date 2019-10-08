@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>Aptacode_TaskCoordinator_Tests</AssemblyName>
+
+    <RootNamespace>Aptacode_TaskCoordinator_Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

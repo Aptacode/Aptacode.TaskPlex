@@ -1,17 +1,16 @@
-using Aptacode_PropertyTransposer.Transformation;
-using Aptacode_PropertyTransposer.Transformation.Interpolaton;
-using Aptacode_PropertyTransposer_Tests.Utilites;
-using Aptacode_PropertyTransposer_Tests.Utilities;
+using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskCoordinator.Tasks.Transformation;
+using TaskCoordinator.Tasks.Transformation.Interpolaton;
 
-namespace Tests
+namespace Aptacode_TaskCoordinator.Tests
 {
     public class Transformation_Tests
     {
-        Transformation transformation;
+        PropertyTransformation transformation;
         TestRectangle testRectangle;
 
         [SetUp]

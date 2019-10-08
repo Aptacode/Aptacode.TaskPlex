@@ -1,25 +1,23 @@
-using Aptacode_PropertyTransposer;
-using Aptacode_PropertyTransposer.Transformation;
-using Aptacode_PropertyTransposer.Transformation.Interpolaton;
-using Aptacode_PropertyTransposer_Tests.Utilites;
-using Aptacode_PropertyTransposer_Tests.Utilities;
+using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskCoordinator.Tasks.Transformation;
+using TaskCoordinator.Tasks.Transformation.Interpolaton;
 
-namespace Tests
+namespace Aptacode_TaskCoordinator.Tests
 {
     public class PropertyTransposer_Tests
     {
 
-        PropertyTransposer transposer;
+        TaskCoordinator.TaskCoordinator transposer;
         TestRectangle testRectangle;
 
         [SetUp]
         public void Setup()
         {
-            transposer = new PropertyTransposer();
+            transposer = new TaskCoordinator.TaskCoordinator();
             testRectangle = new TestRectangle();
         }
 
@@ -27,7 +25,7 @@ namespace Tests
         public void Single_Transformation()
         {
             int destinationValue = 100;
-            Transformation transformation = new IntInterpolation(
+            PropertyTransformation transformation = new IntInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Width"),
                 () =>
@@ -53,7 +51,7 @@ namespace Tests
         [Test]
         public void Parallel_Transformations()
         {
-            Transformation transformation1 = new IntInterpolation(
+            PropertyTransformation transformation1 = new IntInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Width"),
                 () =>
@@ -62,7 +60,7 @@ namespace Tests
                 },
                 TimeSpan.FromMilliseconds(90));
 
-            Transformation transformation2 = new IntInterpolation(
+            PropertyTransformation transformation2 = new IntInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Height"),
                 () =>
@@ -71,7 +69,7 @@ namespace Tests
                 },
                 TimeSpan.FromMilliseconds(100));
 
-            Transformation transformation3 = new DoubleInterpolation(
+            PropertyTransformation transformation3 = new DoubleInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Opacity"),
                 () =>
@@ -121,7 +119,7 @@ namespace Tests
         [Test]
         public void Colliding_Transformations()
         {
-            Transformation transformation1 = new IntInterpolation(
+            PropertyTransformation transformation1 = new IntInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Width"),
                 () =>
@@ -130,7 +128,7 @@ namespace Tests
                 },
                 TimeSpan.FromMilliseconds(90));
 
-            Transformation transformation2 = new IntInterpolation(
+            PropertyTransformation transformation2 = new IntInterpolation(
                 testRectangle,
                 testRectangle.GetType().GetProperty("Width"),
                 () =>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aptacode_PropertyTransposer_Tests.Utilities
+namespace Aptacode_TaskCoordinator.Tests.Utilites
 {
     public class DoubleComparer : IEqualityComparer<double>
     {

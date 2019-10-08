@@ -1,41 +1,36 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Aptacode_PropertyTransposer.Transformation
+namespace TaskCoordinator.Tasks.Transformation
 {
-    public abstract class Transformation
+    public abstract class PropertyTransformation : BaseTask
     {
-        public event EventHandler<PropertyActionEventArgs> OnStarted;
-        public event EventHandler<PropertyActionEventArgs> OnFinished;
         public TimeSpan Interval = TimeSpan.FromMilliseconds(20);
 
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
         public TimeSpan Duration { get; set; }
-        public Transformation(object target, PropertyInfo property, TimeSpan duration)
+        public PropertyTransformation(object target, PropertyInfo property, TimeSpan duration)
         {
             Target = target;
             Property = property;
             Duration = duration;
         }
 
-        public abstract void Start();
-
-        protected void Started()
+        public override bool CollidesWith(BaseTask otherTask)
         {
-            OnStarted?.Invoke(this, new PropertyActionEventArgs());
-        }
-
-        protected void Finished()
-        {
-            OnFinished?.Invoke(this, new PropertyActionEventArgs());
+            PropertyTransformation otherTransformation = otherTask as PropertyTransformation;
+            if (otherTransformation == null)
+                return false;
+            else
+                return Target == otherTransformation.Target && Property.Name == otherTransformation.Property.Name;
         }
     }
 
-    public abstract class Transformation<T> : Transformation
+    public abstract class PropertyTransformation<T> : PropertyTransformation
     {
         public Func<T> DestinationValue { get; set; }
-        public Transformation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, duration)
+        public PropertyTransformation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, duration)
         {
             DestinationValue = destinationValue;
         }
