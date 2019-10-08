@@ -16,12 +16,16 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 
     public abstract class Interpolation<T> : PropertyTransformation<T>
     {
-        public override event EventHandler<BaseTaskEventArgs> OnStarted;
-        public override event EventHandler<BaseTaskEventArgs> OnFinished;
         public Interpolation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
         {
-
         }
+
+        public Interpolation(object target, PropertyInfo property, T destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        {
+        }
+
+        public override event EventHandler<BaseTaskEventArgs> OnStarted;
+        public override event EventHandler<BaseTaskEventArgs> OnFinished;
 
         protected abstract T Subtract(T a, T b);
         protected abstract T Divide(T a, int b);

@@ -35,6 +35,11 @@ namespace TaskCoordinator.Tasks.Transformation
             DestinationValue = destinationValue;
         }
 
+        public PropertyTransformation(object target, PropertyInfo property, T destinationValue, TimeSpan duration) : base(target, property, duration)
+        {
+            DestinationValue = new Func<T>(() => { return destinationValue; });
+        }
+
         protected T GetStartValue()
         {
             return (T)Property.GetValue(Target);

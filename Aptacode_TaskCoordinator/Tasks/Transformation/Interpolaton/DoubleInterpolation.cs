@@ -7,9 +7,11 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
     {
         public DoubleInterpolation(object target, PropertyInfo property, Func<double> destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
         {
-
         }
 
+        public DoubleInterpolation(object target, PropertyInfo property, double destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        {
+        }
         protected override double Add(double a, double b)
         {
             return a + b;

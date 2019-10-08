@@ -108,5 +108,54 @@ namespace Aptacode_TaskCoordinator.Tests
             Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
         }
 
+        [Test]
+        public void DestinationValueFunction()
+        {
+            double destinationValue = 1;
+            transformation = new DoubleInterpolation(
+                testRectangle,
+                testRectangle.GetType().GetProperty("Opacity"), () =>
+                {
+                    return destinationValue;
+                },
+                TimeSpan.FromMilliseconds(10));
+
+            transformation.Interval = TimeSpan.FromMilliseconds(0);
+
+            List<double> changeLog = new List<double>();
+            testRectangle.OnOpacityChanged += (s, e) =>
+            {
+                changeLog.Add(e.NewValue);
+            };
+
+            transformation.Start();
+
+            List<double> expectedChangeLog = new List<double>() { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
+        }
+
+        [Test]
+        public void DestinationValueConstant()
+        {
+            double destinationValue = 1;
+            transformation = new DoubleInterpolation(
+                testRectangle,
+                testRectangle.GetType().GetProperty("Opacity"),1,
+                TimeSpan.FromMilliseconds(10));
+
+            transformation.Interval = TimeSpan.FromMilliseconds(0);
+
+            List<double> changeLog = new List<double>();
+            testRectangle.OnOpacityChanged += (s, e) =>
+            {
+                changeLog.Add(e.NewValue);
+            };
+
+            transformation.Start();
+
+            List<double> expectedChangeLog = new List<double>() { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
+        }
+
     }
 }

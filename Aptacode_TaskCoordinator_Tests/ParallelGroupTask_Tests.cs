@@ -103,8 +103,6 @@ namespace Aptacode_TaskCoordinator_Tests
             ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2, transformation3 });
             groupTask.Start();
 
-
-
             Assert.That(() => latestStartTime.CompareTo(earliestEndTime) < 0, Is.True.After(400, 400));
         }
     }
