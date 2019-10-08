@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
 {
@@ -12,32 +10,19 @@ namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
 
         }
 
-        public override void Start()
+        protected override double Add(double a, double b)
         {
-            Started();
+            return a + b;
+        }
 
-            new TaskFactory().StartNew(() =>
-            {
-                double currentValue = GetStartValue();
-                double endValue = GetEndValue();
-                double distance = endValue - currentValue;
+        protected override double Divide(double a, int b)
+        {
+            return a / b;
+        }
 
-                int stepCount = (int)(Duration.TotalMilliseconds / Interval.TotalMilliseconds);
-                double delta = distance / stepCount;
-
-                for (int i = 0; i < stepCount - 1; i++)
-                {
-                    currentValue += delta;
-                    UpdateValue(currentValue);
-                    Thread.Sleep(Interval);
-                }
-
-                UpdateValue(endValue);
-
-            }).ContinueWith((e) =>
-            {
-                Finished();
-            });
+        protected override double Subtract(double a, double b)
+        {
+            return a - b;
         }
     }
 }

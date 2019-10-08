@@ -35,7 +35,7 @@ namespace Tests
 
             transformation.Start();
 
-            Assert.That(() => testRectangle.Width == destinationValue, Is.True.After(100, 100));
+            Assert.That(() => testRectangle.Width == destinationValue, Is.True.After(150, 150));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Tests
             transformation.Start();
 
             List<int> expectedWidthLog = new List<int>() { 20, 30, 40, 50, 60, 70, 80, 90, 100};
-            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(100, 100));
+            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(200, 200));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Tests
             transformation.Start();
 
             List<int> expectedWidthLog = new List<int>() { 0, -10, -20, -30, -40, -50, -60, -70, -80, -90};
-            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(100, 100));
+            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(200, 200));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Tests
             transformation.Start();
 
             List<int> expectedWidthLog = new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
-            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(100, 100));
+            Assert.That(() => widthLog.SequenceEqual(expectedWidthLog), Is.True.After(200, 200));
         }
 
         [Test]
@@ -146,8 +146,8 @@ namespace Tests
 
             transformation.Start();
 
-            Assert.That(() => startedCalled == true, Is.True.After(100, 100), "OnStarted was not fired");
-            Assert.That(() => finishedCalled == true, Is.True.After(100, 100), "OnFinished was not fired");
+            Assert.That(() => startedCalled == true, Is.True.After(200, 200), "OnStarted was not fired");
+            Assert.That(() => finishedCalled == true, Is.True.After(200, 200), "OnFinished was not fired");
         }
 
         [Test]
@@ -174,7 +174,63 @@ namespace Tests
             transformation.Start();
 
             List<double> expectedChangeLog = new List<double>() { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(100, 100));
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(200, 200));
+        }
+
+
+        [Test]
+        public void ZeroDuration_Transformation()
+        {
+            double destinationValue = 1;
+            transformation = new DoubleInterpolation(
+                testRectangle,
+                testRectangle.GetType().GetProperty("Opacity"),
+                () =>
+                {
+                    return destinationValue;
+                },
+                TimeSpan.FromMilliseconds(0));
+
+            transformation.Interval = TimeSpan.FromMilliseconds(10);
+
+            List<double> changeLog = new List<double>();
+            testRectangle.OnOpacityChanged += (s, e) =>
+            {
+                changeLog.Add(e.NewValue);
+            };
+
+            transformation.Start();
+
+            List<double> expectedChangeLog = new List<double>() { 1.0 };
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
+        }
+
+
+        [Test]
+        public void ZeroDuration_Interval()
+        {
+            double destinationValue = 1;
+            transformation = new DoubleInterpolation(
+                testRectangle,
+                testRectangle.GetType().GetProperty("Opacity"),
+                () =>
+                {
+                    return destinationValue;
+                },
+                TimeSpan.FromMilliseconds(10));
+
+            transformation.Interval = TimeSpan.FromMilliseconds(0);
+
+            List<double> changeLog = new List<double>();
+            testRectangle.OnOpacityChanged += (s, e) =>
+            {
+                changeLog.Add(e.NewValue);
+            };
+
+            transformation.Start();
+
+            List<double> expectedChangeLog = new List<double>() { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
         }
 
      

@@ -11,33 +11,19 @@ namespace Aptacode_PropertyTransposer.Transformation.Interpolaton
         {
 
         }
-
-        public override void Start()
+        protected override int Add(int a, int b)
         {
-            Started();
+            return a + b;
+        }
 
-            new TaskFactory().StartNew(() =>
-            {
-                int currentValue = GetStartValue();
-                int endValue = GetEndValue();
-                int distance = endValue - currentValue;
+        protected override int Divide(int a, int b)
+        {
+            return a / b;
+        }
 
-                int stepCount = (int)(Duration.TotalMilliseconds / Interval.TotalMilliseconds);
-                int delta = distance / stepCount;
-
-                for (int i = 0; i < stepCount - 1; i++)
-                {
-                    currentValue += delta;
-                    UpdateValue(currentValue);
-                    Thread.Sleep(Interval);
-                }
-
-                UpdateValue(endValue);
-
-            }).ContinueWith((e) =>
-            {
-                Finished();
-            });
+        protected override int Subtract(int a, int b)
+        {
+            return a - b;
         }
     }
 }

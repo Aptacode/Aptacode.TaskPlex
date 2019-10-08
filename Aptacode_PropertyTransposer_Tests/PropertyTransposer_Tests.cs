@@ -47,7 +47,7 @@ namespace Tests
             transposer.Apply(transformation);
 
             List<int> expectedChangeLog = new List<int>() { 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(100, 100));
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(150, 150));
         }
 
         [Test]

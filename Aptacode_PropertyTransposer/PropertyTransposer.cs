@@ -30,42 +30,49 @@ namespace Aptacode_PropertyTransposer
 
             new TaskFactory().StartNew(() =>
             {
-                while (IsRunning)
-                {
-                    lock (mutex)
-                    {
-                        List<Transformation.Transformation> startedTransformations = new List<Aptacode_PropertyTransposer.Transformation.Transformation>();
-                        foreach (var item in pendingTransformations)
-                        {
-                            if (!runningTransformations.Exists(t => t.Target == item.Target && t.Property == item.Property))
-                            {
-                                runningTransformations.Add(item);
-                                startedTransformations.Add(item);
-                                item.OnFinished += (s, e) =>
-                                {
-                                    lock (mutex)
-                                    {
-                                        runningTransformations.Remove((Transformation.Transformation)s);
-                                    }
-                                };
-                                item.Start();
-                            }
-                        }
-
-                        foreach (var item in startedTransformations)
-                        {
-                            pendingTransformations.Remove(item);
-                        }
-                    }
-
-                    Thread.Sleep(10);
-                }
+                TransformationCoordinator();
             });
         }
 
         public void Stop()
         {
             IsRunning = false;
+        }
+
+        private void TransformationCoordinator()
+        {
+            while (IsRunning)
+            {
+                lock (mutex)
+                {
+                    //Start all transformations whose target does not collide with running transformations
+                    List<Transformation.Transformation> startedTransformations = new List<Aptacode_PropertyTransposer.Transformation.Transformation>();
+                    foreach (var item in pendingTransformations)
+                    {
+                        if (!runningTransformations.Exists(t => t.Target == item.Target && t.Property == item.Property))
+                        {
+                            runningTransformations.Add(item);
+                            startedTransformations.Add(item);
+                            //Remove the transformation from the running list when it finishes.
+                            item.OnFinished += (s, e) =>
+                            {
+                                lock (mutex)
+                                {
+                                    runningTransformations.Remove((Transformation.Transformation)s);
+                                }
+                            };
+                            item.Start();
+                        }
+                    }
+
+                    //Remove each started transformation from the pending transformation list
+                    foreach (var item in startedTransformations)
+                    {
+                        pendingTransformations.Remove(item);
+                    }
+                }
+                Thread.Sleep(10);
+            }
         }
     }
 }
