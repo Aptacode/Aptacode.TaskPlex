@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aptacode_PropertyTransposer\Aptacode_PropertyTransposer.csproj" />
+    <ProjectReference Include="..\Aptacode_TaskCoordinator\Aptacode_TaskCoordinator.csproj" />
   </ItemGroup>
 
 </Project>
