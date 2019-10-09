@@ -4,17 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
-using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
-using System.Diagnostics;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
-
+    [TestFixture]
     public class DoubleInterpolation_Tests
     {
         PropertyTransformation transformation;
         TestRectangle testRectangle;
+
+        private static object[] _sourceLists = {
+            new object[] {0, 1, new List<double> { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 }},
+            new object[] {0, -1, new List<double> { -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1.0 } },
+            new object[] {1, 1, new List<double> { 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1  } }
+            };
 
         [SetUp]
         public void Setup()
@@ -22,7 +26,8 @@ namespace Aptacode.TaskPlex.Core_Tests
             testRectangle = new TestRectangle();
         }
 
-        private void Interpolation_Expected_Change_Log(double startValue, double endValue, List<double> expectedChangeLog)
+        [Test, TestCaseSource("_sourceLists")]
+        public void Interpolation_Expected_Change_Log(double startValue, double endValue, List<double> expectedChangeLog)
         {
             transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", startValue, endValue, 10, 1);
 
@@ -37,22 +42,5 @@ namespace Aptacode.TaskPlex.Core_Tests
             Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()));
         }
 
-        [Test]
-        public void DoubleInterpolation_PositiveChange()
-        {
-            Interpolation_Expected_Change_Log(0, 1, new List<double>() { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 });
-        }
-
-        [Test]
-        public void DoubleInterpolation_NegativeChange()
-        {
-            Interpolation_Expected_Change_Log(0, -1, new List<double>() { -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1.0 });
-        }
-
-        [Test]
-        public void DoubleInterpolation_NoChange()
-        {
-            Interpolation_Expected_Change_Log(1, 1, new List<double>() { 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1 });
-        }
     }
 }

@@ -4,16 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
-using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
-
+    [TestFixture]
     public class IntInterpolation_Tests
     {
         PropertyTransformation transformation;
         TestRectangle testRectangle;
+
+        private static object[] _sourceLists = {
+            new object[] {0, 100, new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 } },
+            new object[] {0, -100, new List<int> { -10, -20, -30, -40, -50, -60, -70, -80, -90, -100 } },
+            new object[] {1, 1, new List<int> { 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1  } }
+            };
 
         [SetUp]
         public void Setup()
@@ -21,7 +26,8 @@ namespace Aptacode.TaskPlex.Core_Tests
             testRectangle = new TestRectangle();
         }
 
-        private void Interpolation_Expected_Change_Log(int startValue, int endValue, List<int> expectedChangeLog)
+        [Test, TestCaseSource("_sourceLists")]
+        public void Interpolation_Expected_Change_Log(int startValue, int endValue, List<int> expectedChangeLog)
         {
             transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", startValue, endValue, 10, 1);
 
@@ -34,24 +40,6 @@ namespace Aptacode.TaskPlex.Core_Tests
             transformation.StartAsync().Wait();
 
             Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog));
-        }
-
-        [Test]
-        public void IntInterpolation_PositiveChange()
-        {
-            Interpolation_Expected_Change_Log(0, 100, new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100});
-        }
-
-        [Test]
-        public void IntInterpolation_NegativeChange()
-        {
-            Interpolation_Expected_Change_Log(0, -100, new List<int>() { -10, -20, -30, -40, -50, -60, -70, -80, -90, -100 });
-        }
-
-        [Test]
-        public void IntInterpolation_NoChange()
-        {
-            Interpolation_Expected_Change_Log(10, 10, new List<int>() { 10,10,10,10,10,10,10,10,10,10 });
         }
     }
 }

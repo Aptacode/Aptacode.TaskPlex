@@ -65,5 +65,20 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
 
             return transformation;
         }
+
+        public static PropertyTransformation GetStringTransformation(object testObject, string testProperty, string startValue, string endValue, int totalTime, int stepTime)
+        {
+            PropertyInfo property = testObject.GetType().GetProperty(testProperty);
+            property.SetValue(testObject, startValue);
+
+            PropertyTransformation transformation = new StringTransformation(
+                testObject,
+                property,
+                endValue,
+                TimeSpan.FromMilliseconds(totalTime),
+                TimeSpan.FromMilliseconds(stepTime));
+
+            return transformation;
+        }
     }
 }

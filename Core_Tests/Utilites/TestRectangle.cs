@@ -17,6 +17,7 @@ namespace Aptacode_TaskCoordinator.Tests.Utilites
         public event EventHandler<ValueUpdateArgs<int>> OnWidthChange;
         public event EventHandler<ValueUpdateArgs<int>> OnHeigtChange;
         public event EventHandler<ValueUpdateArgs<double>> OnOpacityChanged;
+        public event EventHandler<ValueUpdateArgs<string>> OnNameChanged;
 
         private int width;
 
@@ -56,6 +57,20 @@ namespace Aptacode_TaskCoordinator.Tests.Utilites
                 OnOpacityChanged?.Invoke(this, new ValueUpdateArgs<double>(oldValue, opacity));
             }
         }
+        private string name;
+
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                string oldValue = name;
+                name = value;
+                OnNameChanged?.Invoke(this, new ValueUpdateArgs<string>(oldValue, name));
+            }
+        }
+
+
 
         public TestRectangle()
         {
