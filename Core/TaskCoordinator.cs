@@ -53,7 +53,7 @@ namespace Aptacode.Core
                     startTasks(readyTasks);
                 }
 
-                await Task.Delay(1);
+                await Task.Delay(SleepPeriod);
             }
         }
 

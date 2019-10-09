@@ -19,7 +19,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [SetUp]
         public void Setup()
         {
-            transposer = new TaskCoordinator(TimeSpan.FromMilliseconds(0.1));
+            transposer = new TaskCoordinator(TimeSpan.FromMilliseconds(1));
             testRectangle = new TestRectangle();
         }
 
