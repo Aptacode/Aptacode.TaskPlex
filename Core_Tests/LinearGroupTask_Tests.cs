@@ -27,6 +27,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         {
             PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
             PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 10, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 10, 10, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -34,11 +35,11 @@ namespace Aptacode.TaskPlex.Core_Tests
                 changeLog.Add(e.NewValue);
             };
 
-            LinearGroupTask groupTask = new LinearGroupTask(new List<BaseTask>() { transformation1 , transformation2});
-            groupTask.Start();
+            LinearGroupTask groupTask = new LinearGroupTask(new List<BaseTask>() { transformation1 , transformation2, transformation3 });
+            groupTask.StartAsync().Wait();
 
-            List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0};
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(20, 20));
+            List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+            Assert.That(changeLog.SequenceEqual(expectedChangeLog));
         }
     }
 }

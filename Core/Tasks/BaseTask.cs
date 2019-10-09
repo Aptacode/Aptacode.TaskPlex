@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Aptacode.Core.Tasks
 {
@@ -14,7 +15,8 @@ namespace Aptacode.Core.Tasks
         public event EventHandler<BaseTaskEventArgs> OnStarted;
         public event EventHandler<BaseTaskEventArgs> OnFinished;
 
-        public abstract void Start();
+        public abstract Task StartAsync();
+
         public abstract bool CollidesWith(BaseTask item);
         protected void RaiseOnStarted(BaseTaskEventArgs args)
         {

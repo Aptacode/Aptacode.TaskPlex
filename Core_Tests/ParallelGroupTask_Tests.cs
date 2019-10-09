@@ -60,9 +60,9 @@ namespace Aptacode.TaskPlex.Core_Tests
 
 
             ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2});
-            groupTask.Start();
+            groupTask.StartAsync().Wait();
 
-            Assert.That(() => latestStartTime.CompareTo(earliestEndTime) < 0, Is.True.After(20, 20));
+            Assert.That(latestStartTime.CompareTo(earliestEndTime) < 0);
         }
     }
 }

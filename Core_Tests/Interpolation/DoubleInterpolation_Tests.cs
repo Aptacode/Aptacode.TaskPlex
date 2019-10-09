@@ -6,6 +6,7 @@ using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
 using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
+using System.Diagnostics;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
@@ -31,9 +32,9 @@ namespace Aptacode.TaskPlex.Core_Tests
                 actualChangeLog.Add(e.NewValue);
             };
 
-            transformation.Start();
+            transformation.StartAsync().Wait();
 
-            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(11, 11));
+            Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()));
         }
 
         [Test]

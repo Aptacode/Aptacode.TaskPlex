@@ -24,17 +24,13 @@ namespace Aptacode.Core.Tasks
             return false;
         }
 
-        public override void Start()
+        public override async Task StartAsync()
         {
             RaiseOnStarted(new WaitTaskEventArgs());
 
-            new TaskFactory().StartNew(() =>
-            {
-                Task.Delay(Duration);
-            }).ContinueWith((e) =>
-            {
-                RaiseOnFinished(new WaitTaskEventArgs());
-            });
+            await Task.Delay(Duration);
+
+            RaiseOnFinished(new WaitTaskEventArgs());
         }
     }
 }

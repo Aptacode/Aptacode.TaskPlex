@@ -37,7 +37,7 @@ namespace Aptacode.TaskPlex.Core_Tests
                 finishedCalled = true;
             };
 
-            transformation.Start();
+            transformation.StartAsync().Wait();
 
             Assert.That(() => startedCalled == true && finishedCalled == true, Is.True.After(12, 12), "Events were not fired");
         }
@@ -53,7 +53,7 @@ namespace Aptacode.TaskPlex.Core_Tests
                 changeLog.Add(e.NewValue);
             };
 
-            transformation.Start();
+            transformation.StartAsync().Wait();
 
             List<double> expectedChangeLog = new List<double>() { 1.0 };
             Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(2, 2));
@@ -71,7 +71,8 @@ namespace Aptacode.TaskPlex.Core_Tests
                 changeLog.Add(e.NewValue);
             };
 
-            transformation.Start();
+            transformation.StartAsync().Wait();
+
             Assert.That(() => new DoubleComparer().Equals(testRectangle.Opacity, 1.0), Is.True.After(11, 11));
         }
     }

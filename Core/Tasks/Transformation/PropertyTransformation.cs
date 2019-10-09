@@ -21,10 +21,10 @@ namespace Aptacode.Core.Tasks.Transformations
         public override bool CollidesWith(BaseTask otherTask)
         {
             PropertyTransformation otherTransformation = otherTask as PropertyTransformation;
-            if (otherTransformation == null)
-                return false;
-            else
+            if (otherTransformation != null)
                 return Target == otherTransformation.Target && Property.Name == otherTransformation.Property.Name;
+            else
+                return false;
         }
     }
 

@@ -42,7 +42,7 @@ namespace Aptacode.Core
             IsRunning = false;
         }
 
-        private void run()
+        private async Task run()
         {
             while (IsRunning)
             {
@@ -52,7 +52,8 @@ namespace Aptacode.Core
                     cleanUpPendingTasks(readyTasks);
                     startTasks(readyTasks);
                 }
-                Task.Delay(SleepPeriod);
+
+                await Task.Delay(1);
             }
         }
 
@@ -74,16 +75,18 @@ namespace Aptacode.Core
         {
             foreach (var task in readyTasks)
             {
-                runningTasks.Add(task);
+                BaseTask localTask = task;
+                runningTasks.Add(localTask);
 
-                task.OnFinished += (s, e) =>
+                localTask.OnFinished += (s, e) =>
                 {
                     lock (mutex)
                     {
-                        runningTasks.Remove((BaseTask)s);
+                        runningTasks.Remove((BaseTask)localTask);
                     }
                 };
-                task.Start();
+
+                localTask.StartAsync();
             }
         }
         private void cleanUpPendingTasks(List<BaseTask> startedTasks)

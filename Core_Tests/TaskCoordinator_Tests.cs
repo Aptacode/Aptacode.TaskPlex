@@ -6,6 +6,7 @@ using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
 using Aptacode.Core;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
+using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
@@ -18,7 +19,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [SetUp]
         public void Setup()
         {
-            transposer = new TaskCoordinator(new TimeSpan(1));
+            transposer = new TaskCoordinator(TimeSpan.FromMilliseconds(0.1));
             testRectangle = new TestRectangle();
         }
 
@@ -32,12 +33,20 @@ namespace Aptacode.TaskPlex.Core_Tests
             {
                 changeLog.Add(e.NewValue);
             };
+
             transposer.Start();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            transformation.OnFinished += (s, e) =>
+            {
+                tcs.SetResult(true);
+            };
 
             transposer.Apply(transformation);
 
+            tcs.Task.Wait();
+
             List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(12, 12));
+            Assert.That(changeLog.SequenceEqual(expectedChangeLog));
         }
 
         [Test]
@@ -68,17 +77,26 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             transposer.Start();
 
-            transposer.Apply(transformation1);
-            transposer.Apply(transformation2);
-            transposer.Apply(transformation3);
+
 
             List<int> expectedChangeLog1 = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
             List<int> expectedChangeLog2 = new List<int>() { 60, 70, 80, 90, 100 };
             List<double> expectedChangeLog3 = new List<double>() { 0.2, 0.4, 0.6, 0.8, 1 };
-            Assert.That(() =>
+
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            transformation3.OnFinished += (s, e) =>
             {
-                return changeLog1.SequenceEqual(expectedChangeLog1) && changeLog2.SequenceEqual(expectedChangeLog2) && changeLog3.SequenceEqual(expectedChangeLog3, new DoubleComparer());
-            }, Is.True.After(12, 12));
+                tcs.SetResult(true);
+            };
+
+            transposer.Apply(transformation1);
+            transposer.Apply(transformation2);
+            transposer.Apply(transformation3);
+
+            tcs.Task.Wait();
+
+            Assert.That(changeLog1.SequenceEqual(expectedChangeLog1) && changeLog2.SequenceEqual(expectedChangeLog2) && changeLog3.SequenceEqual(expectedChangeLog3, new DoubleComparer()));
         }
 
 
@@ -96,11 +114,19 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             transposer.Start();
 
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            transformation2.OnFinished += (s, e) =>
+            {
+                tcs.SetResult(true);
+            };
+
             transposer.Apply(transformation1);
             transposer.Apply(transformation2);
 
+            tcs.Task.Wait();
+
             List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(10, 10));
+            Assert.That(changeLog.SequenceEqual(expectedChangeLog));
         }
     }
 }

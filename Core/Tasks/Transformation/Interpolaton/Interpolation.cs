@@ -15,38 +15,37 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 
     public abstract class Interpolation<T> : PropertyTransformation<T>
     {
+        private Stopwatch stepTimer;
         public Interpolation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
+            stepTimer = new Stopwatch();
         }
 
         public Interpolation(object target, PropertyInfo property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
+            stepTimer = new Stopwatch();
         }
 
         protected abstract T Subtract(T a, T b);
         protected abstract T Divide(T a, int b);
         protected abstract T Add(T a, T b);
 
-        public override void Start()
+        public override async Task StartAsync()
         {
             RaiseOnStarted(new InterpolationEventArgs());
 
-            new TaskFactory().StartNew(() =>
-                {
-                    int StepCount = GetNumberOfSteps();
+            int StepCount = GetNumberOfSteps();
 
-                    if (StepCount > 0)
-                    {
-                        Interpolate(StepCount);
-                    }
-                   
-                    //End by updating to the final value
-                    UpdateValue(GetEndValue());
+            if (StepCount > 0)
+            {
+                await InterpolateAsync(StepCount);
+            }
 
-                }).ContinueWith((e) =>
-                {
-                    RaiseOnFinished(new InterpolationEventArgs());
-                });
+            //End by updating to the final value
+            UpdateValue(GetEndValue());
+
+            RaiseOnFinished(new InterpolationEventArgs());
+
         }
 
         private int GetNumberOfSteps()
@@ -56,31 +55,29 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
             return (int)Math.Floor((double)taskDurationMilliSeconds / stepDurationMilliSeconds);
         }
 
-        private void Interpolate(int stepCount)
+        private async Task InterpolateAsync(int stepCount)
         {
             T currentValue = GetStartValue();
             T endValue = GetEndValue();
             T totalDelta = Subtract(endValue, currentValue);
             T incrementDelta = Divide(totalDelta, stepCount);
 
-            //Adjust how long to sleep each step based on how long it took to update the value and the step duration
-            Stopwatch stepTimer = new Stopwatch();
-            stepTimer.Start();
-
-            for (int i = 0; i < stepCount - 1; i++)
+            stepTimer.Restart();
+            for (int stepIndex = 0; stepIndex < stepCount - 1; stepIndex++)
             {
                 currentValue = Add(currentValue, incrementDelta);
                 UpdateValue(currentValue);
-                Delay(stepTimer);
+                await delayAsync(stepIndex);
             }
         }
 
-        private void Delay(Stopwatch stepTimer)
+        private async Task delayAsync(int currentStep)
         {
-            int sleepDuration = (int)(StepDuration.TotalMilliseconds - stepTimer.ElapsedMilliseconds);
-            if(sleepDuration > 0)
-                Task.Delay(sleepDuration);
-            stepTimer.Restart();
+            int millisecondsAhead = (int)(StepDuration.TotalMilliseconds * currentStep - stepTimer.ElapsedMilliseconds);
+            if(millisecondsAhead > 0)
+            {
+                await Task.Delay(millisecondsAhead);
+            }
         }
     }
 }

@@ -24,47 +24,17 @@ namespace Aptacode.Core.Tasks
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        public override void Start()
+        public override async Task StartAsync()
         {
             RaiseOnStarted(new LinearGroupTaskEventArgs());
 
-            new TaskFactory().StartNew(() =>
+            foreach (var task in Tasks)
             {
-                if (Tasks.Count > 0)
-                {
-                    chainTasks();
-                    startChain();
-                }else
-                {
-                    RaiseOnFinished(new LinearGroupTaskEventArgs());
-                }
-            });
-        }
-
-        private void chainTasks()
-        {
-            BaseTask lastTask = Tasks[0];
-
-            for (int i = 1; i < Tasks.Count; i++)
-            {
-                BaseTask task = Tasks[i];
-                lastTask.OnFinished += (s, e) =>
-                {
-                    task.Start();
-                };
-
-                lastTask = task;
+                await task.StartAsync();
             }
 
-            lastTask.OnFinished += (s, e) =>
-            {
-                RaiseOnFinished(new LinearGroupTaskEventArgs());
-            };
-        }
+            RaiseOnFinished(new LinearGroupTaskEventArgs());
 
-        private void startChain()
-        {
-            Tasks[0].Start();
         }
     }
 }

@@ -31,9 +31,9 @@ namespace Aptacode.TaskPlex.Core_Tests
                 actualChangeLog.Add(e.NewValue);
             };
 
-            transformation.Start();
+            transformation.StartAsync().Wait();
 
-            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog), Is.True.After(11, 11));
+            Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog));
         }
 
         [Test]

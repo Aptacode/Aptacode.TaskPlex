@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aptacode.Core.Tasks
@@ -13,7 +14,6 @@ namespace Aptacode.Core.Tasks
     public class ParallelGroupTask : GroupTask
     {
         List<BaseTask> Tasks { get; set; }
-        public int FinishedTaskCount { get; private set; }
 
         public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base()
         {
@@ -25,38 +25,12 @@ namespace Aptacode.Core.Tasks
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        public override void Start()
+        public override async Task StartAsync()
         {
-            FinishedTaskCount = 0;
             RaiseOnStarted(new ParallelGroupTaskEventArgs());
-
-            new TaskFactory().StartNew(() =>
-            {
-                connectTasks();
-                startTasks();
-            });
+            var taskFactory = new TaskFactory();
+            await Task.WhenAll(Tasks.Select(task => task.StartAsync()));
         }
 
-        private void connectTasks()
-        {
-            foreach (var task in Tasks)
-            {
-                task.OnFinished += Task_OnFinished;
-            }
-        }
-
-        private void Task_OnFinished(object sender, BaseTaskEventArgs eventArgs)
-        {
-            if (++FinishedTaskCount >= Tasks.Count)
-                RaiseOnFinished(new ParallelGroupTaskEventArgs());
-        }
-
-        private void startTasks()
-        {
-            foreach (var task in Tasks)
-            {
-                task.Start();
-            }
-        }
     }
 }
