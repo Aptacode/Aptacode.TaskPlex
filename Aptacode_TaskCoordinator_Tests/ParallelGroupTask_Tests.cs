@@ -31,7 +31,7 @@ namespace Aptacode_TaskCoordinator_Tests
                     return 100;
                 },
                 TimeSpan.FromMilliseconds(90));
-            transformation1.Interval = TimeSpan.FromMilliseconds(10);
+            transformation1.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             PropertyTransformation transformation2 = new IntInterpolation(
                 testRectangle,
@@ -41,7 +41,7 @@ namespace Aptacode_TaskCoordinator_Tests
                     return 0;
                 },
                 TimeSpan.FromMilliseconds(100));
-            transformation2.Interval = TimeSpan.FromMilliseconds(10);
+            transformation2.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             PropertyTransformation transformation3 = new IntInterpolation(
                 testRectangle,
@@ -51,7 +51,7 @@ namespace Aptacode_TaskCoordinator_Tests
                     return 50;
                 },
                 TimeSpan.FromMilliseconds(50));
-            transformation3.Interval = TimeSpan.FromMilliseconds(10);
+            transformation3.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             bool firstToEnd = true;
             DateTime latestStartTime = DateTime.Now;

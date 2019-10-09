@@ -31,7 +31,7 @@ namespace Aptacode_TaskCoordinator.Tests
                     return destinationValue;
                 },
                 TimeSpan.FromMilliseconds(90));
-            transformation.Interval = TimeSpan.FromMilliseconds(10);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(10);
 
 
             bool startedCalled = false;
@@ -66,7 +66,7 @@ namespace Aptacode_TaskCoordinator.Tests
                 },
                 TimeSpan.FromMilliseconds(0));
 
-            transformation.Interval = TimeSpan.FromMilliseconds(10);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -94,7 +94,7 @@ namespace Aptacode_TaskCoordinator.Tests
                 },
                 TimeSpan.FromMilliseconds(10));
 
-            transformation.Interval = TimeSpan.FromMilliseconds(0);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(0);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -120,7 +120,7 @@ namespace Aptacode_TaskCoordinator.Tests
                 },
                 TimeSpan.FromMilliseconds(10));
 
-            transformation.Interval = TimeSpan.FromMilliseconds(0);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(0);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -143,7 +143,7 @@ namespace Aptacode_TaskCoordinator.Tests
                 testRectangle.GetType().GetProperty("Opacity"),1,
                 TimeSpan.FromMilliseconds(10));
 
-            transformation.Interval = TimeSpan.FromMilliseconds(0);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(0);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>

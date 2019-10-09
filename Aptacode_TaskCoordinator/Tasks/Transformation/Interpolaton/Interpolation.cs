@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace TaskCoordinator.Tasks.Transformation.Interpolaton
@@ -34,17 +33,15 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 
             new TaskFactory().StartNew(() =>
                 {
-                    //Calculate the total difference between the start and end value
-                    T endValue = GetEndValue();
-                    int incrementCount = GetIncrementCount();
+                    int StepCount = GetNumberOfSteps();
 
-                    if (incrementCount > 0)
+                    if (StepCount > 0)
                     {
-                        RunInterpolation(incrementCount);
+                        Interpolate(StepCount);
                     }
                    
                     //End by updating to the final value
-                    UpdateValue(endValue);
+                    UpdateValue(GetEndValue());
 
                 }).ContinueWith((e) =>
                 {
@@ -52,37 +49,39 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
                 });
         }
 
-        private void RunInterpolation(int incrementCount)
+        private int GetNumberOfSteps()
+        {
+            int taskDurationMilliSeconds = (int)TaskDuration.TotalMilliseconds;
+            int stepDurationMilliSeconds = SteoDuration.TotalMilliseconds >= 1 ? (int)SteoDuration.TotalMilliseconds : 1;
+            return (int)Math.Floor((double)taskDurationMilliSeconds / stepDurationMilliSeconds);
+        }
+
+        private void Interpolate(int stepCount)
         {
             T currentValue = GetStartValue();
             T endValue = GetEndValue();
             T totalDelta = Subtract(endValue, currentValue);
+            T incrementDelta = Divide(totalDelta, stepCount);
 
-            //If there are more then one increments calculate the incremental difference
-            T incrementDelta = Divide(totalDelta, incrementCount);
+            //Adjust how long to sleep each step based on how long it took to update the value and the step duration
+            Stopwatch stepTimer = new Stopwatch();
+            stepTimer.Start();
 
-            //Adjust how long to sleep each iteration based on how long it took to increment the value
-            Stopwatch intervalAdjustmentTimer = new Stopwatch();
-            intervalAdjustmentTimer.Start();
-
-            for (int i = 0; i < incrementCount - 1; i++)
+            for (int i = 0; i < stepCount - 1; i++)
             {
                 currentValue = Add(currentValue, incrementDelta);
                 UpdateValue(currentValue);
-
-                int sleepDuration = (int)(Interval.TotalMilliseconds - intervalAdjustmentTimer.ElapsedMilliseconds);
-                Task.Delay(sleepDuration > 0 ? sleepDuration : 0);
-                intervalAdjustmentTimer.Restart();
+                Delay(stepTimer);
             }
         }
 
-        private int GetIncrementCount()
+        private void Delay(Stopwatch stepTimer)
         {
-            //Calculate the number of increments 
-            int durationMilliseconds = (int)Duration.TotalMilliseconds;
-            int intervalMilliseconds = Interval.TotalMilliseconds >= 1 ? (int)Interval.TotalMilliseconds : 1;
-            return (int)Math.Floor((double)durationMilliseconds / intervalMilliseconds);
+            int sleepDuration = (int)(SteoDuration.TotalMilliseconds - stepTimer.ElapsedMilliseconds);
+            Task.Delay(sleepDuration > 0 ? sleepDuration : 0);
+            stepTimer.Restart();
         }
+
 
     }
 }

@@ -33,7 +33,7 @@ namespace Aptacode_TaskCoordinator.Tests
                     return destinationValue;
                 },
                 TimeSpan.FromMilliseconds(90));
-            transformation.Interval = TimeSpan.FromMilliseconds(10);
+            transformation.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -79,9 +79,9 @@ namespace Aptacode_TaskCoordinator.Tests
                 TimeSpan.FromMilliseconds(100));
 
 
-            transformation1.Interval = TimeSpan.FromMilliseconds(10);
-            transformation2.Interval = TimeSpan.FromMilliseconds(10);
-            transformation3.Interval = TimeSpan.FromMilliseconds(20);
+            transformation1.SteoDuration = TimeSpan.FromMilliseconds(10);
+            transformation2.SteoDuration = TimeSpan.FromMilliseconds(10);
+            transformation3.SteoDuration = TimeSpan.FromMilliseconds(20);
 
             List<int> changeLog1 = new List<int>();
             List<int> changeLog2 = new List<int>();
@@ -138,8 +138,8 @@ namespace Aptacode_TaskCoordinator.Tests
                 TimeSpan.FromMilliseconds(50));
 
 
-            transformation1.Interval = TimeSpan.FromMilliseconds(10);
-            transformation2.Interval = TimeSpan.FromMilliseconds(10);
+            transformation1.SteoDuration = TimeSpan.FromMilliseconds(10);
+            transformation2.SteoDuration = TimeSpan.FromMilliseconds(10);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>

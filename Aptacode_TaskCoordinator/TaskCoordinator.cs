@@ -49,15 +49,15 @@ namespace TaskCoordinator
             {
                 lock (mutex)
                 {
-                    List<BaseTask> readyTasks = GetReadyTasks();
-                    StartTasks(readyTasks);
-                    CleanUpPendingTasks(readyTasks);
+                    List<BaseTask> readyTasks = getReadyTasks();
+                    cleanUpPendingTasks(readyTasks);
+                    startTasks(readyTasks);
                 }
                 Task.Delay(SleepPeriod);
             }
         }
 
-        private List<BaseTask> GetReadyTasks()
+        private List<BaseTask> getReadyTasks()
         {
             List<BaseTask> readyTasks = new List<BaseTask>();
 
@@ -71,10 +71,12 @@ namespace TaskCoordinator
             return readyTasks;
         }
 
-        private void StartTasks(List<BaseTask> readyTasks)
+        private void startTasks(List<BaseTask> readyTasks)
         {
             foreach (var task in readyTasks)
             {
+                runningTasks.Add(task);
+
                 task.OnFinished += (s, e) =>
                 {
                     lock (mutex)
@@ -85,7 +87,7 @@ namespace TaskCoordinator
                 task.Start();
             }
         }
-        private void CleanUpPendingTasks(List<BaseTask> startedTasks)
+        private void cleanUpPendingTasks(List<BaseTask> startedTasks)
         {
             foreach (var item in startedTasks)
             {

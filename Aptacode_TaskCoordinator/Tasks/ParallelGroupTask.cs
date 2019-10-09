@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TaskCoordinator.Tasks
 {
@@ -13,6 +13,7 @@ namespace TaskCoordinator.Tasks
     public class ParallelGroupTask : GroupTask
     {
         List<BaseTask> Tasks { get; set; }
+        public int FinishedTaskCount { get; private set; }
 
         public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base()
         {
@@ -24,23 +25,38 @@ namespace TaskCoordinator.Tasks
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        public int FinishedTaskCount { get; set; }
         public override void Start()
         {
             FinishedTaskCount = 0;
+            RaiseOnStarted(new ParallelGroupTaskEventArgs());
 
-            RaiseOnStarted( new ParallelGroupTaskEventArgs());
-            foreach(var task in Tasks)
+            new TaskFactory().StartNew(() =>
             {
-                task.OnFinished += (s, e) =>
-                {
-                    if (++FinishedTaskCount >= Tasks.Count)
-                        RaiseOnFinished(new ParallelGroupTaskEventArgs());
-                };
+                connectTasks();
+                startTasks();
+            });
+        }
 
+        private void connectTasks()
+        {
+            foreach (var task in Tasks)
+            {
+                task.OnFinished += Task_OnFinished;
+            }
+        }
+
+        private void Task_OnFinished(object sender, BaseTaskEventArgs eventArgs)
+        {
+            if (++FinishedTaskCount >= Tasks.Count)
+                RaiseOnFinished(new ParallelGroupTaskEventArgs());
+        }
+
+        private void startTasks()
+        {
+            foreach (var task in Tasks)
+            {
                 task.Start();
             }
-
         }
     }
 }

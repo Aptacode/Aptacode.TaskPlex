@@ -18,7 +18,7 @@ namespace TaskCoordinator.Tasks
         public abstract bool CollidesWith(BaseTask item);
         protected void RaiseOnStarted(BaseTaskEventArgs args)
         {
-            OnStarted.Invoke(this, args);
+            OnStarted?.Invoke(this, args);
         }
 
         protected void RaiseOnFinished(BaseTaskEventArgs args)

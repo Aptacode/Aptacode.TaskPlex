@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace TaskCoordinator.Tasks
@@ -32,7 +31,6 @@ namespace TaskCoordinator.Tasks
             new TaskFactory().StartNew(() =>
             {
                 Task.Delay(Duration);
-
             }).ContinueWith((e) =>
             {
                 RaiseOnFinished(new WaitTaskEventArgs());

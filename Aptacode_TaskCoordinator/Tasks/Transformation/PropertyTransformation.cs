@@ -5,16 +5,16 @@ namespace TaskCoordinator.Tasks.Transformation
 {
     public abstract class PropertyTransformation : BaseTask
     {
-        public TimeSpan Interval = TimeSpan.FromMilliseconds(20);
+        public TimeSpan SteoDuration = TimeSpan.FromMilliseconds(20);
 
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
-        public TimeSpan Duration { get; set; }
+        public TimeSpan TaskDuration { get; set; }
         public PropertyTransformation(object target, PropertyInfo property, TimeSpan duration)
         {
             Target = target;
             Property = property;
-            Duration = duration;
+            TaskDuration = duration;
         }
 
         public override bool CollidesWith(BaseTask otherTask)

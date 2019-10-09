@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TaskCoordinator.Tasks
@@ -32,28 +30,41 @@ namespace TaskCoordinator.Tasks
 
             new TaskFactory().StartNew(() =>
             {
-                BaseTask firstTask = Tasks[0];
-                BaseTask lastTask = firstTask;
-
-                for (int i = 1; i < Tasks.Count; i++)
+                if (Tasks.Count > 0)
                 {
-                    BaseTask task = Tasks[i];
-                    lastTask.OnFinished += (s, e) =>
-                    {
-                        task.Start();
-                    };
-
-                    lastTask = task;
-                }
-
-                lastTask.OnFinished += (s, e) =>
+                    chainTasks();
+                    startChain();
+                }else
                 {
                     RaiseOnFinished(new LinearGroupTaskEventArgs());
+                }
+            });
+        }
+
+        private void chainTasks()
+        {
+            BaseTask lastTask = Tasks[0];
+
+            for (int i = 1; i < Tasks.Count; i++)
+            {
+                BaseTask task = Tasks[i];
+                lastTask.OnFinished += (s, e) =>
+                {
+                    task.Start();
                 };
 
-                firstTask.Start();
+                lastTask = task;
+            }
 
-            });
+            lastTask.OnFinished += (s, e) =>
+            {
+                RaiseOnFinished(new LinearGroupTaskEventArgs());
+            };
+        }
+
+        private void startChain()
+        {
+            Tasks[0].Start();
         }
     }
 }
