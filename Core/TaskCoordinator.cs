@@ -14,12 +14,12 @@ namespace Aptacode.Core
         private static readonly Object mutex = new Object();
         public bool IsRunning { get; set; }
 
-        public TaskCoordinator()
+        public TaskCoordinator(TimeSpan sleepPeriod)
         {
             pendingTasks = new List<BaseTask>();
             runningTasks = new List<BaseTask>();
             IsRunning = false;
-            SleepPeriod = TimeSpan.FromMilliseconds(10);
+            SleepPeriod = sleepPeriod;
         }
 
         public void Apply(BaseTask action)

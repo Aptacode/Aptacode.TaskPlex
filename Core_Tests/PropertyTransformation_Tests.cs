@@ -1,5 +1,4 @@
 using Aptacode.Core.Tasks.Transformations;
-using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
 using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
@@ -23,7 +22,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void StartAndFinishEvents()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
 
             bool startedCalled = false;
             bool finishedCalled = false;
@@ -40,14 +39,13 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             transformation.Start();
 
-            Assert.That(() => startedCalled == true, Is.True.After(200, 200), "OnStarted was not fired");
-            Assert.That(() => finishedCalled == true, Is.True.After(200, 200), "OnFinished was not fired");
+            Assert.That(() => startedCalled == true && finishedCalled == true, Is.True.After(12, 12), "Events were not fired");
         }
 
         [Test]
         public void ZeroTransformationDuration()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1, 0, 1);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -58,14 +56,14 @@ namespace Aptacode.TaskPlex.Core_Tests
             transformation.Start();
 
             List<double> expectedChangeLog = new List<double>() { 1.0 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(150, 150));
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(2, 2));
         }
 
 
         [Test]
         public void ZeroIntervalDuration()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(0));
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1, 1, 0);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -74,7 +72,7 @@ namespace Aptacode.TaskPlex.Core_Tests
             };
 
             transformation.Start();
-            Assert.That(() => changeLog.Count == 100 && new DoubleComparer().Equals(testRectangle.Opacity, 1.0), Is.True.After(150, 150));
+            Assert.That(() => new DoubleComparer().Equals(testRectangle.Opacity, 1.0), Is.True.After(11, 11));
         }
     }
 }

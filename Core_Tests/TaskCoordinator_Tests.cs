@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
-using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.Core;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
 
@@ -19,14 +18,14 @@ namespace Aptacode.TaskPlex.Core_Tests
         [SetUp]
         public void Setup()
         {
-            transposer = new TaskCoordinator();
+            transposer = new TaskCoordinator(new TimeSpan(1));
             testRectangle = new TestRectangle();
         }
 
         [Test]
         public void Single_Transformation()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -38,15 +37,15 @@ namespace Aptacode.TaskPlex.Core_Tests
             transposer.Apply(transformation);
 
             List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(150, 150));
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(12, 12));
         }
 
         [Test]
         public void Parallel_Transformations()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Height", 50, 100, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(10));
-            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1.0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(20));
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Height", 50, 100, 5, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1.0, 5, 1);
 
 
             List<int> changeLog1 = new List<int>();
@@ -75,18 +74,19 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             List<int> expectedChangeLog1 = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
             List<int> expectedChangeLog2 = new List<int>() { 60, 70, 80, 90, 100 };
-            List<double> expectedChangeLog3 = new List<double>() { 0.2,0.4,0.6,0.8,1 };
-            Assert.That(() => changeLog1.SequenceEqual(expectedChangeLog1), Is.True.After(200, 200));
-            Assert.That(() => changeLog2.SequenceEqual(expectedChangeLog2), Is.True.After(200, 200));
-            Assert.That(() => changeLog3.SequenceEqual(expectedChangeLog3, new DoubleComparer()), Is.True.After(200, 200));
+            List<double> expectedChangeLog3 = new List<double>() { 0.2, 0.4, 0.6, 0.8, 1 };
+            Assert.That(() =>
+            {
+                return changeLog1.SequenceEqual(expectedChangeLog1) && changeLog2.SequenceEqual(expectedChangeLog2) && changeLog3.SequenceEqual(expectedChangeLog3, new DoubleComparer());
+            }, Is.True.After(12, 12));
         }
 
 
         [Test]
         public void Colliding_Transformations()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 50, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 50, 5, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -100,7 +100,7 @@ namespace Aptacode.TaskPlex.Core_Tests
             transposer.Apply(transformation2);
 
             List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50 };
-            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(200, 200));
+            Assert.That(() => changeLog.SequenceEqual(expectedChangeLog), Is.True.After(10, 10));
         }
     }
 }

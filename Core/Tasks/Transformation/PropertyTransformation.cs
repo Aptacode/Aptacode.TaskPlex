@@ -5,16 +5,17 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {
-        public TimeSpan SteoDuration = TimeSpan.FromMilliseconds(20);
 
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
         public TimeSpan TaskDuration { get; set; }
-        public PropertyTransformation(object target, PropertyInfo property, TimeSpan duration)
+        public TimeSpan StepDuration { get; set; }
+        public PropertyTransformation(object target, PropertyInfo property, TimeSpan taskDuration, TimeSpan stepDuration)
         {
             Target = target;
             Property = property;
-            TaskDuration = duration;
+            TaskDuration = taskDuration;
+            StepDuration = stepDuration;
         }
 
         public override bool CollidesWith(BaseTask otherTask)
@@ -30,12 +31,12 @@ namespace Aptacode.Core.Tasks.Transformations
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
         public Func<T> DestinationValue { get; set; }
-        public PropertyTransformation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, duration)
+        public PropertyTransformation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
         {
             DestinationValue = destinationValue;
         }
 
-        public PropertyTransformation(object target, PropertyInfo property, T destinationValue, TimeSpan duration) : base(target, property, duration)
+        public PropertyTransformation(object target, PropertyInfo property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
         {
             DestinationValue = new Func<T>(() => { return destinationValue; });
         }

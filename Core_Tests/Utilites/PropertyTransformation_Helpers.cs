@@ -7,7 +7,7 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
 {
     public static class PropertyTransformation_Helpers
     {
-        public static PropertyTransformation GetIntInterpolation(object testObject, string testProperty, int startValue, int endValue, TimeSpan totalTime, TimeSpan stepTime)
+        public static PropertyTransformation GetIntInterpolation(object testObject, string testProperty, int startValue, int endValue, int totalTime, int stepTime)
         {
             PropertyInfo property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
@@ -16,14 +16,14 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
                 testObject,
                 property,
                 endValue,
-                totalTime);
-            transformation.SteoDuration = stepTime;
+                TimeSpan.FromMilliseconds(totalTime),
+                TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
         }
 
 
-        public static PropertyTransformation GetIntInterpolation(object testObject, string testProperty, int endValue, TimeSpan totalTime, TimeSpan stepTime)
+        public static PropertyTransformation GetIntInterpolation(object testObject, string testProperty, int endValue, int totalTime, int stepTime)
         {
             PropertyInfo property = testObject.GetType().GetProperty(testProperty);
 
@@ -31,13 +31,13 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
                 testObject,
                 property,
                 endValue,
-                totalTime);
-            transformation.SteoDuration = stepTime;
+                TimeSpan.FromMilliseconds(totalTime),
+                TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
         }
 
-        public static PropertyTransformation GetDoubleInterpolation(object testObject, string testProperty, double startValue, double endValue, TimeSpan totalTime, TimeSpan stepTime)
+        public static PropertyTransformation GetDoubleInterpolation(object testObject, string testProperty, double startValue, double endValue, int totalTime, int stepTime)
         {
             PropertyInfo property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
@@ -46,13 +46,13 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
                 testObject,
                 property,
                 endValue,
-                totalTime);
-            transformation.SteoDuration = stepTime;
+                TimeSpan.FromMilliseconds(totalTime),
+                TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
         }
 
-        public static PropertyTransformation GetDoubleInterpolation(object testObject, string testProperty, double endValue, TimeSpan totalTime, TimeSpan stepTime)
+        public static PropertyTransformation GetDoubleInterpolation(object testObject, string testProperty, double endValue, int totalTime, int stepTime)
         {
             PropertyInfo property = testObject.GetType().GetProperty(testProperty);
 
@@ -60,8 +60,8 @@ namespace Aptacode.TaskPlex.Core_Tests.Utilites
                 testObject,
                 property,
                 endValue,
-                totalTime);
-            transformation.SteoDuration = stepTime;
+                TimeSpan.FromMilliseconds(totalTime),
+                TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
         }

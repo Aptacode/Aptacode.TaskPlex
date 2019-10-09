@@ -23,7 +23,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
         private void Interpolation_Expected_Change_Log(double startValue, double endValue, List<double> expectedChangeLog)
         {
-            transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", startValue, endValue, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", startValue, endValue, 10, 1);
 
             List<double> actualChangeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -33,7 +33,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             transformation.Start();
 
-            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(120, 120));
+            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()), Is.True.After(11, 11));
         }
 
         [Test]

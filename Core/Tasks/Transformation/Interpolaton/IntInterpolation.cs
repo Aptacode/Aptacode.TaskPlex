@@ -5,11 +5,11 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class IntInterpolation : Interpolation<int>
     {
-        public IntInterpolation(object target, PropertyInfo property, Func<int> destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        public IntInterpolation(object target, PropertyInfo property, Func<int> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
         }
 
-        public IntInterpolation(object target, PropertyInfo property, int destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        public IntInterpolation(object target, PropertyInfo property, int destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
         }
 

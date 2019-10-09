@@ -23,8 +23,8 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void ParallelTransformation()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 10, 1);
 
             bool firstToEnd = true;
             DateTime latestStartTime = DateTime.Now;
@@ -62,7 +62,7 @@ namespace Aptacode.TaskPlex.Core_Tests
             ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2});
             groupTask.Start();
 
-            Assert.That(() => latestStartTime.CompareTo(earliestEndTime) < 0, Is.True.After(400, 400));
+            Assert.That(() => latestStartTime.CompareTo(earliestEndTime) < 0, Is.True.After(20, 20));
         }
     }
 }

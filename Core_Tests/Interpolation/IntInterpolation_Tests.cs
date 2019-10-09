@@ -23,7 +23,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
         private void Interpolation_Expected_Change_Log(int startValue, int endValue, List<int> expectedChangeLog)
         {
-            transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", startValue, endValue, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", startValue, endValue, 10, 1);
 
             List<int> actualChangeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -33,7 +33,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             transformation.Start();
 
-            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog), Is.True.After(120, 120));
+            Assert.That(() => actualChangeLog.SequenceEqual(expectedChangeLog), Is.True.After(11, 11));
         }
 
         [Test]

@@ -15,11 +15,11 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 
     public abstract class Interpolation<T> : PropertyTransformation<T>
     {
-        public Interpolation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        public Interpolation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
         }
 
-        public Interpolation(object target, PropertyInfo property, T destinationValue, TimeSpan duration) : base(target, property, destinationValue, duration)
+        public Interpolation(object target, PropertyInfo property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
         }
 
@@ -52,7 +52,7 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
         private int GetNumberOfSteps()
         {
             int taskDurationMilliSeconds = (int)TaskDuration.TotalMilliseconds;
-            int stepDurationMilliSeconds = SteoDuration.TotalMilliseconds >= 1 ? (int)SteoDuration.TotalMilliseconds : 1;
+            int stepDurationMilliSeconds = StepDuration.TotalMilliseconds >= 1 ? (int)StepDuration.TotalMilliseconds : 1;
             return (int)Math.Floor((double)taskDurationMilliSeconds / stepDurationMilliSeconds);
         }
 
@@ -77,11 +77,10 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 
         private void Delay(Stopwatch stepTimer)
         {
-            int sleepDuration = (int)(SteoDuration.TotalMilliseconds - stepTimer.ElapsedMilliseconds);
-            Task.Delay(sleepDuration > 0 ? sleepDuration : 0);
+            int sleepDuration = (int)(StepDuration.TotalMilliseconds - stepTimer.ElapsedMilliseconds);
+            if(sleepDuration > 0)
+                Task.Delay(sleepDuration);
             stepTimer.Restart();
         }
-
-
     }
 }
