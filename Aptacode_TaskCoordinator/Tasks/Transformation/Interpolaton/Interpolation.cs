@@ -24,16 +24,13 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
         {
         }
 
-        public override event EventHandler<BaseTaskEventArgs> OnStarted;
-        public override event EventHandler<BaseTaskEventArgs> OnFinished;
-
         protected abstract T Subtract(T a, T b);
         protected abstract T Divide(T a, int b);
         protected abstract T Add(T a, T b);
 
         public override void Start()
         {
-            OnStarted?.Invoke(this, new InterpolationEventArgs());
+            RaiseOnStarted(new InterpolationEventArgs());
 
             new TaskFactory().StartNew(() =>
                 {
@@ -51,7 +48,7 @@ namespace TaskCoordinator.Tasks.Transformation.Interpolaton
 
                 }).ContinueWith((e) =>
                 {
-                    OnFinished?.Invoke(this, new InterpolationEventArgs());
+                    RaiseOnFinished(new InterpolationEventArgs());
                 });
         }
 

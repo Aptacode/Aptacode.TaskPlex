@@ -14,9 +14,6 @@ namespace TaskCoordinator.Tasks
     }
     public class LinearGroupTask : GroupTask
     {
-        public override event EventHandler<BaseTaskEventArgs> OnStarted;
-        public override event EventHandler<BaseTaskEventArgs> OnFinished;
-
         List<BaseTask> Tasks { get; set; }
 
         public LinearGroupTask(IEnumerable<BaseTask> tasks) : base()
@@ -31,7 +28,7 @@ namespace TaskCoordinator.Tasks
 
         public override void Start()
         {
-            OnStarted?.Invoke(this, new LinearGroupTaskEventArgs());
+            RaiseOnStarted(new LinearGroupTaskEventArgs());
 
             new TaskFactory().StartNew(() =>
             {
@@ -51,7 +48,7 @@ namespace TaskCoordinator.Tasks
 
                 lastTask.OnFinished += (s, e) =>
                 {
-                    OnFinished?.Invoke(this, new LinearGroupTaskEventArgs());
+                    RaiseOnFinished(new LinearGroupTaskEventArgs());
                 };
 
                 firstTask.Start();

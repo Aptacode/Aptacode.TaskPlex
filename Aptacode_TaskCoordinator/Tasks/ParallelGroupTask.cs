@@ -12,8 +12,6 @@ namespace TaskCoordinator.Tasks
     }
     public class ParallelGroupTask : GroupTask
     {
-        public override event EventHandler<BaseTaskEventArgs> OnStarted;
-        public override event EventHandler<BaseTaskEventArgs> OnFinished;
         List<BaseTask> Tasks { get; set; }
 
         public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base()
@@ -31,13 +29,13 @@ namespace TaskCoordinator.Tasks
         {
             FinishedTaskCount = 0;
 
-            OnStarted?.Invoke(this, new ParallelGroupTaskEventArgs());
+            RaiseOnStarted( new ParallelGroupTaskEventArgs());
             foreach(var task in Tasks)
             {
                 task.OnFinished += (s, e) =>
                 {
                     if (++FinishedTaskCount >= Tasks.Count)
-                        OnFinished?.Invoke(this, new ParallelGroupTaskEventArgs());
+                        RaiseOnFinished(new ParallelGroupTaskEventArgs());
                 };
 
                 task.Start();

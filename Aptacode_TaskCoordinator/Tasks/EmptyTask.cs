@@ -13,9 +13,6 @@ namespace TaskCoordinator.Tasks
     }
     public class WaitTask : BaseTask
     {
-        public override event EventHandler<BaseTaskEventArgs> OnStarted;
-        public override event EventHandler<BaseTaskEventArgs> OnFinished;
-
         public TimeSpan Duration { get; set; }
 
         public WaitTask(TimeSpan duration)
@@ -30,7 +27,7 @@ namespace TaskCoordinator.Tasks
 
         public override void Start()
         {
-            OnStarted?.Invoke(this, new WaitTaskEventArgs());
+            RaiseOnStarted(new WaitTaskEventArgs());
 
             new TaskFactory().StartNew(() =>
             {
@@ -38,7 +35,7 @@ namespace TaskCoordinator.Tasks
 
             }).ContinueWith((e) =>
             {
-                OnFinished?.Invoke(this, new WaitTaskEventArgs());
+                RaiseOnFinished(new WaitTaskEventArgs());
             });
         }
     }
