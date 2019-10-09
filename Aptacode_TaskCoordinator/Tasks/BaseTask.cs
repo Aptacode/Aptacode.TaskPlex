@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TaskCoordinator.Tasks
 {
@@ -13,8 +11,8 @@ namespace TaskCoordinator.Tasks
     }
     public abstract class BaseTask
     {
-        public abstract event EventHandler<BaseTaskEventArgs> OnStarted;
-        public abstract event EventHandler<BaseTaskEventArgs> OnFinished;
+        public event EventHandler<BaseTaskEventArgs> OnStarted;
+        public event EventHandler<BaseTaskEventArgs> OnFinished;
 
         public abstract void Start();
         public abstract bool CollidesWith(BaseTask item);

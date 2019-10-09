@@ -34,7 +34,7 @@ namespace TaskCoordinator.Tasks
 
             new TaskFactory().StartNew(() =>
             {
-                Thread.Sleep(Duration);
+                Task.Delay(Duration);
 
             }).ContinueWith((e) =>
             {

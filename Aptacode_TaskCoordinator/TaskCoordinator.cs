@@ -10,8 +10,8 @@ namespace TaskCoordinator
     {
         public TimeSpan SleepPeriod { get; set; }
 
-        public List<BaseTask> pendingTasks;
-        public List<BaseTask> runningTasks;
+        private readonly List<BaseTask> pendingTasks;
+        private readonly List<BaseTask> runningTasks;
         private static readonly Object mutex = new Object();
         public bool IsRunning { get; set; }
 
@@ -49,33 +49,47 @@ namespace TaskCoordinator
             {
                 lock (mutex)
                 {
-                    //Start all transformations whose target does not collide with running transformations
-                    List<BaseTask> startedTasks = new List<BaseTask>();
-                    foreach (var item in pendingTasks)
-                    {
-                        if (!runningTasks.Exists(t => t.CollidesWith(item)))
-                        {
-                            runningTasks.Add(item);
-                            startedTasks.Add(item);
-                            //Remove the transformation from the running list when it finishes.
-                            item.OnFinished += (s, e) =>
-                            {
-                                lock (mutex)
-                                {
-                                    runningTasks.Remove((BaseTask)s);
-                                }
-                            };
-                            item.Start();
-                        }
-                    }
-
-                    //Remove each started transformation from the pending transformation list
-                    foreach (var item in startedTasks)
-                    {
-                        pendingTasks.Remove(item);
-                    }
+                    List<BaseTask> readyTasks = GetReadyTasks();
+                    StartTasks(readyTasks);
+                    CleanUpPendingTasks(readyTasks);
                 }
-                Thread.Sleep(SleepPeriod);
+                Task.Delay(SleepPeriod);
+            }
+        }
+
+        private List<BaseTask> GetReadyTasks()
+        {
+            List<BaseTask> readyTasks = new List<BaseTask>();
+
+            foreach (var item in pendingTasks)
+            {
+                if (!runningTasks.Exists(t => t.CollidesWith(item)) && !readyTasks.Exists(t => t.CollidesWith(item)))
+                {
+                    readyTasks.Add(item);
+                }
+            }
+            return readyTasks;
+        }
+
+        private void StartTasks(List<BaseTask> readyTasks)
+        {
+            foreach (var task in readyTasks)
+            {
+                task.OnFinished += (s, e) =>
+                {
+                    lock (mutex)
+                    {
+                        runningTasks.Remove((BaseTask)s);
+                    }
+                };
+                task.Start();
+            }
+        }
+        private void CleanUpPendingTasks(List<BaseTask> startedTasks)
+        {
+            foreach (var item in startedTasks)
+            {
+                pendingTasks.Remove(item);
             }
         }
     }
