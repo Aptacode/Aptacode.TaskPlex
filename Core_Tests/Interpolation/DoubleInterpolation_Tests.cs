@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
 using Aptacode.Core.Tasks.Transformations.Interpolation;
+using Aptacode.TaskPlex.Core_Tests.Utilites;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
@@ -22,18 +23,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
         private void Interpolation_Expected_Change_Log(double startValue, double endValue, List<double> expectedChangeLog)
         {
-            testRectangle.Opacity = startValue;
-
-            transformation = new DoubleInterpolation(
-                testRectangle,
-                testRectangle.GetType().GetProperty("Opacity"),
-                () =>
-                {
-                    return endValue;
-                },
-                TimeSpan.FromMilliseconds(100));
-
-            transformation.SteoDuration = TimeSpan.FromMilliseconds(10);
+            transformation = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", startValue, endValue, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
 
             List<double> actualChangeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>

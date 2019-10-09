@@ -1,6 +1,7 @@
 ﻿using Aptacode.Core.Tasks;
 using Aptacode.Core.Tasks.Transformations;
 using Aptacode.Core.Tasks.Transformations.Interpolation;
+using Aptacode.TaskPlex.Core_Tests.Utilites;
 using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
 using System;
@@ -22,35 +23,8 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void ParallelTransformation()
         {
-            PropertyTransformation transformation1 = new IntInterpolation(
-                testRectangle,
-                testRectangle.GetType().GetProperty("Width"),
-                () =>
-                {
-                    return 100;
-                },
-                TimeSpan.FromMilliseconds(90));
-            transformation1.SteoDuration = TimeSpan.FromMilliseconds(10);
-
-            PropertyTransformation transformation2 = new IntInterpolation(
-                testRectangle,
-                testRectangle.GetType().GetProperty("Width"),
-                () =>
-                {
-                    return 0;
-                },
-                TimeSpan.FromMilliseconds(100));
-            transformation2.SteoDuration = TimeSpan.FromMilliseconds(10);
-
-            PropertyTransformation transformation3 = new IntInterpolation(
-                testRectangle,
-                testRectangle.GetType().GetProperty("Width"),
-                () =>
-                {
-                    return 50;
-                },
-                TimeSpan.FromMilliseconds(50));
-            transformation3.SteoDuration = TimeSpan.FromMilliseconds(10);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
 
             bool firstToEnd = true;
             DateTime latestStartTime = DateTime.Now;
@@ -84,22 +58,8 @@ namespace Aptacode.TaskPlex.Core_Tests
                 }
             };
 
-            transformation3.OnStarted += (s, e) =>
-            {
-                latestStartTime = DateTime.Now;
-            };
 
-            transformation3.OnFinished += (s, e) =>
-            {
-                if (firstToEnd)
-                {
-                    earliestEndTime = DateTime.Now;
-                    firstToEnd = true;
-                }
-            };
-
-
-            ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2, transformation3 });
+            ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2});
             groupTask.Start();
 
             Assert.That(() => latestStartTime.CompareTo(earliestEndTime) < 0, Is.True.After(400, 400));

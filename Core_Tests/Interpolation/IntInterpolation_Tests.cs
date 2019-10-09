@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Aptacode.Core.Tasks.Transformations;
 using Aptacode.Core.Tasks.Transformations.Interpolation;
+using Aptacode.TaskPlex.Core_Tests.Utilites;
 
 namespace Aptacode.TaskPlex.Core_Tests
 {
@@ -22,18 +23,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
         private void Interpolation_Expected_Change_Log(int startValue, int endValue, List<int> expectedChangeLog)
         {
-            testRectangle.Width = startValue;
-
-            transformation = new IntInterpolation(
-                testRectangle,
-                testRectangle.GetType().GetProperty("Width"),
-                () =>
-                {
-                    return endValue;
-                },
-                TimeSpan.FromMilliseconds(100));
-
-            transformation.SteoDuration = TimeSpan.FromMilliseconds(10);
+            transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", startValue, endValue, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
 
             List<int> actualChangeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
