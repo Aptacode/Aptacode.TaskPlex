@@ -1,11 +1,11 @@
-# Aptacode_TaskCoordinator
+# AptacodeTaskPlex
 A library for changing .Net properties over time
 
 ## User Guide
 
 ### Instantiation
 ```
-TaskCoordinator.TaskCoordinator taskCoordinator = new TaskCoordinator.TaskCoordinator();
+TaskCoordinator taskCoordinator = new TaskCoordinator();
 taskCoordinator.Start();
 ```
 
