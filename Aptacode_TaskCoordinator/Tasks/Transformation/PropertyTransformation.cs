@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace TaskCoordinator.Tasks.Transformation
+namespace Aptacode.Core.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {

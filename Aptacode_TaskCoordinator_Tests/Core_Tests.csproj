@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Aptacode_TaskCoordinator_Tests</AssemblyName>
+    <AssemblyName>Core_Tests</AssemblyName>
 
-    <RootNamespace>Aptacode_TaskCoordinator_Tests</RootNamespace>
+    <RootNamespace>Aptacode.TaskPlex.Core_Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aptacode_TaskCoordinator\Aptacode_TaskCoordinator.csproj" />
+    <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aptacode_TaskCoordinator\Core.csproj" />
   </ItemGroup>
 
 </Project>

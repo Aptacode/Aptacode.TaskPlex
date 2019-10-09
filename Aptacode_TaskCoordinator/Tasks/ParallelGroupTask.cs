@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TaskCoordinator.Tasks
+namespace Aptacode.Core.Tasks
 {
     public class ParallelGroupTaskEventArgs : BaseTaskEventArgs
     {

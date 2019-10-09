@@ -1,13 +1,12 @@
-﻿using Aptacode_TaskCoordinator.Tests.Utilites;
+﻿using Aptacode.Core.Tasks;
+using Aptacode.Core.Tasks.Transformations;
+using Aptacode.Core.Tasks.Transformations.Interpolation;
+using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using TaskCoordinator.Tasks;
-using TaskCoordinator.Tasks.Transformation;
-using TaskCoordinator.Tasks.Transformation.Interpolaton;
 
-namespace Aptacode_TaskCoordinator_Tests
+namespace Aptacode.TaskPlex.Core_Tests
 {
 
     public class ParallelGroupTask_Tests

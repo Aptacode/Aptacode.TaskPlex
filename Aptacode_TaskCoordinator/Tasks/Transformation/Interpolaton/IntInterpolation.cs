@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace TaskCoordinator.Tasks.Transformation.Interpolaton
+namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class IntInterpolation : Interpolation<int>
     {

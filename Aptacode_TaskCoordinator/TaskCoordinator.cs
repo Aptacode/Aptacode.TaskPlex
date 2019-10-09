@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using TaskCoordinator.Tasks;
+using Aptacode.Core.Tasks;
 
-namespace TaskCoordinator
+namespace Aptacode.Core
 {
     public class TaskCoordinator
     {

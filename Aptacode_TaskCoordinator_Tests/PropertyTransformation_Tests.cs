@@ -1,12 +1,12 @@
+using Aptacode.Core.Tasks.Transformations;
+using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskCoordinator.Tasks.Transformation;
-using TaskCoordinator.Tasks.Transformation.Interpolaton;
 
-namespace Aptacode_TaskCoordinator.Tests
+namespace Aptacode.TaskPlex.Core_Tests
 {
     public class Transformation_Tests
     {

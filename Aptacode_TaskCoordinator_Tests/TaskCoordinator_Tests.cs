@@ -3,21 +3,22 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskCoordinator.Tasks.Transformation;
-using TaskCoordinator.Tasks.Transformation.Interpolaton;
+using Aptacode.Core.Tasks.Transformations;
+using Aptacode.Core.Tasks.Transformations.Interpolation;
+using Aptacode.Core;
 
-namespace Aptacode_TaskCoordinator.Tests
+namespace Aptacode.TaskPlex.Core_Tests
 {
     public class PropertyTransposer_Tests
     {
 
-        TaskCoordinator.TaskCoordinator transposer;
+        TaskCoordinator transposer;
         TestRectangle testRectangle;
 
         [SetUp]
         public void Setup()
         {
-            transposer = new TaskCoordinator.TaskCoordinator();
+            transposer = new TaskCoordinator();
             testRectangle = new TestRectangle();
         }
 

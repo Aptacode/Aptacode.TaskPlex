@@ -3,10 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskCoordinator.Tasks.Transformation;
-using TaskCoordinator.Tasks.Transformation.Interpolaton;
+using Aptacode.Core.Tasks.Transformations;
+using Aptacode.Core.Tasks.Transformations.Interpolation;
 
-namespace Aptacode_TaskCoordinator_Tests
+namespace Aptacode.TaskPlex.Core_Tests
 {
 
     public class Interpolation_Tests

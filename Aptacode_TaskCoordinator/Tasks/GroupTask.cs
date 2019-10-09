@@ -1,4 +1,4 @@
-﻿namespace TaskCoordinator.Tasks
+﻿namespace Aptacode.Core.Tasks
 {
     public abstract class GroupTask : BaseTask
     {

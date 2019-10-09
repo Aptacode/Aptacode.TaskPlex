@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace TaskCoordinator.Tasks.Transformation.Interpolaton
+namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class InterpolationEventArgs : BaseTaskEventArgs
     {
