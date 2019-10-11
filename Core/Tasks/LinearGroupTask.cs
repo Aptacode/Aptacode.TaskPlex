@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aptacode.Core.Tasks
@@ -13,11 +14,20 @@ namespace Aptacode.Core.Tasks
     }
     public class LinearGroupTask : GroupTask
     {
-        List<BaseTask> Tasks { get; set; }
 
-        public LinearGroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
+        public LinearGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
-            Tasks = new List<BaseTask>(tasks);
+
+        }
+
+        protected override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
+        {
+            TimeSpan totalDuration = TimeSpan.Zero;
+            foreach (var task in tasks)
+            {
+                totalDuration.Add(task.Duration);
+            }
+            return totalDuration;
         }
 
         public override bool CollidesWith(BaseTask item)
@@ -35,7 +45,6 @@ namespace Aptacode.Core.Tasks
             }
 
             RaiseOnFinished(new LinearGroupTaskEventArgs());
-
         }
     }
 }

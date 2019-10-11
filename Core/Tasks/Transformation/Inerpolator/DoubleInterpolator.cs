@@ -15,16 +15,6 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
             return a + b;
         }
 
-        protected override Comparison Compare(double a, double b)
-        {
-            if (a > b)
-                return Comparison.Greater;
-            else if (b > a)
-                return Comparison.Less;
-            else
-                return Comparison.Equal;
-        }
-
         protected override double Divide(double a, int incrementCount)
         {
             return a / incrementCount;

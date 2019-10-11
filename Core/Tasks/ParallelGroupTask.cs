@@ -14,11 +14,14 @@ namespace Aptacode.Core.Tasks
     }
     public class ParallelGroupTask : GroupTask
     {
-        List<BaseTask> Tasks { get; set; }
-
-        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
+        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
-            Tasks = new List<BaseTask>(tasks);
+
+        }
+
+        protected override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
+        {
+            return tasks.Select(t => t.Duration).OrderByDescending(t => t.TotalMilliseconds).FirstOrDefault();
         }
 
         public override bool CollidesWith(BaseTask item)
@@ -29,8 +32,10 @@ namespace Aptacode.Core.Tasks
         public override async Task StartAsync()
         {
             RaiseOnStarted(new ParallelGroupTaskEventArgs());
-            var taskFactory = new TaskFactory();
+
             await Task.WhenAll(Tasks.Select(task => task.StartAsync()));
+
+            RaiseOnFinished(new ParallelGroupTaskEventArgs());
         }
 
     }

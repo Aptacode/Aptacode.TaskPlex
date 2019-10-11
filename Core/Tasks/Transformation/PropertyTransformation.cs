@@ -5,7 +5,6 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {
-
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
         public TimeSpan StepDuration { get; set; }

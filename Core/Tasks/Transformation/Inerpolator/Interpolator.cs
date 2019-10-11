@@ -22,12 +22,6 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
             Value = value;
         }
     }
-
-    public enum Comparison
-    {
-        Greater, Equal, Less
-    }
-
     public abstract class Interpolator<T> : BaseTask
     {
         public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
@@ -62,7 +56,6 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
         protected abstract T Subtract(T a, T b);
         protected abstract T Add(T a, T b);
         protected abstract T Divide(T a, int incrementCount);
-        protected abstract Comparison Compare(T a, T b);
 
         public override async Task StartAsync()
         {

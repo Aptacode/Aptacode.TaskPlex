@@ -30,7 +30,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
         public override async Task StartAsync()
         {
-            RaiseOnStarted(new StringTransformEventArgs());
+            RaiseOnStarted(new ColorTransformationventArgs());
 
             Color startValue = GetStartValue();
             Color endValue = GetEndValue();
@@ -79,7 +79,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
             await Task.WhenAll(aComponentInterpolator.StartAsync(), rComponentInterpolator.StartAsync(), gComponentInterpolator.StartAsync(), bComponentInterpolator.StartAsync());
 
-            RaiseOnFinished(new StringTransformEventArgs());
+            RaiseOnFinished(new ColorTransformationventArgs());
 
         }
 

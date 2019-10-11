@@ -25,7 +25,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
         public override async Task StartAsync()
         {
-            RaiseOnStarted(new StringTransformEventArgs());
+            RaiseOnStarted(new IntTransformationventArgs());
 
             IntInterpolator interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
             interpolator.OnValueChanged += (s, e) =>
@@ -35,7 +35,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
             await interpolator.StartAsync();
 
-            RaiseOnFinished(new StringTransformEventArgs());
+            RaiseOnFinished(new IntTransformationventArgs());
 
         }
     }

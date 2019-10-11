@@ -18,12 +18,10 @@ namespace Aptacode.Core.Tasks.Transformations
         {
 
         }
-
         public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
 
         }
-
         public override async Task StartAsync()
         {
             RaiseOnStarted(new StringTransformEventArgs());

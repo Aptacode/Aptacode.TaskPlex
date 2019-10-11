@@ -24,7 +24,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
         public override async Task StartAsync()
         {
-            RaiseOnStarted(new StringTransformEventArgs());
+            RaiseOnStarted(new DoubleTransformationventArgs());
 
             DoubleInterpolator interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
@@ -35,7 +35,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
             await interpolator.StartAsync();
 
-            RaiseOnFinished(new StringTransformEventArgs());
+            RaiseOnFinished(new DoubleTransformationventArgs());
 
         }
     }
