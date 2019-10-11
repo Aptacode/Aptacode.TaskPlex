@@ -17,7 +17,10 @@ taskCoordinator.Start();
 
 ### Applying Tasks
 ```
-//Create a DoubleTransformation on the 'With' property of 'myObject' from its current width to the result of the specified function which will be evaluated when the transformation is applied. The transformation will occur over 100ms and will update the property every 10ms.
+//Create a DoubleTransformation on the 'With' property of 'myObject'.
+//Animate the Width property from its current value to the result of the specified function.
+//The function will be evaluated when the transformation is ran by the TaskCoordinator.
+//The transformation will occur over 100ms and will update the property every 10ms.
 
   PropertyTransformation transformation = new DoubleTransformation(
       myObject,
@@ -44,19 +47,22 @@ taskCoordinator.Start();
 e.g
 ```
 //Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
-            DoubleInterpolator exampleDoubleInterpolator = new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
-            IntInterpolator exampleIntInterpolator = new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
-            
-            exampleDoubleInterpolator.SetEaser(new CubicOutEaser());
-            exampleInterpolator.SetEaser(new CubicInEaser());
-            
-            exampleDoubleInterpolator.OnValueChanged += (s, e) =>
-            {
-                myObject.X = e.Value;
-            };
-            
-            exampleDoubleInterpolator.StartAsync();
-            exampleInterpolator.StartAsync();
+DoubleInterpolator exampleDoubleInterpolator = 
+      new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
+exampleDoubleInterpolator.SetEaser(new CubicInEaser());
+
+
+IntInterpolator exampleIntInterpolator = 
+      new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));         
+  exampleIntInterpolator.SetEaser(new CubicOutEaser());
+
+exampleDoubleInterpolator.OnValueChanged += (s, e) =>
+{
+    UpdatedValue = e.Value;
+};
+
+exampleDoubleInterpolator.StartAsync();
+exampleInterpolator.StartAsync();
 ```
 
 ### PropertyTransformation
@@ -101,3 +107,6 @@ GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformati
 
 ### WaitTask
 -Wait for the specified amount of time
+```
+WaitTask wait = new WaitTask(TimeSpan.FromMilliseconds(100));
+```
