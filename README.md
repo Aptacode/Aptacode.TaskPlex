@@ -9,6 +9,9 @@ I hope you find some use in it!
 ## User Guide
 
 ### TaskCoordinator
+
+- The task coordinator determines in which order tasks are executed.
+
 ```
 
 //Initialise the task coordinator
@@ -30,7 +33,12 @@ taskCoordinator.Stop();
 
 ```
 
-### Applying Tasks
+### Tasks
+- A task is a unit of work to be executed over its 'Duration'.
+Each Task has an 'OnStarted' and 'OnFinished' event.
+OnStarted is triggered when the TaskCoordinator decides to run the task.
+OnFinished is triggered just after the Task finishes.
+
 ```
 
 //Create a DoubleTransformation on the 'With' property of 'myObject'.
