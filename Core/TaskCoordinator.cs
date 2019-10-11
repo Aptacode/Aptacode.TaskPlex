@@ -7,19 +7,16 @@ namespace Aptacode.Core
 {
     public class TaskCoordinator
     {
-        public TimeSpan SleepPeriod { get; set; }
-
         private readonly List<BaseTask> pendingTasks;
         private readonly List<BaseTask> runningTasks;
         private static readonly Object mutex = new Object();
         public bool IsRunning { get; set; }
 
-        public TaskCoordinator(TimeSpan sleepPeriod)
+        public TaskCoordinator()
         {
             pendingTasks = new List<BaseTask>();
             runningTasks = new List<BaseTask>();
             IsRunning = false;
-            SleepPeriod = sleepPeriod;
         }
 
         public void Apply(BaseTask action)
@@ -53,7 +50,7 @@ namespace Aptacode.Core
                     startTasks(readyTasks);
                 }
 
-                await Task.Delay(SleepPeriod);
+                await Task.Delay(1);
             }
         }
 
