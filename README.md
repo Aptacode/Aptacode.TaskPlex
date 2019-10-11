@@ -2,8 +2,9 @@
 A simple library for changing / interpolating .Net properties over time
 
 ### Why?
-I needed to synchronize the animation of .Net properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it behave erratically. 
+I needed to synchronize the animation of properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it to behave erratically. 
 In order to simplify the application and synchronization of transformations on properties I created TaskPlex.
+
 I hope you find some use in it!
 
 ## User Guide
@@ -34,14 +35,14 @@ taskCoordinator.Stop();
 ```
 
 ### Tasks
-- A task is a unit of work to be executed over its 'Duration'.
-Each Task has an 'OnStarted' and 'OnFinished' event.
-OnStarted is triggered when the TaskCoordinator decides to run the task.
-OnFinished is triggered just after the Task finishes.
+- A task is a unit of work to be executed over a duration.
+Each task has an started and finished event.
+'OnStarted' is triggered when the task coordinator decides to run the task.
+'OnFinished' is triggered just after the task finishes.
 
 ```
 
-//Create a DoubleTransformation on the 'With' property of 'myObject'.
+//Create a DoubleTransformation on the 'Width' property of 'myObject'.
 //Transform the Width property from its current value to the result of the specified function.
 //The function will be evaluated when the transformation is ran by the TaskCoordinator.
 //The transformation will occur over 100ms and will update the property every 10ms.
@@ -68,10 +69,11 @@ OnFinished is triggered just after the Task finishes.
 
 ## Built in Tasks:
 
-### Interpolator         
-- Transition from a start value to an end value over a set time with a given interval.
+### Interpolator  
 
-*Note you can set a custom easing function as shown bellow the default is 'LinearEaser'
+- Incrementally transition from a start value to an end value at the given interval. 
+
+*Note you can set a custom easing function as shown below, the default is 'LinearEaser'
 
 ```
 
@@ -98,7 +100,9 @@ exampleInterpolator.StartAsync();
 ```
 
 ### PropertyTransformation
-- Transform an objects property from its current value to a given value over the specified time and interval
+
+- Incrementally transition a property from its initil value to the specified end value at the given interval.
+
 ```    
 
 PropertyTransformation xTransformation = new DoubleTransformation(
@@ -132,7 +136,9 @@ PropertyTransformation titleTransformation = new StringTransformation(
 ```
 
 ### GroupTasks
+
 - Group together tasks to be executed sequentially or in parallel
+
 ```
 
 GroupTask animation1 = new LinearGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
@@ -142,7 +148,9 @@ GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformati
 ```
 
 ### WaitTask
--Wait for the specified amount of time
+
+- Wait for the specified amount of time
+
 ```
 
 WaitTask wait = new WaitTask(TimeSpan.FromMilliseconds(100));
