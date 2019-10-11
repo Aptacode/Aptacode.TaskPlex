@@ -16,12 +16,12 @@ namespace Aptacode.Core.Tasks.Transformations
     public class StringTransformation : PropertyTransformation<string>
     {
         private Stopwatch stepTimer;
-        public StringTransformation(object target, PropertyInfo property, Func<string> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public StringTransformation(object target, string property, Func<string> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
             stepTimer = new Stopwatch();
         }
 
-        public StringTransformation(object target, PropertyInfo property, string destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
             stepTimer = new Stopwatch();
         }
@@ -32,7 +32,7 @@ namespace Aptacode.Core.Tasks.Transformations
 
             await Task.Delay(TaskDuration);
 
-            UpdateValue(GetEndValue());
+            SetValue(GetEndValue());
 
             RaiseOnFinished(new StringTransformEventArgs());
 

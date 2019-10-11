@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         private static object[] _sourceLists = {
             new object[] {0, 100, new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 } },
             new object[] {0, -100, new List<int> { -10, -20, -30, -40, -50, -60, -70, -80, -90, -100 } },
-            new object[] {1, 1, new List<int> { 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1  } }
+            new object[] {1, 1, new List<int> { 1 } }
             };
 
         [SetUp]

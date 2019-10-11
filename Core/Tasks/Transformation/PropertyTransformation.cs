@@ -10,10 +10,10 @@ namespace Aptacode.Core.Tasks.Transformations
         public PropertyInfo Property { get; set; }
         public TimeSpan TaskDuration { get; set; }
         public TimeSpan StepDuration { get; set; }
-        public PropertyTransformation(object target, PropertyInfo property, TimeSpan taskDuration, TimeSpan stepDuration)
+        public PropertyTransformation(object target, string property, TimeSpan taskDuration, TimeSpan stepDuration)
         {
             Target = target;
-            Property = property;
+            Property = target.GetType().GetProperty(property);
             TaskDuration = taskDuration;
             StepDuration = stepDuration;
         }
@@ -31,12 +31,12 @@ namespace Aptacode.Core.Tasks.Transformations
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
         public Func<T> DestinationValue { get; set; }
-        public PropertyTransformation(object target, PropertyInfo property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
+        public PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
         {
             DestinationValue = destinationValue;
         }
 
-        public PropertyTransformation(object target, PropertyInfo property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
+        public PropertyTransformation(object target, string property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
         {
             DestinationValue = new Func<T>(() => { return destinationValue; });
         }
@@ -50,7 +50,7 @@ namespace Aptacode.Core.Tasks.Transformations
             return (T)DestinationValue.Invoke();
         }
 
-        protected void UpdateValue(T value)
+        protected void SetValue(T value)
         {
             Property.SetValue(Target, value);
         }

@@ -54,7 +54,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         {
             PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
             PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Height", 50, 100, 5, 1);
-            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleInterpolation(testRectangle, "Opacity", 0, 1.0, 5, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleInterpolator(testRectangle, "Opacity", 0, 1.0, 5, 1);
 
 
             List<int> changeLog1 = new List<int>();
