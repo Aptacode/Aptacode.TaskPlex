@@ -10,30 +10,82 @@ I hope you find some use in it!
 
 ### Instantiation
 ```
-TaskCoordinator taskCoordinator = new TaskCoordinator();
+TaskCoordinator taskCoordinator = new TaskCoordinator(TimeSpan.FromMilliseconds(1));
 taskCoordinator.Start();
 ```
 
 ### Applying Tasks
 ```
-  PropertyTransformation transformation = new IntInterpolation(
+  PropertyTransformation transformation = new DoubleTransformation(
       myObject,
-      myObject.GetType().GetProperty("Width"),
+      "Width",
       () =>
       {
-          return 10;
+          if(Orientation == Orientation.Horizontal)
+            return 100;
+          else
+            return 50;
       },
-      TimeSpan.FromMilliseconds(100));
-  transformation.Interval = TimeSpan.FromMilliseconds(10);
+      TimeSpan.FromMilliseconds(100),
+      TimeSpan.FromMilliseconds(10));
 
   taskCoordinator.Apply(transformation);
   
  ```
 
-### Built in Tasks:
-- IntInterpolation          - Animate between a integer property value and a given destination value over a set time
-- DoubleInterpolation       - Animate between a double property value and a given destination value over a set time
-- StringTransformation      - Change a string property to a given value at a set time
-- WaitTask                  - Wait for the specified time
-- LinearGroupTask           - Chain together a set of Tasks such that the completion of the first task triggers the start of the next and so on
-- ParallelGroupTask         - Run a set of tasks in parallel
+## Built in Tasks:
+
+### Interpolator         
+- Transition from a start value to an end value over a set time with a given interval.
+*Note you can set a custom easing function as shown bellow the default is 'LinearEaser'
+e.g
+```
+            DoubleInterpolator exampleDoubleInterpolator = new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
+            IntInterpolator exampleIntInterpolator = new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
+            
+            exampleDoubleInterpolator.SetEaser(new CubicOutEaser());
+            exampleInterpolator.SetEaser(new CubicInEaser());
+```
+
+### PropertyTransformation
+- Animate a property on a .Net object between two values over the given time and interval
+```                
+PropertyTransformation xTransformation = new DoubleTransformation(
+                testObject,
+                "X",
+                100,
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(10));
+                                
+PropertyTransformation widthTransformation = new IntTransformation(
+                testObject,
+                "Width",
+                100,
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(10));
+                
+PropertyTransformation backgroundTransformation = new ColorTransformation(
+                testObject,
+                "BackgroundColor",
+                Color.FromARGB(255,100,150,200),
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(10));
+                
+PropertyTransformation titleTransformation = new StringTransformation(
+                testObject,
+                "Title",
+                "Hello, World!",
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(10));
+                
+```
+
+### GroupTasks
+- Group together tasks to be executed sequentially or in parallel
+```
+GroupTask animation1 = new LinearGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
+GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformation4, transformation5});
+```
+
+### WaitTask
+-Wait for the specified amount of time
