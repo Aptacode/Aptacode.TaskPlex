@@ -3,19 +3,22 @@ A simple library for changing / interpolating .Net properties over time
 
 ### Why?
 I needed to synchronize the animation of .Net properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it behave erratically. 
-In order simplify the application and synchronization of transformations on properties I created TaskPlex.
+In order to simplify the application and synchronization of transformations on properties I created TaskPlex.
 I hope you find some use in it!
 
 ## User Guide
 
 ### Instantiation
 ```
-TaskCoordinator taskCoordinator = new TaskCoordinator(TimeSpan.FromMilliseconds(1));
+//Initialise and start the task coordinator
+TaskCoordinator taskCoordinator = new TaskCoordinator();
 taskCoordinator.Start();
 ```
 
 ### Applying Tasks
 ```
+//Create a DoubleTransformation on the 'With' property of 'myObject' from its current width to the result of the specified function which will be evaluated when the transformation is applied. The transformation will occur over 100ms and will update the property every 10ms.
+
   PropertyTransformation transformation = new DoubleTransformation(
       myObject,
       "Width",
@@ -40,15 +43,24 @@ taskCoordinator.Start();
 *Note you can set a custom easing function as shown bellow the default is 'LinearEaser'
 e.g
 ```
+//Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
             DoubleInterpolator exampleDoubleInterpolator = new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
             IntInterpolator exampleIntInterpolator = new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));
             
             exampleDoubleInterpolator.SetEaser(new CubicOutEaser());
             exampleInterpolator.SetEaser(new CubicInEaser());
+            
+            exampleDoubleInterpolator.OnValueChanged += (s, e) =>
+            {
+                myObject.X = e.Value;
+            };
+            
+            exampleDoubleInterpolator.StartAsync();
+            exampleInterpolator.StartAsync();
 ```
 
 ### PropertyTransformation
-- Animate a property on a .Net object between two values over the given time and interval
+- Animate a property on a .Net object from its current value to a given end value over a given time and interval
 ```                
 PropertyTransformation xTransformation = new DoubleTransformation(
                 testObject,
