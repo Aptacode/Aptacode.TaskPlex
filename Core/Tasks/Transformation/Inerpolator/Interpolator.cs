@@ -83,7 +83,7 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
             int stepCount = GetStepCount();
             T incrementValue = GetIncrementValue(StartValue, EndValue, stepCount);
             int incrementIndex = 0;
-
+            
             for (int stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
                 int nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
@@ -125,7 +125,8 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
         private async Task delayAsync(int currentStep)
         {
             int millisecondsAhead = (int)(IntervalDuration.TotalMilliseconds * currentStep - stepTimer.ElapsedMilliseconds);
-            if (millisecondsAhead > 0)
+            //the Task.Delay function will only accuratly sleep for >8ms
+            if (millisecondsAhead > 8)
             {
                 await Task.Delay(millisecondsAhead);
             }

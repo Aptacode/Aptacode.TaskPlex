@@ -52,9 +52,9 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void Parallel_Transformations()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Height", 50, 100, 5, 1);
-            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", 0, 1.0, 5, 1);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 50, 5, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Height", 100, 0, 10, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", 0, 0.5, 5, 1);
 
 
             List<int> changeLog1 = new List<int>();
@@ -79,13 +79,13 @@ namespace Aptacode.TaskPlex.Core_Tests
 
 
 
-            List<int> expectedChangeLog1 = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            List<int> expectedChangeLog2 = new List<int>() { 60, 70, 80, 90, 100 };
-            List<double> expectedChangeLog3 = new List<double>() { 0.2, 0.4, 0.6, 0.8, 1 };
+            List<int> expectedChangeLog1 = new List<int>() { 10, 20, 30, 40 ,50 };
+            List<int> expectedChangeLog2 = new List<int>() { 90, 80, 70, 60, 50, 40, 30, 20, 10, 0 };
+            List<double> expectedChangeLog3 = new List<double>() { 0.1,0.2,0.3,0.4,0.5 };
 
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            transformation3.OnFinished += (s, e) =>
+            transformation2.OnFinished += (s, e) =>
             {
                 tcs.SetResult(true);
             };

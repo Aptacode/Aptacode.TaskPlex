@@ -22,10 +22,11 @@ namespace Aptacode.Core.Tasks.Transformations
 
         public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
+
         }
 
+        private static readonly Object mutex = new Object();
         Queue<int> a, r, g, b;
-        int updatedComponentCount;
 
         public override async Task StartAsync()
         {
@@ -37,7 +38,6 @@ namespace Aptacode.Core.Tasks.Transformations
             r = new Queue<int>();
             g = new Queue<int>();
             b = new Queue<int>();
-            updatedComponentCount = 0;
 
             IntInterpolator aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, StepDuration);
             IntInterpolator rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration);
@@ -46,23 +46,35 @@ namespace Aptacode.Core.Tasks.Transformations
 
             aComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                a.Enqueue(e.Value);
-                componentUpdated();
+                lock (mutex)
+                {
+                    a.Enqueue(e.Value);
+                    componentUpdated();
+                }
             };
             rComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                r.Enqueue(e.Value);
-                componentUpdated();
+                lock (mutex)
+                {
+                    r.Enqueue(e.Value);
+                    componentUpdated();
+                }
             };
             gComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                g.Enqueue(e.Value);
-                componentUpdated();
+                lock (mutex)
+                {
+                    g.Enqueue(e.Value);
+                    componentUpdated();
+                }
             };
             bComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                b.Enqueue(e.Value);
-                componentUpdated();
+                lock (mutex)
+                {
+                    b.Enqueue(e.Value);
+                    componentUpdated();
+                }
             };
 
             await Task.WhenAll(aComponentInterpolator.StartAsync(), rComponentInterpolator.StartAsync(), gComponentInterpolator.StartAsync(), bComponentInterpolator.StartAsync());
