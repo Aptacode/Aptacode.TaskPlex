@@ -8,11 +8,19 @@ I hope you find some use in it!
 
 ## User Guide
 
-### Instantiation
+### TaskCoordinator
 ```
-//Initialise and start the task coordinator
+//Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
+//Start the execution loop
 taskCoordinator.Start();
+//Add tasks as they occur
+taskCoordinator.Apply(transformation1);
+...
+taskCoordinator.Apply(transformation2);
+
+//Stop
+taskCoordinator.Stop();
 ```
 
 ### Applying Tasks
@@ -35,6 +43,8 @@ taskCoordinator.Start();
       TimeSpan.FromMilliseconds(100),
       TimeSpan.FromMilliseconds(10));
 
+//When applied the TaskCoordinator checks if there are currently no running tasks which conflict with the given task
+//If there is a confliction the given task is added to a list of 'Pending tasks' and executed when there are no coflicts
   taskCoordinator.Apply(transformation);
   
  ```
