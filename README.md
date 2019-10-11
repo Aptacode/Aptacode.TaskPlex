@@ -10,21 +10,29 @@ I hope you find some use in it!
 
 ### TaskCoordinator
 ```
+
 //Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
+
+
 //Start the execution loop
 taskCoordinator.Start();
+
+
 //Add tasks as they occur
 taskCoordinator.Apply(transformation1);
 ...
 taskCoordinator.Apply(transformation2);
 
+
 //Stop
 taskCoordinator.Stop();
+
 ```
 
 ### Applying Tasks
 ```
+
 //Create a DoubleTransformation on the 'With' property of 'myObject'.
 //Animate the Width property from its current value to the result of the specified function.
 //The function will be evaluated when the transformation is ran by the TaskCoordinator.
@@ -45,6 +53,7 @@ taskCoordinator.Stop();
 
 //When applied the TaskCoordinator checks if there are currently no running tasks which conflict with the given task
 //If there is a confliction the given task is added to a list of 'Pending tasks' and executed when there are no coflicts
+
   taskCoordinator.Apply(transformation);
   
  ```
@@ -56,14 +65,17 @@ taskCoordinator.Stop();
 *Note you can set a custom easing function as shown bellow the default is 'LinearEaser'
 e.g
 ```
+
 //Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
 DoubleInterpolator exampleDoubleInterpolator = 
       new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
+      
 exampleDoubleInterpolator.SetEaser(new CubicInEaser());
 
 
 IntInterpolator exampleIntInterpolator = 
-      new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));         
+      new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));   
+      
   exampleIntInterpolator.SetEaser(new CubicOutEaser());
 
 exampleDoubleInterpolator.OnValueChanged += (s, e) =>
@@ -73,11 +85,13 @@ exampleDoubleInterpolator.OnValueChanged += (s, e) =>
 
 exampleDoubleInterpolator.StartAsync();
 exampleInterpolator.StartAsync();
+
 ```
 
 ### PropertyTransformation
 - Animate a property on a .Net object from its current value to a given end value over a given time and interval
-```                
+```    
+
 PropertyTransformation xTransformation = new DoubleTransformation(
                 testObject,
                 "X",
@@ -111,12 +125,17 @@ PropertyTransformation titleTransformation = new StringTransformation(
 ### GroupTasks
 - Group together tasks to be executed sequentially or in parallel
 ```
+
 GroupTask animation1 = new LinearGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
+
 GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformation4, transformation5});
+
 ```
 
 ### WaitTask
 -Wait for the specified amount of time
 ```
+
 WaitTask wait = new WaitTask(TimeSpan.FromMilliseconds(100));
+
 ```
