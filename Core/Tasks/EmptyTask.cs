@@ -12,11 +12,9 @@ namespace Aptacode.Core.Tasks
     }
     public class WaitTask : BaseTask
     {
-        public TimeSpan Duration { get; set; }
-
-        public WaitTask(TimeSpan duration)
+        public WaitTask(TimeSpan duration) : base(duration)
         {
-            Duration = duration;
+
         }
 
         public override bool CollidesWith(BaseTask item)

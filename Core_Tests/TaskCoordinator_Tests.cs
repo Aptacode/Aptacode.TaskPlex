@@ -26,7 +26,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void Single_Transformation()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>
@@ -52,9 +52,9 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void Parallel_Transformations()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Height", 50, 100, 5, 1);
-            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleInterpolator(testRectangle, "Opacity", 0, 1.0, 5, 1);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Height", 50, 100, 5, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", 0, 1.0, 5, 1);
 
 
             List<int> changeLog1 = new List<int>();
@@ -103,8 +103,8 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void Colliding_Transformations()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 50, 5, 1);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 50, 5, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>

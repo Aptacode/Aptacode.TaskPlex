@@ -1,8 +1,10 @@
-﻿namespace Aptacode.Core.Tasks
+﻿using System;
+
+namespace Aptacode.Core.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        public GroupTask() : base()
+        public GroupTask(TimeSpan duration) : base(duration)
         {
 
         }

@@ -5,12 +5,9 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class DoubleInterpolator : Interpolator<double>
     {
-        public DoubleInterpolator(object target, string property, Func<double> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval) : base(startValue, endValue, duration, interval)
         {
-        }
 
-        public DoubleInterpolator(object target, string property, double destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
-        {
         }
 
         protected override double Add(double a, double b)

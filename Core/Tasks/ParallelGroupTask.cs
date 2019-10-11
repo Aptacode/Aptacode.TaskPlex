@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace Aptacode.Core.Tasks
     {
         List<BaseTask> Tasks { get; set; }
 
-        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base()
+        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
         {
             Tasks = new List<BaseTask>(tasks);
         }

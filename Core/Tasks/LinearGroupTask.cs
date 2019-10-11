@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Aptacode.Core.Tasks
@@ -14,7 +15,7 @@ namespace Aptacode.Core.Tasks
     {
         List<BaseTask> Tasks { get; set; }
 
-        public LinearGroupTask(IEnumerable<BaseTask> tasks) : base()
+        public LinearGroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
         {
             Tasks = new List<BaseTask>(tasks);
         }

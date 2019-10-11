@@ -23,8 +23,8 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void ParallelTransformation()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 10, 1);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 10, 1);
 
             bool firstToEnd = true;
             DateTime latestStartTime = DateTime.Now;

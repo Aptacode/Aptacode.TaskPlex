@@ -8,13 +8,11 @@ namespace Aptacode.Core.Tasks.Transformations
 
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
-        public TimeSpan TaskDuration { get; set; }
         public TimeSpan StepDuration { get; set; }
-        public PropertyTransformation(object target, string property, TimeSpan taskDuration, TimeSpan stepDuration)
+        public PropertyTransformation(object target, string property, TimeSpan duration, TimeSpan stepDuration) : base(duration)
         {
             Target = target;
             Property = target.GetType().GetProperty(property);
-            TaskDuration = taskDuration;
             StepDuration = stepDuration;
         }
 
@@ -31,12 +29,12 @@ namespace Aptacode.Core.Tasks.Transformations
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
         public Func<T> DestinationValue { get; set; }
-        public PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
+        public PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = destinationValue;
         }
 
-        public PropertyTransformation(object target, string property, T destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, taskDuration, stepDuration)
+        public PropertyTransformation(object target, string property, T destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = new Func<T>(() => { return destinationValue; });
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Aptacode_TaskCoordinator.Tests.Utilites
 {
@@ -18,6 +19,7 @@ namespace Aptacode_TaskCoordinator.Tests.Utilites
         public event EventHandler<ValueUpdateArgs<int>> OnHeigtChange;
         public event EventHandler<ValueUpdateArgs<double>> OnOpacityChanged;
         public event EventHandler<ValueUpdateArgs<string>> OnNameChanged;
+        public event EventHandler<ValueUpdateArgs<Color>> OnBackgroundChanged;
 
         private int width;
 
@@ -70,13 +72,25 @@ namespace Aptacode_TaskCoordinator.Tests.Utilites
             }
         }
 
+        private Color backgroundColor;
 
+        public Color BackgroundColor
+        {
+            get { return backgroundColor; }
+            set
+            {
+                Color oldValue = backgroundColor;
+                backgroundColor = value;
+                OnBackgroundChanged?.Invoke(this, new ValueUpdateArgs<Color>(oldValue, backgroundColor));
+            }
+        }
 
         public TestRectangle()
         {
             Width = 10;
             Height = 20;
             Opacity = 0;
+            BackgroundColor = Color.White;
         }
 
     }

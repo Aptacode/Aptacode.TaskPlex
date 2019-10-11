@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class IntInterpolator : Interpolator<int>
     {
-        public IntInterpolator(object target, string property, Func<int> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval) : base(startValue, endValue, duration, interval)
         {
-        }
 
-        public IntInterpolator(object target, string property, int destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
-        {
         }
 
         protected override int Add(int a, int b)

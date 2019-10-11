@@ -14,6 +14,11 @@ namespace Aptacode.Core.Tasks
     {
         public event EventHandler<BaseTaskEventArgs> OnStarted;
         public event EventHandler<BaseTaskEventArgs> OnFinished;
+        public TimeSpan Duration { get; set; }
+        public BaseTask(TimeSpan duration)
+        {
+            Duration = duration;
+        }
 
         public abstract Task StartAsync();
 

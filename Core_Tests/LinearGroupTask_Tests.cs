@@ -25,9 +25,9 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void LinearGroup_SameProperty()
         {
-            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
-            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 10, 1);
-            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 10, 10, 1);
+            PropertyTransformation transformation1 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation2 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 10, 1);
+            PropertyTransformation transformation3 = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 10, 10, 1);
 
             List<int> changeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>

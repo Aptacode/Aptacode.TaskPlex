@@ -9,7 +9,7 @@ using Aptacode.TaskPlex.Core_Tests.Utilites;
 namespace Aptacode.TaskPlex.Core_Tests
 {
     [TestFixture]
-    public class DoubleInterpolation_Tests
+    public class DoubleTransformation_Tests
     {
         PropertyTransformation transformation;
         TestRectangle testRectangle;
@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         private static object[] _sourceLists = {
             new object[] {0, 1, new List<double> { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 }},
             new object[] {0, -1, new List<double> { -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1.0 } },
-            new object[] {1, 1, new List<double> { 1 } }
+            new object[] {1, 1, new List<double> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }
             };
 
         [SetUp]
@@ -27,9 +27,9 @@ namespace Aptacode.TaskPlex.Core_Tests
         }
 
         [Test, TestCaseSource("_sourceLists")]
-        public void Interpolation_Expected_Change_Log(double startValue, double endValue, List<double> expectedChangeLog)
+        public void DoubleTransformation_OutputMatchesExpectedValues(double startValue, double endValue, List<double> expectedChangeLog)
         {
-            transformation = PropertyTransformation_Helpers.GetDoubleInterpolator(testRectangle, "Opacity", startValue, endValue, 10, 1);
+            transformation = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", startValue, endValue, 10, 1);
 
             List<double> actualChangeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>

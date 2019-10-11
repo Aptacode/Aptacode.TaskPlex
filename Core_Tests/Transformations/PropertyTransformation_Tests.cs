@@ -10,7 +10,6 @@ namespace Aptacode.TaskPlex.Core_Tests
 {
     public class Transformation_Tests
     {
-        PropertyTransformation transformation;
         TestRectangle testRectangle;
 
         [SetUp]
@@ -22,7 +21,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void StartAndFinishEvents()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntInterpolation(testRectangle, "Width", 0, 100, 10, 1);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1);
 
             bool startedCalled = false;
             bool finishedCalled = false;
@@ -45,7 +44,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void ZeroTransformationDuration()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolator(testRectangle, "Opacity", 0, 1, 0, 1);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", 0, 1, 0, 1);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
@@ -63,7 +62,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test]
         public void ZeroIntervalDuration()
         {
-            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleInterpolator(testRectangle, "Opacity", 0, 1, 1, 0);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", 0, 1, 1, 0);
 
             List<double> changeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>
