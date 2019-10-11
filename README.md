@@ -34,7 +34,7 @@ taskCoordinator.Stop();
 ```
 
 //Create a DoubleTransformation on the 'With' property of 'myObject'.
-//Animate the Width property from its current value to the result of the specified function.
+//Transform the Width property from its current value to the result of the specified function.
 //The function will be evaluated when the transformation is ran by the TaskCoordinator.
 //The transformation will occur over 100ms and will update the property every 10ms.
 
@@ -62,8 +62,9 @@ taskCoordinator.Stop();
 
 ### Interpolator         
 - Transition from a start value to an end value over a set time with a given interval.
+
 *Note you can set a custom easing function as shown bellow the default is 'LinearEaser'
-e.g
+
 ```
 
 //Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
@@ -89,7 +90,7 @@ exampleInterpolator.StartAsync();
 ```
 
 ### PropertyTransformation
-- Animate a property on a .Net object from its current value to a given end value over a given time and interval
+- Transform an objects property from its current value to a given value over the specified time and interval
 ```    
 
 PropertyTransformation xTransformation = new DoubleTransformation(
