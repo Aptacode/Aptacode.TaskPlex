@@ -6,7 +6,7 @@ namespace Aptacode.TaskPlex.Core.Tasks.Transformation.Inerpolator.Easing
     {
         public abstract double ProgressAt(int index, int count);
 
-        protected double Normalize(int index, int count)
+        protected static double Normalize(int index, int count)
         {
             return (double)index / count;
         }

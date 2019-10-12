@@ -7,10 +7,6 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public class IntTransformationventArgs : BaseTaskEventArgs
     {
-        public IntTransformationventArgs()
-        {
-
-        }
     }
 
     public class IntTransformation : PropertyTransformation<int>
@@ -33,7 +29,7 @@ namespace Aptacode.Core.Tasks.Transformations
                 SetValue(e.Value);
             };
 
-            await interpolator.StartAsync();
+            await interpolator.StartAsync().ConfigureAwait(false);
 
             RaiseOnFinished(new IntTransformationventArgs());
 

@@ -7,10 +7,9 @@ namespace Aptacode.Core.Tasks
     {
         protected List<BaseTask> Tasks { get; set; }
 
-        public GroupTask(IEnumerable<BaseTask> tasks) : base()
+        protected GroupTask(IEnumerable<BaseTask> tasks)
         {
             Tasks = new List<BaseTask>(tasks);
-            Duration = GetTotalDuration(Tasks);
         }
 
         public void Add(BaseTask task)

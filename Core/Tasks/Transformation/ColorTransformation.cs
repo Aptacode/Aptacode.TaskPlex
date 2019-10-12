@@ -8,10 +8,6 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public class ColorTransformationventArgs : BaseTaskEventArgs
     {
-        public ColorTransformationventArgs()
-        {
-
-        }
     }
 
     public class ColorTransformation : PropertyTransformation<Color>
@@ -52,6 +48,7 @@ namespace Aptacode.Core.Tasks.Transformations
                     componentUpdated();
                 }
             };
+
             rComponentInterpolator.OnValueChanged += (s, e) =>
             {
                 lock (mutex)
@@ -60,6 +57,7 @@ namespace Aptacode.Core.Tasks.Transformations
                     componentUpdated();
                 }
             };
+
             gComponentInterpolator.OnValueChanged += (s, e) =>
             {
                 lock (mutex)
@@ -68,6 +66,7 @@ namespace Aptacode.Core.Tasks.Transformations
                     componentUpdated();
                 }
             };
+
             bComponentInterpolator.OnValueChanged += (s, e) =>
             {
                 lock (mutex)
@@ -80,7 +79,6 @@ namespace Aptacode.Core.Tasks.Transformations
             await Task.WhenAll(aComponentInterpolator.StartAsync(), rComponentInterpolator.StartAsync(), gComponentInterpolator.StartAsync(), bComponentInterpolator.StartAsync());
 
             RaiseOnFinished(new ColorTransformationventArgs());
-
         }
 
         private void componentUpdated()

@@ -45,7 +45,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             tcs.Task.Wait();
 
-            List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+            List<int> expectedChangeLog = new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
             Assert.That(changeLog.SequenceEqual(expectedChangeLog));
         }
 
@@ -78,10 +78,9 @@ namespace Aptacode.TaskPlex.Core_Tests
             transposer.Start();
 
 
-
-            List<int> expectedChangeLog1 = new List<int>() { 10, 20, 30, 40 ,50 };
-            List<int> expectedChangeLog2 = new List<int>() { 90, 80, 70, 60, 50, 40, 30, 20, 10, 0 };
-            List<double> expectedChangeLog3 = new List<double>() { 0.1,0.2,0.3,0.4,0.5 };
+            List<int> expectedChangeLog1 = new List<int> { 10, 20, 30, 40 ,50 };
+            List<int> expectedChangeLog2 = new List<int> { 90, 80, 70, 60, 50, 40, 30, 20, 10, 0 };
+            List<double> expectedChangeLog3 = new List<double> { 0.1,0.2,0.3,0.4,0.5 };
 
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -125,7 +124,7 @@ namespace Aptacode.TaskPlex.Core_Tests
 
             tcs.Task.Wait();
 
-            List<int> expectedChangeLog = new List<int>() { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50 };
+            List<int> expectedChangeLog = new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80, 70, 60, 50 };
             Assert.That(changeLog.SequenceEqual(expectedChangeLog));
         }
     }

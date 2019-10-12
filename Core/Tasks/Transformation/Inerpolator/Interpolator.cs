@@ -7,10 +7,6 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 {
     public class InterpolationEventArgs : BaseTaskEventArgs
     {
-        public InterpolationEventArgs()
-        {
-
-        }
     }
 
     public class InterpolationValueChangedEventArgs<T> : InterpolationEventArgs
@@ -27,14 +23,15 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
         public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
 
         public IEaser Easer { get; set; }
-        private Stopwatch stepTimer;
+
+        private readonly Stopwatch StepTimer;
         private T StartValue { get; set; }
         private T CurrentValue { get; set; }
         private T EndValue { get; set; }
         public TimeSpan IntervalDuration { get; set; }
-        public Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : base(duration)
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : base(duration)
         {
-            stepTimer = new Stopwatch();
+            StepTimer = new Stopwatch();
             Easer = new LinearEaser();
 
             CurrentValue = StartValue = startValue;
@@ -61,11 +58,11 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
         {
             RaiseOnStarted(new InterpolationEventArgs());
 
-            stepTimer.Restart();
+            StepTimer.Restart();
 
-            await InterpolateAsync();
+            await InterpolateAsync().ConfigureAwait(false);
 
-            stepTimer.Stop();
+            StepTimer.Stop();
             OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
 
             RaiseOnFinished(new InterpolationEventArgs());
@@ -117,11 +114,11 @@ namespace Aptacode.Core.Tasks.Transformations.Interpolation
 
         private async Task delayAsync(int currentStep)
         {
-            int millisecondsAhead = (int)(IntervalDuration.TotalMilliseconds * currentStep - stepTimer.ElapsedMilliseconds);
+            int millisecondsAhead = (int)(IntervalDuration.TotalMilliseconds * currentStep - StepTimer.ElapsedMilliseconds);
             //the Task.Delay function will only accuratly sleep for >8ms
             if (millisecondsAhead > 8)
             {
-                await Task.Delay(millisecondsAhead);
+                await Task.Delay(millisecondsAhead).ConfigureAwait(false);
             }
         }
     }

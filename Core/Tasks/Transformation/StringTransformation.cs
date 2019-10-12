@@ -6,10 +6,6 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public class StringTransformEventArgs : BaseTaskEventArgs
     {
-        public StringTransformEventArgs()
-        {
-
-        }
     }
 
     public class StringTransformation : PropertyTransformation<string>
@@ -20,13 +16,13 @@ namespace Aptacode.Core.Tasks.Transformations
         }
         public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
-
+            
         }
         public override async Task StartAsync()
         {
             RaiseOnStarted(new StringTransformEventArgs());
 
-            await Task.Delay(Duration);
+            await Task.Delay(Duration).ConfigureAwait(false);
 
             SetValue(GetEndValue());
 

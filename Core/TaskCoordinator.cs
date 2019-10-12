@@ -30,7 +30,7 @@ namespace Aptacode.Core
 
             new TaskFactory().StartNew(() =>
             {
-                run();
+                run().Wait();
             });
         }
 
@@ -50,7 +50,7 @@ namespace Aptacode.Core
                     startTasks(readyTasks);
                 }
 
-                await Task.Delay(1);
+                await Task.Delay(1).ConfigureAwait(false);
             }
         }
 
@@ -79,11 +79,11 @@ namespace Aptacode.Core
                 {
                     lock (mutex)
                     {
-                        runningTasks.Remove((BaseTask)localTask);
+                        runningTasks.Remove(localTask);
                     }
                 };
 
-                localTask.StartAsync();
+                localTask.StartAsync().ConfigureAwait(false);
             }
         }
         private void cleanUpPendingTasks(List<BaseTask> startedTasks)

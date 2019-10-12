@@ -11,7 +11,6 @@ namespace Aptacode.TaskPlex.Core_Tests
     [TestFixture]
     public class DoubleTransformation_Tests
     {
-        PropertyTransformation transformation;
         TestRectangle testRectangle;
 
         private static object[] _sourceLists = {
@@ -29,7 +28,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test, TestCaseSource("_sourceLists")]
         public void DoubleTransformation_OutputMatchesExpectedValues(double startValue, double endValue, List<double> expectedChangeLog)
         {
-            transformation = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", startValue, endValue, 10, 1);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetDoubleTransformation(testRectangle, "Opacity", startValue, endValue, 10, 1);
 
             List<double> actualChangeLog = new List<double>();
             testRectangle.OnOpacityChanged += (s, e) =>

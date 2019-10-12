@@ -11,7 +11,6 @@ namespace Aptacode.TaskPlex.Core_Tests
     [TestFixture]
     public class IntTransformation_Tests
     {
-        PropertyTransformation transformation;
         TestRectangle testRectangle;
 
         private static object[] _sourceLists = {
@@ -29,7 +28,7 @@ namespace Aptacode.TaskPlex.Core_Tests
         [Test, TestCaseSource("_sourceLists")]
         public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog)
         {
-            transformation = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", startValue, endValue, 10, 1);
+            PropertyTransformation transformation = PropertyTransformation_Helpers.GetIntTransformation(testRectangle, "Width", startValue, endValue, 10, 1);
 
             List<int> actualChangeLog = new List<int>();
             testRectangle.OnWidthChange += (s, e) =>

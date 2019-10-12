@@ -24,11 +24,6 @@ namespace Aptacode.TaskPlex.Core_Tests
             new object[] {1, 1, new List<double> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } , new LinearEaser() }
             };
 
-        [SetUp]
-        public void Setup()
-        {
-
-        }
 
         [Test, TestCaseSource("_sourceLists")]
         public void DoubleInterpolator_OutputValuesMatchSequence(double startValue, double endValue, List<double> expectedChangeLog, IEaser easer)

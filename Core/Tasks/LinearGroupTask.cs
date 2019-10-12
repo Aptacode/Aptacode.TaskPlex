@@ -7,17 +7,13 @@ namespace Aptacode.Core.Tasks
 {
     public class LinearGroupTaskEventArgs : BaseTaskEventArgs
     {
-        public LinearGroupTaskEventArgs()
-        {
-
-        }
     }
     public class LinearGroupTask : GroupTask
     {
 
         public LinearGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
-
+            Duration = GetTotalDuration(Tasks);
         }
 
         protected override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
@@ -41,7 +37,7 @@ namespace Aptacode.Core.Tasks
 
             foreach (var task in Tasks)
             {
-                await task.StartAsync();
+                await task.StartAsync().ConfigureAwait(false);
             }
 
             RaiseOnFinished(new LinearGroupTaskEventArgs());

@@ -18,10 +18,6 @@ namespace Aptacode.TaskPlex.Core_Tests
             new object[] {new List<double> { 0, 0.31622, 0.44721, 0.54772, 0.6324, 0.7071, 0.77454, 0.8366, 0.8944, 0.9486, 1 }},
             };
 
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test, TestCaseSource("_sourceLists")]
         public void Interpolation_Expected_Change_Log(List<double> expectedValues)

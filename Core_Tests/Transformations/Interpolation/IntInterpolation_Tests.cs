@@ -16,11 +16,6 @@ namespace Aptacode.TaskPlex.Core_Tests
             new object[] {1, 1, new List<int> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } , new LinearEaser()}
             };
 
-        [SetUp]
-        public void Setup()
-        {
-
-        }
 
         [Test, TestCaseSource("_sourceLists")]
         public void IntInterpolator_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog, IEaser easer)

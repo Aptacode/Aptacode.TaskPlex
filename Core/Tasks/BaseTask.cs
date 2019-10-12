@@ -5,10 +5,7 @@ namespace Aptacode.Core.Tasks
 {
     public abstract class BaseTaskEventArgs : EventArgs
     {
-        public BaseTaskEventArgs()
-        {
 
-        }
     }
     public abstract class BaseTask
     {
@@ -17,12 +14,12 @@ namespace Aptacode.Core.Tasks
 
         public TimeSpan Duration { get; set; }
 
-        public BaseTask(TimeSpan duration)
+        protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
         }
 
-        public BaseTask()
+        protected BaseTask()
         {
             Duration = TimeSpan.Zero;
         }

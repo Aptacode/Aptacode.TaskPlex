@@ -1,6 +1,5 @@
 ﻿using Aptacode.Core.Tasks;
 using Aptacode.Core.Tasks.Transformations;
-using Aptacode.Core.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.Core_Tests.Utilites;
 using Aptacode_TaskCoordinator.Tests.Utilites;
 using NUnit.Framework;
@@ -59,7 +58,7 @@ namespace Aptacode.TaskPlex.Core_Tests
             };
 
 
-            ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask>() { transformation1, transformation2});
+            ParallelGroupTask groupTask = new ParallelGroupTask(new List<BaseTask> { transformation1, transformation2});
             groupTask.StartAsync().Wait();
 
             Assert.That(latestStartTime.CompareTo(earliestEndTime) < 0);

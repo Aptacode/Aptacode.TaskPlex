@@ -5,10 +5,6 @@ namespace Aptacode.Core.Tasks
 {
     public class WaitTaskEventArgs : BaseTaskEventArgs
     {
-        public WaitTaskEventArgs()
-        {
-
-        }
     }
     public class WaitTask : BaseTask
     {
@@ -26,7 +22,7 @@ namespace Aptacode.Core.Tasks
         {
             RaiseOnStarted(new WaitTaskEventArgs());
 
-            await Task.Delay(Duration);
+            await Task.Delay(Duration).ConfigureAwait(false);
 
             RaiseOnFinished(new WaitTaskEventArgs());
         }

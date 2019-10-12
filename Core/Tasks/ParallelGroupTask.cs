@@ -7,16 +7,12 @@ namespace Aptacode.Core.Tasks
 {
     public class ParallelGroupTaskEventArgs : BaseTaskEventArgs
     {
-        public ParallelGroupTaskEventArgs()
-        {
-
-        }
     }
     public class ParallelGroupTask : GroupTask
     {
         public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
-
+            Duration = GetTotalDuration(Tasks);
         }
 
         protected override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)

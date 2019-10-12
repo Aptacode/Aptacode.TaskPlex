@@ -8,7 +8,7 @@ namespace Aptacode.Core.Tasks.Transformations
         public object Target { get; set; }
         public PropertyInfo Property { get; set; }
         public TimeSpan StepDuration { get; set; }
-        public PropertyTransformation(object target, string property, TimeSpan duration, TimeSpan stepDuration) : base(duration)
+        protected PropertyTransformation(object target, string property, TimeSpan duration, TimeSpan stepDuration) : base(duration)
         {
             Target = target;
             Property = target.GetType().GetProperty(property);
@@ -19,21 +19,25 @@ namespace Aptacode.Core.Tasks.Transformations
         {
             PropertyTransformation otherTransformation = otherTask as PropertyTransformation;
             if (otherTransformation != null)
+            {
                 return Target == otherTransformation.Target && Property.Name == otherTransformation.Property.Name;
+            }
             else
+            {
                 return false;
+            }
         }
     }
 
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
         public Func<T> DestinationValue { get; set; }
-        public PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
+        protected PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = destinationValue;
         }
 
-        public PropertyTransformation(object target, string property, T destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
+        protected PropertyTransformation(object target, string property, T destinationValue, TimeSpan duration, TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = new Func<T>(() => { return destinationValue; });
         }
@@ -44,7 +48,7 @@ namespace Aptacode.Core.Tasks.Transformations
         }
         protected T GetEndValue()
         {
-            return (T)DestinationValue.Invoke();
+            return DestinationValue.Invoke();
         }
 
         protected void SetValue(T value)

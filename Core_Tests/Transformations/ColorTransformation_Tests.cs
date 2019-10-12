@@ -15,7 +15,6 @@ namespace Aptacode.TaskPlex.Core_Tests
             new object[] { Color.FromArgb(0,0,0,0), Color.FromArgb(30,30,30,30), new List<Color> { Color.FromArgb(10, 10, 10, 10), Color.FromArgb(20, 20, 20, 20), Color.FromArgb(30, 30, 30, 30) } },
             new object[] { Color.FromArgb(30,30,30,30), Color.FromArgb(0,0,0,0), new List<Color> { Color.FromArgb(20, 20, 20, 20), Color.FromArgb(10, 10, 10, 10), Color.FromArgb(0, 0, 0, 0) } },
             new object[] { Color.FromArgb(255,0,30,10), Color.FromArgb(255,30,0,10), new List<Color> { Color.FromArgb(255, 10, 20, 10), Color.FromArgb(255, 20, 10, 10), Color.FromArgb(255, 30, 0, 10) } }
-
         };
 
         [Test, TestCaseSource("_sourceLists")]

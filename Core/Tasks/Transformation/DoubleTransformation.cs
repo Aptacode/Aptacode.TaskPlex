@@ -6,10 +6,6 @@ namespace Aptacode.Core.Tasks.Transformations
 {
     public class DoubleTransformationventArgs : BaseTaskEventArgs
     {
-        public DoubleTransformationventArgs()
-        {
-
-        }
     }
 
     public class DoubleTransformation : PropertyTransformation<double>
@@ -33,7 +29,7 @@ namespace Aptacode.Core.Tasks.Transformations
                 SetValue(e.Value);
             };
 
-            await interpolator.StartAsync();
+            await interpolator.StartAsync().ConfigureAwait(false);
 
             RaiseOnFinished(new DoubleTransformationventArgs());
 

@@ -1,7 +1,7 @@
 # AptacodeTaskPlex
 A simple library for changing / interpolating .Net properties over time
 
-### Why?
+## Why
 I needed to synchronize the animation of properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it to behave erratically. 
 In order to simplify the application and synchronization of transformations on properties I created TaskPlex.
 
@@ -11,7 +11,7 @@ I hope you find some use in it!
 
 ### TaskCoordinator
 
-- The task coordinator determines in which order tasks are executed.
+-  The task coordinator determines in which order tasks are executed.
 
 ```
 
@@ -35,7 +35,7 @@ taskCoordinator.Stop();
 ```
 
 ### Tasks
-- A task is a unit of work to be executed over a duration.
+-  A task is a unit of work to be executed over a duration.
 Each task has an started and finished event.
 'OnStarted' is triggered when the task coordinator decides to run the task.
 'OnFinished' is triggered just after the task finishes.
@@ -67,11 +67,11 @@ Each task has an started and finished event.
   
  ```
 
-## Built in Tasks:
+## Built in Tasks
 
 ### Interpolator  
 
-- Incrementally transition from a start value to an end value at the given interval. 
+-  Incrementally transition from a start value to an end value at the given interval. 
 
 *Note you can set a custom easing function as shown below, the default is 'LinearEaser'
 
@@ -101,7 +101,7 @@ exampleInterpolator.StartAsync();
 
 ### PropertyTransformation
 
-- Incrementally transition a property from its initil value to the specified end value at the given interval.
+-  Incrementally transition a property from its initil value to the specified end value at the given interval.
 
 ```    
 
@@ -137,7 +137,7 @@ PropertyTransformation titleTransformation = new StringTransformation(
 
 ### GroupTasks
 
-- Group together tasks to be executed sequentially or in parallel
+-  Group together tasks to be executed sequentially or in parallel
 
 ```
 
@@ -149,7 +149,7 @@ GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformati
 
 ### WaitTask
 
-- Wait for the specified amount of time
+-  Wait for the specified amount of time
 
 ```
 
