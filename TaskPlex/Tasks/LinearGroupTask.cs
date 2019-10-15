@@ -33,12 +33,10 @@ namespace Aptacode.TaskPlex.Tasks
         public override async Task StartAsync()
         {
             RaiseOnStarted(new LinearGroupTaskEventArgs());
-
             foreach (var task in Tasks)
             {
                 await task.StartAsync().ConfigureAwait(false);
-            }
-
+            } 
             RaiseOnFinished(new LinearGroupTaskEventArgs());
         }
     }

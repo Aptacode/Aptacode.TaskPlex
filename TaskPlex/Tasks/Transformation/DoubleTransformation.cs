@@ -19,7 +19,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         public override async Task StartAsync()
-        {
+        { 
             RaiseOnStarted(new DoubleTransformationEventArgs());
 
             DoubleInterpolator interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
@@ -30,7 +30,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             };
 
             await interpolator.StartAsync().ConfigureAwait(false);
-
+            
             RaiseOnFinished(new DoubleTransformationEventArgs());
 
         }

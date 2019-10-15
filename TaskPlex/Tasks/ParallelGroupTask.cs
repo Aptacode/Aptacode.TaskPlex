@@ -28,9 +28,7 @@ namespace Aptacode.TaskPlex.Tasks
         public override async Task StartAsync()
         {
             RaiseOnStarted(new ParallelGroupTaskEventArgs());
-
-            await Task.WhenAll(Tasks.Select(task => task.StartAsync()));
-
+            await Task.WhenAll(Tasks.Select(task => task.StartAsync())); 
             RaiseOnFinished(new ParallelGroupTaskEventArgs());
         }
 

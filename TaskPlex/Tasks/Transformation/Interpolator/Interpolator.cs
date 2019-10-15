@@ -55,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         protected abstract T Divide(T a, int incrementCount);
 
         public override async Task StartAsync()
-        {
+        { 
             RaiseOnStarted(new InterpolationEventArgs());
 
             _stepTimer.Restart();
@@ -64,7 +64,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
             _stepTimer.Stop();
             OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
-
+            
             RaiseOnFinished(new InterpolationEventArgs());
         }
 

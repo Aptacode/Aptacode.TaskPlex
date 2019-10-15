@@ -18,13 +18,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             
         }
         public override async Task StartAsync()
-        {
+        { 
             RaiseOnStarted(new StringTransformationEventArgs());
-
             await Task.Delay(Duration).ConfigureAwait(false);
-
-            SetValue(GetEndValue());
-
+            SetValue(GetEndValue()); 
             RaiseOnFinished(new StringTransformationEventArgs());
         }
     }

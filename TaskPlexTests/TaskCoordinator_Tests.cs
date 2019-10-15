@@ -31,7 +31,6 @@ namespace Aptacode.TaskPlex.Tests
                 changeLog.Add(e.NewValue);
             };
 
-            _taskCoordinator.Start();
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             transformation.OnFinished += (s, e) =>
             {
@@ -72,9 +71,6 @@ namespace Aptacode.TaskPlex.Tests
                 changeLog3.Add(e.NewValue);
             };
 
-            _taskCoordinator.Start();
-
-
             List<int> expectedChangeLog1 = new List<int> { 10, 20, 30, 40 ,50 };
             List<int> expectedChangeLog2 = new List<int> { 90, 80, 70, 60, 50, 40, 30, 20, 10, 0 };
             List<double> expectedChangeLog3 = new List<double> { 0.1,0.2,0.3,0.4,0.5 };
@@ -107,8 +103,6 @@ namespace Aptacode.TaskPlex.Tests
             {
                 changeLog.Add(e.NewValue);
             };
-
-            _taskCoordinator.Start();
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             transformation2.OnFinished += (s, e) =>

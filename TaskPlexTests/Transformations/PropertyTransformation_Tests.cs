@@ -36,6 +36,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
 
             transformation.StartAsync().Wait();
 
+
             Assert.That(startedCalled && finishedCalled);
         }
 

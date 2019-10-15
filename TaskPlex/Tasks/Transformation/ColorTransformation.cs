@@ -43,7 +43,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                     _bComponentQueue;
 
         public override async Task StartAsync()
-        {
+        { 
             RaiseOnStarted(new ColorTransformationEventArgs());
 
             var startValue = GetStartValue();
@@ -90,8 +90,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 }
             };
 
-            await Task.WhenAll(aComponentInterpolator.StartAsync(), rComponentInterpolator.StartAsync(), gComponentInterpolator.StartAsync(), bComponentInterpolator.StartAsync());
-
+            await Task.WhenAll(aComponentInterpolator.StartAsync(), rComponentInterpolator.StartAsync(), gComponentInterpolator.StartAsync(), bComponentInterpolator.StartAsync()); 
             RaiseOnFinished(new ColorTransformationEventArgs());
         }
 

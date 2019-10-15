@@ -21,15 +21,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public override async Task StartAsync()
         {
             RaiseOnStarted(new IntTransformationEventArgs());
-
             IntInterpolator interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
             interpolator.OnValueChanged += (s, e) =>
             {
                 SetValue(e.Value);
             };
 
-            await interpolator.StartAsync().ConfigureAwait(false);
-
+            await interpolator.StartAsync().ConfigureAwait(false); 
             RaiseOnFinished(new IntTransformationEventArgs());
 
         }

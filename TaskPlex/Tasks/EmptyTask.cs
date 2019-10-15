@@ -21,9 +21,7 @@ namespace Aptacode.TaskPlex.Tasks
         public override async Task StartAsync()
         {
             RaiseOnStarted(new WaitTaskEventArgs());
-
-            await Task.Delay(Duration).ConfigureAwait(false);
-
+            await Task.Delay(Duration).ConfigureAwait(false); 
             RaiseOnFinished(new WaitTaskEventArgs());
         }
     }
