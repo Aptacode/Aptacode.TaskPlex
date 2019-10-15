@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
@@ -12,6 +14,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public class ColorTransformation : PropertyTransformation<Color>
     {
+        public Easer Easer { get; set; }     
         public ColorTransformation(object target, string property, Func<Color> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
             lock (_mutex)
@@ -21,6 +24,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 _gComponentQueue = new Queue<int>();
                 _bComponentQueue = new Queue<int>();
             }
+            Easer = new LinearEaser();
         }
 
         public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
@@ -32,7 +36,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 _gComponentQueue = new Queue<int>();
                 _bComponentQueue = new Queue<int>();
             }
-
+            Easer = new LinearEaser();
         }
 
         private readonly object _mutex = new object();
@@ -53,6 +57,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             IntInterpolator rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration);
             IntInterpolator gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, StepDuration);
             IntInterpolator bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, StepDuration);
+
+            aComponentInterpolator.SetEaser(Easer);
+            rComponentInterpolator.SetEaser(Easer);
+            gComponentInterpolator.SetEaser(Easer);
+            bComponentInterpolator.SetEaser(Easer);
 
             aComponentInterpolator.OnValueChanged += (s, e) =>
             {
