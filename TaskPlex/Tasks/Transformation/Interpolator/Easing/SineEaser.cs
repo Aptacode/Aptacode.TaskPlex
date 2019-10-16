@@ -2,13 +2,13 @@
 
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing
 {
-    public class SmoothInOutEaser : Easer
+    public class SineEaser : Easer
     {
-        private readonly double constant = Math.PI * 2;
+        private readonly double constant = Math.PI / 2;
         public override double ProgressAt(int index, int count)
         {
             double x = Normalize(index, count);
-            return 1 / (1 + (1 / Math.Pow((x / (1 - x)), 2)));
+            return (Math.Sin((x*Math.PI)-(constant))+1.0)/2.0;
         }
     }
 }
