@@ -20,6 +20,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         public IntTransformation(object target, string property, int destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
+            Easer = new LinearEaser();
         }
 
         public override async Task StartAsync()

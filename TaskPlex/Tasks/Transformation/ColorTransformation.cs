@@ -23,8 +23,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 _rComponentQueue = new Queue<int>();
                 _gComponentQueue = new Queue<int>();
                 _bComponentQueue = new Queue<int>();
-            }
-            Easer = new LinearEaser();
+            }            Easer = new LinearEaser();
         }
 
         public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
