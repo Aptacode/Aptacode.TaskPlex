@@ -6,7 +6,7 @@
 
         protected static double Normalize(int index, int count)
         {
-            return (double)index / (double)count;
+            return index / (double) count;
         }
     }
 }
