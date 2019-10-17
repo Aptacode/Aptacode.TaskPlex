@@ -21,19 +21,13 @@ I hope you find some use in it!
 //Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
 
-
-//Start the execution loop
-taskCoordinator.Start();
-
-
 //Add tasks as they occur
 taskCoordinator.Apply(transformation1);
 ...
 taskCoordinator.Apply(transformation2);
 
-
-//Stop
-taskCoordinator.Stop();
+//Clean up
+taskCoordinator.Dispose();
 
 ```
 
@@ -149,7 +143,7 @@ PropertyTransformation titleTransformation = new StringTransformation(
 
 ```csharp
 
-GroupTask animation1 = new LinearGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
+GroupTask animation1 = new SequentialGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
 
 GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformation4, transformation5});
 
