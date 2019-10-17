@@ -13,7 +13,6 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         [TestCaseSource(typeof(TaskPlexTestData), "GetZeroIntervalTransformations")]
         public void TargetsPropertyMatchesExpectedValue(PropertyTransformation task, object expectedEndValue)
         {
-            object startValue = task.Property.GetValue(task.Target);
             task.StartAsync().Wait();
             object endValue = task.Property.GetValue(task.Target);
 

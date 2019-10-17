@@ -13,9 +13,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         private TestRectangle _testRectangle;
 
         private static object[] _sourceLists = {
-            new object[] {0, 100, new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 } },
-            new object[] {0, -100, new List<int> { -10, -20, -30, -40, -50, -60, -70, -80, -90, -100 } },
-            new object[] {1, 1, new List<int> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }}
+
             };
 
         [SetUp]
@@ -24,7 +22,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
             _testRectangle = new TestRectangle();
         }
 
-        [Test, TestCaseSource("_sourceLists")]
+        [TestCaseSource(typeof(TaskPlexTestData), "GetIntInterpolationData")]
         public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog)
         {
             var transformation = TaskPlexFactory.GetIntTransformation(_testRectangle, "Width", startValue, endValue, 10, 1);

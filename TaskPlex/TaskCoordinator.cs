@@ -10,7 +10,7 @@ namespace Aptacode.TaskPlex
         private readonly List<BaseTask> _pendingTasks;
         private readonly List<BaseTask> _runningTasks;
         private readonly object _mutex = new object();
-        private bool _isRunning { get; set; }
+        private bool _isRunning;
 
         public TaskCoordinator()
         {
@@ -23,8 +23,8 @@ namespace Aptacode.TaskPlex
         {
             lock (_mutex)
             {
-                if (!_isRunning)
-                    return;
+                if (!_isRunning) { return; }
+
                 _pendingTasks.Add(action);
             }
 
@@ -37,11 +37,10 @@ namespace Aptacode.TaskPlex
             {
                 lock (_mutex)
                 {
-                    if (!_isRunning)
-                        return;
+                    if (!_isRunning) { return; }
 
                     var readyTasks = GetReadyTasks();
-                    if (readyTasks.Count <= 0) return;
+                    if (readyTasks.Count <= 0){ return;}
 
                     CleanUpPendingTasks(readyTasks);
                     StartTasks(readyTasks);

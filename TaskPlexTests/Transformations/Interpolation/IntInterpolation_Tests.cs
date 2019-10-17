@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
+using Aptacode.TaskPlex.Tests.Data;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
@@ -10,14 +11,8 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     [TestFixture]
     public class IntInterpolationTests
     {
-        private static object[] _sourceLists = {
-            new object[] {0, 100, new List<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 } , new LinearEaser()},
-            new object[] {0, -100, new List<int> { -10, -20, -30, -40, -50, -60, -70, -80, -90, -100 } , new LinearEaser()},
-            new object[] {1, 1, new List<int> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } , new LinearEaser()}
-            };
-
-
-        [Test, TestCaseSource("_sourceLists")]
+        
+        [TestCaseSource(typeof(TaskPlexTestData), "GetLinearEaserData")]
         public void IntInterpolator_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog, Easer easer)
         {
             IntInterpolator interpolator = new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));

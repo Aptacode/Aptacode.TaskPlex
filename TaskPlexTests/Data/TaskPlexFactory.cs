@@ -109,9 +109,14 @@ namespace Aptacode.TaskPlex.Tests.Data
             return new ParallelGroupTask(tasks);
         }
 
-        public static BaseTask GetWaitTask(int duration = 0)
+        public static BaseTask GetWaitTask(int duration)
         {
             return new WaitTask(TimeSpan.FromMilliseconds(duration));
+        }        
+        
+        public static BaseTask GetWaitTask()
+        {
+            return new WaitTask(TimeSpan.FromMilliseconds(0));
         }
 
         public static object GetIntInterpolator(int startValue, int endValue, int total, int interval)

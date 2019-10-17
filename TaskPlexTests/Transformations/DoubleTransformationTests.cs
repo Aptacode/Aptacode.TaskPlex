@@ -11,19 +11,13 @@ namespace Aptacode.TaskPlex.Tests.Transformations
     {
         private TestRectangle _testRectangle;
 
-        private static object[] _sourceLists = {
-            new object[] {0, 1, new List<double> { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 }},
-            new object[] {0, -1, new List<double> { -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1.0 } },
-            new object[] {1, 1, new List<double> { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }
-            };
-
         [SetUp]
         public void Setup()
         {
             _testRectangle = new TestRectangle();
         }
-
-        [Test, TestCaseSource("_sourceLists")]
+        
+        [TestCaseSource(typeof(TaskPlexTestData), "GetDoubleInterpolationData")]
         public void DoubleTransformation_OutputMatchesExpectedValues(double startValue, double endValue, List<double> expectedChangeLog)
         {
             var transformation = TaskPlexFactory.GetDoubleTransformation(_testRectangle, "Opacity", startValue, endValue, 10, 1);

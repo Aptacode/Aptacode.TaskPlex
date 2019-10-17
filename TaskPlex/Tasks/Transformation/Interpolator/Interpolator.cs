@@ -59,7 +59,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             try
             {
                 if (_cancellationToken.IsCancellationRequested)
+                {
                     throw new TaskCanceledException();
+                }
 
                 RaiseOnStarted(new InterpolationEventArgs());
 
@@ -85,20 +87,23 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             for (int stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
                 if (_cancellationToken.IsCancellationRequested)
+                {
                     throw new TaskCanceledException();
+                }
+
 
                 int nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
 
                 UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);
                 incrementIndex = nextIncrementIndex;
 
-                await DelayAsync(stepIndex);
+                await DelayAsync(stepIndex).ConfigureAwait(false);
             }
         }
         private int GetStepCount()
         {
-            int taskDurationMilliSeconds = (int)Duration.TotalMilliseconds;
-            int stepDurationMilliSeconds = IntervalDuration.TotalMilliseconds >= 1 ? (int)IntervalDuration.TotalMilliseconds : 1;
+            var taskDurationMilliSeconds = (int)Duration.TotalMilliseconds;
+            var stepDurationMilliSeconds = IntervalDuration.TotalMilliseconds >= 1 ? (int)IntervalDuration.TotalMilliseconds : 1;
             return (int)Math.Floor((double)taskDurationMilliSeconds / stepDurationMilliSeconds);
         }
 
@@ -107,7 +112,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             T difference = Subtract(endValue, startValue);
 
             if (stepCount <= 1)
+            {
                 return difference;
+            }
+
 
             return Divide(difference, stepCount);
         }
@@ -120,7 +128,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         private void UpdateValue(int incrementIndex, T incrementValue, int nextIncrementIndex)
         {
             if (_cancellationToken.IsCancellationRequested)
+            {
                 throw new TaskCanceledException();
+            }
 
             while (incrementIndex < nextIncrementIndex)
             {

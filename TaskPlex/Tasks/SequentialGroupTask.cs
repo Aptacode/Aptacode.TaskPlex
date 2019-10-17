@@ -36,20 +36,17 @@ namespace Aptacode.TaskPlex.Tasks
             try
             {
                 RaiseOnStarted(new LinearGroupTaskEventArgs());
-                await RunTasks();
+                
+                foreach (var task in Tasks)
+                {
+                    await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+                }
+
                 RaiseOnFinished(new LinearGroupTaskEventArgs());
             }
             catch (TaskCanceledException)
             {
                 RaiseOnCancelled();
-            }
-        }
-
-        private async Task RunTasks()
-        {
-            foreach (var task in Tasks)
-            {
-                await task.StartAsync(_cancellationToken).ConfigureAwait(false);
             }
         }
     }

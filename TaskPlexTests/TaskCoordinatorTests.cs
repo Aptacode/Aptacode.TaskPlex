@@ -66,7 +66,9 @@ namespace Aptacode.TaskPlex.Tests
                 {
                     endTimes.Add(DateTime.Now);
                     if (++finishedTaskCount >= tasks.Count())
+                    {
                         tcs.SetResult(true);
+                    }
                 };
             }
 
