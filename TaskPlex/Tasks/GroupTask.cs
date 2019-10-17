@@ -5,12 +5,12 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected List<BaseTask> Tasks { get; set; }
-
         protected GroupTask(IEnumerable<BaseTask> tasks)
         {
             Tasks = new List<BaseTask>(tasks);
         }
+
+        protected List<BaseTask> Tasks { get; set; }
 
         public void Add(BaseTask task)
         {
@@ -25,6 +25,5 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
-
     }
 }

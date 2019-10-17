@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Data;
 using Aptacode.TaskPlex.Tests.Utilites;
 using NUnit.Framework;
@@ -10,28 +9,27 @@ namespace Aptacode.TaskPlex.Tests.Transformations
     [TestFixture]
     public class IntTransformationTests
     {
-        private TestRectangle _testRectangle;
-
-        private static object[] _sourceLists = {
-
-            };
-
         [SetUp]
         public void Setup()
         {
             _testRectangle = new TestRectangle();
         }
 
-        [TestCaseSource(typeof(TaskPlexTestData), "GetIntInterpolationData")]
-        public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog)
+        private TestRectangle _testRectangle;
+
+        private static object[] _sourceLists =
         {
-            var transformation = TaskPlexFactory.GetIntTransformation(_testRectangle, "Width", startValue, endValue, 10, 1);
+        };
+
+        [TestCaseSource(typeof(TaskPlexTestData), "GetIntInterpolationData")]
+        public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue,
+            List<int> expectedChangeLog)
+        {
+            var transformation =
+                TaskPlexFactory.GetIntTransformation(_testRectangle, "Width", startValue, endValue, 10, 1);
 
             var actualChangeLog = new List<int>();
-            _testRectangle.OnWidthChange += (s, e) =>
-            {
-                actualChangeLog.Add(e.NewValue);
-            };
+            _testRectangle.OnWidthChange += (s, e) => { actualChangeLog.Add(e.NewValue); };
 
             transformation.StartAsync().Wait();
 

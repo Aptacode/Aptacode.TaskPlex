@@ -6,7 +6,6 @@ using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
 {
-
     public class ParallelGroupTaskTests
     {
         [Test]
@@ -15,11 +14,11 @@ namespace Aptacode.TaskPlex.Tests
             var task1StartTime = DateTime.Now;
             var task1EndTime = DateTime.Now;
             var task2StartTime = DateTime.Now;
-            var task2EndTime = DateTime.Now;  
+            var task2EndTime = DateTime.Now;
             var task3StartTime = DateTime.Now;
             var task3EndTime = DateTime.Now;
 
-            List<BaseTask> tasks = new List<BaseTask>();
+            var tasks = new List<BaseTask>();
             var task1 = TaskPlexFactory.GetWaitTask(15);
             var task2 = TaskPlexFactory.GetWaitTask(10);
             var task3 = TaskPlexFactory.GetWaitTask(1);

@@ -10,14 +10,11 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     public class EaserTests
     {
         [TestCaseSource(typeof(TaskPlexTestData), "GetEaserData")]
-
         public void EaserProgresFrom0To1(Easer easer, List<double> expectedValues)
         {
             var comparer = new DoubleComparer();
-            for (int i = 0; i < expectedValues.Count; i++)
-            {
+            for (var i = 0; i < expectedValues.Count; i++)
                 Assert.That(comparer.Equals(expectedValues[i], easer.ProgressAt(i, 10)));
-            }
         }
     }
 }

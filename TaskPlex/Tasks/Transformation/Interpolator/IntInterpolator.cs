@@ -4,9 +4,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class IntInterpolator : Interpolator<int>
     {
-        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval) : base(startValue, endValue, duration, interval)
+        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval) : base(startValue,
+            endValue, duration, interval)
         {
-
         }
 
         protected override int Add(int a, int b)

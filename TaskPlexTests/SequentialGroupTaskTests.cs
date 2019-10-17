@@ -6,7 +6,6 @@ using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
 {
-
     public class SequentialGroupTaskTests
     {
         [Test]
@@ -17,7 +16,7 @@ namespace Aptacode.TaskPlex.Tests
             var task2StartTime = DateTime.Now;
             var task2EndTime = DateTime.Now;
 
-            List<BaseTask> tasks = new List<BaseTask>();
+            var tasks = new List<BaseTask>();
             var task1 = TaskPlexFactory.GetWaitTask();
             var task2 = TaskPlexFactory.GetWaitTask();
             tasks.Add(task1);
@@ -28,7 +27,7 @@ namespace Aptacode.TaskPlex.Tests
             task2.OnStarted += (s, e) => { task2StartTime = DateTime.Now; };
             task2.OnFinished += (s, e) => { task2EndTime = DateTime.Now; };
 
-            SequentialGroupTask groupTask = TaskPlexFactory.GetSequentialGroup(tasks);
+            var groupTask = TaskPlexFactory.GetSequentialGroup(tasks);
 
             groupTask.StartAsync().Wait();
 

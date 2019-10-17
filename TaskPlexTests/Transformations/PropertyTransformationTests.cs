@@ -6,7 +6,6 @@ namespace Aptacode.TaskPlex.Tests.Transformations
 {
     public class PropertyTransformationTests
     {
-        
         [Test]
         [TestCaseSource(typeof(TaskPlexTestData), "GetNonZeroTransformationAndInterval")]
         [TestCaseSource(typeof(TaskPlexTestData), "GetInstantTransformations")]
@@ -14,7 +13,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         public void TargetsPropertyMatchesExpectedValue(PropertyTransformation task, object expectedEndValue)
         {
             task.StartAsync().Wait();
-            object endValue = task.Property.GetValue(task.Target);
+            var endValue = task.Property.GetValue(task.Target);
 
             Assert.AreEqual(expectedEndValue, endValue);
         }

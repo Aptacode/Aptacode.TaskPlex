@@ -4,9 +4,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class DoubleInterpolator : Interpolator<double>
     {
-        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval) : base(startValue, endValue, duration, interval)
+        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval) : base(
+            startValue, endValue, duration, interval)
         {
-
         }
 
         protected override double Add(double a, double b)

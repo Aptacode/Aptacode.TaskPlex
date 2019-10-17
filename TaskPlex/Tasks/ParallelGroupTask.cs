@@ -8,6 +8,7 @@ namespace Aptacode.TaskPlex.Tasks
     public class ParallelGroupTaskEventArgs : BaseTaskEventArgs
     {
     }
+
     public class ParallelGroupTask : GroupTask
     {
         public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)

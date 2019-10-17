@@ -11,18 +11,16 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     [TestFixture]
     public class IntInterpolationTests
     {
-        
         [TestCaseSource(typeof(TaskPlexTestData), "GetLinearEaserData")]
-        public void IntInterpolator_OutputMatchesExpectedValues(int startValue, int endValue, List<int> expectedChangeLog, Easer easer)
+        public void IntInterpolator_OutputMatchesExpectedValues(int startValue, int endValue,
+            List<int> expectedChangeLog, Easer easer)
         {
-            IntInterpolator interpolator = new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
+            var interpolator = new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
+                TimeSpan.FromMilliseconds(1));
             interpolator.SetEaser(easer);
 
-            List<int> actualChangeLog = new List<int>();
-            interpolator.OnValueChanged += (s, e) =>
-            {
-                actualChangeLog.Add(e.Value);
-            };
+            var actualChangeLog = new List<int>();
+            interpolator.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };
 
             interpolator.StartAsync().Wait();
 

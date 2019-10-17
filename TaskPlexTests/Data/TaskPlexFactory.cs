@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
@@ -10,18 +9,20 @@ namespace Aptacode.TaskPlex.Tests.Data
 {
     public static class TaskPlexFactory
     {
-        public static IntTransformation GetIntTransformation(object testObject, string testProperty, int startValue, int endValue, int totalTime, int stepTime)
+        public static IntTransformation GetIntTransformation(object testObject, string testProperty, int startValue,
+            int endValue, int totalTime, int stepTime)
         {
-            PropertyInfo property = testObject.GetType().GetProperty(testProperty);
+            var property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
 
             return GetIntTransformation(testObject, testProperty, endValue, totalTime, stepTime);
         }
 
 
-        public static IntTransformation GetIntTransformation(object testObject, string testProperty, int endValue, int totalTime, int stepTime)
+        public static IntTransformation GetIntTransformation(object testObject, string testProperty, int endValue,
+            int totalTime, int stepTime)
         {
-            IntTransformation transformation = new IntTransformation(
+            var transformation = new IntTransformation(
                 testObject,
                 testProperty,
                 endValue,
@@ -31,17 +32,19 @@ namespace Aptacode.TaskPlex.Tests.Data
             return transformation;
         }
 
-        public static DoubleTransformation GetDoubleTransformation(object testObject, string testProperty, double startValue, double endValue, int totalTime, int stepTime)
+        public static DoubleTransformation GetDoubleTransformation(object testObject, string testProperty,
+            double startValue, double endValue, int totalTime, int stepTime)
         {
-            PropertyInfo property = testObject.GetType().GetProperty(testProperty);
+            var property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
 
             return GetDoubleTransformation(testObject, testProperty, endValue, totalTime, stepTime);
         }
 
-        public static DoubleTransformation GetDoubleTransformation(object testObject, string testProperty, double endValue, int totalTime, int stepTime)
+        public static DoubleTransformation GetDoubleTransformation(object testObject, string testProperty,
+            double endValue, int totalTime, int stepTime)
         {
-            DoubleTransformation transformation = new DoubleTransformation(
+            var transformation = new DoubleTransformation(
                 testObject,
                 testProperty,
                 endValue,
@@ -51,12 +54,13 @@ namespace Aptacode.TaskPlex.Tests.Data
             return transformation;
         }
 
-        public static StringTransformation GetStringTransformation(object testObject, string testProperty, string startValue, string endValue, int totalTime, int stepTime)
+        public static StringTransformation GetStringTransformation(object testObject, string testProperty,
+            string startValue, string endValue, int totalTime, int stepTime)
         {
-            PropertyInfo property = testObject.GetType().GetProperty(testProperty);
+            var property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
 
-            StringTransformation transformation = new StringTransformation(
+            var transformation = new StringTransformation(
                 testObject,
                 testProperty,
                 endValue,
@@ -66,12 +70,13 @@ namespace Aptacode.TaskPlex.Tests.Data
             return transformation;
         }
 
-        public static ColorTransformation GetColorTransformation(object testObject, string testProperty, Color startValue, Color endValue, int totalTime, int stepTime)
+        public static ColorTransformation GetColorTransformation(object testObject, string testProperty,
+            Color startValue, Color endValue, int totalTime, int stepTime)
         {
-            PropertyInfo property = testObject.GetType().GetProperty(testProperty);
+            var property = testObject.GetType().GetProperty(testProperty);
             property.SetValue(testObject, startValue);
 
-            ColorTransformation transformation = new ColorTransformation(
+            var transformation = new ColorTransformation(
                 testObject,
                 testProperty,
                 endValue,
@@ -84,12 +89,13 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static SequentialGroupTask GetSequentialGroup()
         {
             return GetSequentialGroup(
-                new List<BaseTask> {
-                    GetWaitTask(), 
+                new List<BaseTask>
+                {
+                    GetWaitTask(),
                     GetWaitTask()
-                    });
-        } 
-        
+                });
+        }
+
         public static SequentialGroupTask GetSequentialGroup(IEnumerable<BaseTask> tasks)
         {
             return new SequentialGroupTask(tasks);
@@ -98,7 +104,8 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static ParallelGroupTask GetParallelGroup()
         {
             return GetParallelGroup(
-                new List<BaseTask> {
+                new List<BaseTask>
+                {
                     GetWaitTask(),
                     GetWaitTask()
                 });
@@ -112,8 +119,8 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static BaseTask GetWaitTask(int duration)
         {
             return new WaitTask(TimeSpan.FromMilliseconds(duration));
-        }        
-        
+        }
+
         public static BaseTask GetWaitTask()
         {
             return new WaitTask(TimeSpan.FromMilliseconds(0));
@@ -123,8 +130,8 @@ namespace Aptacode.TaskPlex.Tests.Data
         {
             return new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
                 TimeSpan.FromMilliseconds(interval));
-        }   
-        
+        }
+
         public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval)
         {
             return new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),

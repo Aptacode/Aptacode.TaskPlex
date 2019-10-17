@@ -12,18 +12,16 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     [TestFixture]
     public class DoubleEasing_Tests
     {
-
         [TestCaseSource(typeof(TaskPlexTestData), "GetExpectedEaserData")]
-        public void DoubleInterpolator_OutputValuesMatchSequence(double startValue, double endValue, List<double> expectedChangeLog, Easer easer)
+        public void DoubleInterpolator_OutputValuesMatchSequence(double startValue, double endValue,
+            List<double> expectedChangeLog, Easer easer)
         {
-            DoubleInterpolator transformation = new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
+            var transformation = new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
+                TimeSpan.FromMilliseconds(1));
             transformation.SetEaser(easer);
 
-            List<double> actualChangeLog = new List<double>();
-            transformation.OnValueChanged += (s, e) =>
-            {
-                actualChangeLog.Add(e.Value);
-            };
+            var actualChangeLog = new List<double>();
+            transformation.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };
 
             transformation.StartAsync().Wait();
 

@@ -9,13 +9,15 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public class StringTransformation : PropertyTransformation<string>
     {
-        public StringTransformation(object target, string property, Func<string> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public StringTransformation(object target, string property, Func<string> destinationValue,
+            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration,
+            stepDuration)
         {
-
         }
-        public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+
+        public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
-            
         }
 
         protected override async Task InternalTask()

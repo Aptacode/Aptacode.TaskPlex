@@ -11,16 +11,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public class DoubleTransformation : PropertyTransformation<double>
     {
-        public Easer Easer { get; set; }
-        public DoubleTransformation(object target, string property, Func<double> destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public DoubleTransformation(object target, string property, Func<double> destinationValue,
+            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration,
+            stepDuration)
         {
             Easer = new LinearEaser();
         }
 
-        public DoubleTransformation(object target, string property, double destinationValue, TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public DoubleTransformation(object target, string property, double destinationValue, TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
             Easer = new LinearEaser();
         }
+
+        public Easer Easer { get; set; }
 
         protected override async Task InternalTask()
         {
@@ -28,14 +32,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             {
                 RaiseOnStarted(new DoubleTransformationEventArgs());
 
-                DoubleInterpolator interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
+                var interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
                 interpolator.SetEaser(Easer);
 
-                interpolator.OnValueChanged += (s, e) =>
-                {
-                    SetValue(e.Value);
-                };
+                interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 
                 await interpolator.StartAsync(_cancellationToken);
 
