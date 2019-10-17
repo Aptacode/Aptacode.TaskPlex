@@ -13,9 +13,10 @@ I hope you find some use in it!
 
 ### TaskCoordinator
 
+
 -  The task coordinator determines in which order tasks are executed.
 
-```
+```csharp
 
 //Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
@@ -37,12 +38,14 @@ taskCoordinator.Stop();
 ```
 
 ### Tasks
+
+
 -  A task is a unit of work to be executed over a duration.
 Each task has an started and finished event.
 'OnStarted' is triggered when the task coordinator decides to run the task.
 'OnFinished' is triggered just after the task finishes.
 
-```
+```csharp
 
 //Create a DoubleTransformation on the 'Width' property of 'myObject'.
 //Transform the Width property from its current value to the result of the specified function.
@@ -73,11 +76,12 @@ Each task has an started and finished event.
 
 ### Interpolator  
 
+
 -  Incrementally transition from a start value to an end value at the given interval. 
 
 *Note you can set a custom easing function as shown below, the default is 'LinearEaser'
 
-```
+```csharp
 
 //Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
 DoubleInterpolator exampleDoubleInterpolator = 
@@ -103,9 +107,10 @@ exampleInterpolator.StartAsync();
 
 ### PropertyTransformation
 
+
 -  Incrementally transition a property from its initil value to the specified end value at the given interval.
 
-```    
+```csharp
 
 PropertyTransformation xTransformation = new DoubleTransformation(
                 testObject,
@@ -139,9 +144,10 @@ PropertyTransformation titleTransformation = new StringTransformation(
 
 ### GroupTasks
 
+
 -  Group together tasks to be executed sequentially or in parallel
 
-```
+```csharp
 
 GroupTask animation1 = new LinearGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
 
@@ -151,9 +157,10 @@ GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformati
 
 ### WaitTask
 
+
 -  Wait for the specified amount of time
 
-```
+```csharp
 
 WaitTask wait = new WaitTask(TimeSpan.FromMilliseconds(100));
 
