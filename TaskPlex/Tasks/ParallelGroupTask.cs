@@ -25,12 +25,20 @@ namespace Aptacode.TaskPlex.Tasks
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        public override async Task StartAsync()
+        protected override async Task InternalTask()
         {
-            RaiseOnStarted(new ParallelGroupTaskEventArgs());
-            await Task.WhenAll(Tasks.Select(task => task.StartAsync())); 
-            RaiseOnFinished(new ParallelGroupTaskEventArgs());
-        }
+            try
+            {
+                RaiseOnStarted(new ParallelGroupTaskEventArgs());
 
+                await Task.WhenAll(Tasks.Select(task => task.StartAsync(_cancellationToken)));
+
+                RaiseOnFinished(new ParallelGroupTaskEventArgs());
+            }
+            catch (TaskCanceledException)
+            {
+                RaiseOnCancelled();
+            }
+        }
     }
 }

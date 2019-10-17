@@ -17,12 +17,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             
         }
-        public override async Task StartAsync()
-        { 
-            RaiseOnStarted(new StringTransformationEventArgs());
-            await Task.Delay(Duration).ConfigureAwait(false);
-            SetValue(GetEndValue()); 
-            RaiseOnFinished(new StringTransformationEventArgs());
+
+        protected override async Task InternalTask()
+        {
+            try
+            {
+                RaiseOnStarted(new StringTransformationEventArgs());
+                await Task.Delay(Duration, _cancellationToken.Token).ConfigureAwait(false);
+                SetValue(GetEndValue());
+                RaiseOnFinished(new StringTransformationEventArgs());
+            }
+            catch (TaskCanceledException)
+            {
+                RaiseOnCancelled();
+            }
         }
     }
 }

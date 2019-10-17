@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
+using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 
-namespace Aptacode.TaskPlex.Tests.Utilites
+namespace Aptacode.TaskPlex.Tests.Data
 {
-    public static class PropertyTransformationHelpers
+    public static class TaskPlexFactory
     {
         public static IntTransformation GetIntTransformation(object testObject, string testProperty, int startValue, int endValue, int totalTime, int stepTime)
         {
@@ -76,6 +79,51 @@ namespace Aptacode.TaskPlex.Tests.Utilites
                 TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
+        }
+
+        public static SequentialGroupTask GetSequentialGroup()
+        {
+            return GetSequentialGroup(
+                new List<BaseTask> {
+                    GetWaitTask(), 
+                    GetWaitTask()
+                    });
+        } 
+        
+        public static SequentialGroupTask GetSequentialGroup(IEnumerable<BaseTask> tasks)
+        {
+            return new SequentialGroupTask(tasks);
+        }
+
+        public static ParallelGroupTask GetParallelGroup()
+        {
+            return GetParallelGroup(
+                new List<BaseTask> {
+                    GetWaitTask(),
+                    GetWaitTask()
+                });
+        }
+
+        public static ParallelGroupTask GetParallelGroup(IEnumerable<BaseTask> tasks)
+        {
+            return new ParallelGroupTask(tasks);
+        }
+
+        public static BaseTask GetWaitTask(int duration = 0)
+        {
+            return new WaitTask(TimeSpan.FromMilliseconds(duration));
+        }
+
+        public static object GetIntInterpolator(int startValue, int endValue, int total, int interval)
+        {
+            return new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
+                TimeSpan.FromMilliseconds(interval));
+        }   
+        
+        public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval)
+        {
+            return new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
+                TimeSpan.FromMilliseconds(interval));
         }
     }
 }

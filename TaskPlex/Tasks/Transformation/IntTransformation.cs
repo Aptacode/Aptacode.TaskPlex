@@ -23,21 +23,29 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Easer = new LinearEaser();
         }
 
-        public override async Task StartAsync()
+        protected override async Task InternalTask()
         {
-            RaiseOnStarted(new IntTransformationEventArgs());
-            IntInterpolator interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
-
-            interpolator.SetEaser(Easer);
-
-            interpolator.OnValueChanged += (s, e) =>
+            try
             {
-                SetValue(e.Value);
-            };
+                RaiseOnStarted(new IntTransformationEventArgs());
 
-            await interpolator.StartAsync().ConfigureAwait(false); 
-            RaiseOnFinished(new IntTransformationEventArgs());
+                IntInterpolator interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
+                interpolator.SetEaser(Easer);
+
+                interpolator.OnValueChanged += (s, e) =>
+                {
+                    SetValue(e.Value);
+                };
+
+                await Task.WhenAll(interpolator.StartAsync(_cancellationToken));
+
+                RaiseOnFinished(new IntTransformationEventArgs());
+            }
+            catch (TaskCanceledException)
+            {
+                RaiseOnCancelled();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
@@ -7,10 +8,10 @@ namespace Aptacode.TaskPlex.Tasks
     public class LinearGroupTaskEventArgs : BaseTaskEventArgs
     {
     }
-    public class LinearGroupTask : GroupTask
+    public class SequentialGroupTask : GroupTask
     {
 
-        public LinearGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
+        public SequentialGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
         }
@@ -30,14 +31,26 @@ namespace Aptacode.TaskPlex.Tasks
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        public override async Task StartAsync()
+        protected override async Task InternalTask()
         {
-            RaiseOnStarted(new LinearGroupTaskEventArgs());
+            try
+            {
+                RaiseOnStarted(new LinearGroupTaskEventArgs());
+                await RunTasks();
+                RaiseOnFinished(new LinearGroupTaskEventArgs());
+            }
+            catch (TaskCanceledException)
+            {
+                RaiseOnCancelled();
+            }
+        }
+
+        private async Task RunTasks()
+        {
             foreach (var task in Tasks)
             {
-                await task.StartAsync().ConfigureAwait(false);
-            } 
-            RaiseOnFinished(new LinearGroupTaskEventArgs());
+                await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 }

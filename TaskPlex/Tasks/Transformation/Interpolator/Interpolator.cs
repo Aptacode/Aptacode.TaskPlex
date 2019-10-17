@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
@@ -53,19 +54,26 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         protected abstract T Subtract(T a, T b);
         protected abstract T Add(T a, T b);
         protected abstract T Divide(T a, int incrementCount);
+        protected override async Task InternalTask()
+        {
+            try
+            {
+                if (_cancellationToken.IsCancellationRequested)
+                    throw new TaskCanceledException();
 
-        public override async Task StartAsync()
-        { 
-            RaiseOnStarted(new InterpolationEventArgs());
+                RaiseOnStarted(new InterpolationEventArgs());
 
-            _stepTimer.Restart();
+                _stepTimer.Restart();
+                await InterpolateAsync().ConfigureAwait(false);
+                _stepTimer.Stop();
+                OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
 
-            await InterpolateAsync().ConfigureAwait(false);
-
-            _stepTimer.Stop();
-            OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
-            
-            RaiseOnFinished(new InterpolationEventArgs());
+                RaiseOnFinished(new InterpolationEventArgs());
+            }
+            catch (TaskCanceledException)
+            {
+                RaiseOnCancelled();
+            }
         }
 
         private async Task InterpolateAsync()
@@ -76,6 +84,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             
             for (int stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
+                if (_cancellationToken.IsCancellationRequested)
+                    throw new TaskCanceledException();
+
                 int nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
 
                 UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);
@@ -94,6 +105,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         private T GetIncrementValue(T startValue, T endValue, int stepCount)
         {
             T difference = Subtract(endValue, startValue);
+
+            if (stepCount <= 1)
+                return difference;
+
             return Divide(difference, stepCount);
         }
 
@@ -104,6 +119,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         private void UpdateValue(int incrementIndex, T incrementValue, int nextIncrementIndex)
         {
+            if (_cancellationToken.IsCancellationRequested)
+                throw new TaskCanceledException();
+
             while (incrementIndex < nextIncrementIndex)
             {
                 incrementIndex++;
@@ -118,7 +136,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             //the Task.Delay function will only accuratly sleep for >8ms
             if (millisecondsAhead > 8)
             {
-                await Task.Delay(millisecondsAhead).ConfigureAwait(false);
+                await Task.Delay(millisecondsAhead, _cancellationToken.Token).ConfigureAwait(false);
             }
         }
     }
