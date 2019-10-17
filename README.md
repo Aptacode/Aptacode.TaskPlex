@@ -1,6 +1,8 @@
 # AptacodeTaskPlex
 A simple library for changing / interpolating .Net properties over time
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d25f0cea83384aacada81fa9790679c8)](https://www.codacy.com/manual/Timmoth/AptacodeTaskPlex?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Timmoth/AptacodeTaskPlex&amp;utm_campaign=Badge_Grade)
+
 ## Why
 I needed to synchronize the animation of properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it to behave erratically. 
 In order to simplify the application and synchronization of transformations on properties I created TaskPlex.
