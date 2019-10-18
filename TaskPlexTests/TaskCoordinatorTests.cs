@@ -34,11 +34,16 @@ namespace Aptacode.TaskPlex.Tests
                 baseTask.OnFinished += (s, e) =>
                 {
                     if (++finishedTaskCount >= tasks.Count())
+                    {
                         tcs.SetResult(true);
+                    }
                 };
             }
 
-            foreach (var baseTask in tasks) _taskCoordinator.Apply(baseTask);
+            foreach (var baseTask in tasks)
+            {
+                _taskCoordinator.Apply(baseTask);
+            }
 
             tcs.Task.Wait();
             Assert.Pass();
@@ -62,16 +67,25 @@ namespace Aptacode.TaskPlex.Tests
                 baseTask.OnFinished += (s, e) =>
                 {
                     endTimes.Add(DateTime.Now);
-                    if (++finishedTaskCount >= tasks.Count()) tcs.SetResult(true);
+                    if (++finishedTaskCount >= tasks.Count())
+                    {
+                        tcs.SetResult(true);
+                    }
                 };
             }
 
-            foreach (var baseTask in tasks) _taskCoordinator.Apply(baseTask);
+            foreach (var baseTask in tasks)
+            {
+                _taskCoordinator.Apply(baseTask);
+            }
 
             tcs.Task.Wait();
 
 
-            for (var i = 1; i < endTimes.Count(); i++) Assert.That(endTimes[i - 1] < startTimes[i]);
+            for (var i = 1; i < endTimes.Count(); i++)
+            {
+                Assert.That(endTimes[i - 1] < startTimes[i]);
+            }
         }
     }
 }

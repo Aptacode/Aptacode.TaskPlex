@@ -14,7 +14,9 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
         {
             var comparer = new DoubleComparer();
             for (var i = 0; i < expectedValues.Count; i++)
+            {
                 Assert.That(comparer.Equals(expectedValues[i], easer.ProgressAt(i, 10)));
+            }
         }
     }
 }

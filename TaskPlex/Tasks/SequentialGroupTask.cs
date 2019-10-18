@@ -18,7 +18,11 @@ namespace Aptacode.TaskPlex.Tasks
         protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
             var totalDuration = TimeSpan.Zero;
-            foreach (var task in tasks) totalDuration = totalDuration.Add(task.Duration);
+            foreach (var task in tasks)
+            {
+                totalDuration = totalDuration.Add(task.Duration);
+            }
+
             return totalDuration;
         }
 
@@ -33,7 +37,10 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 RaiseOnStarted(new LinearGroupTaskEventArgs());
 
-                foreach (var task in Tasks) await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+                foreach (var task in Tasks)
+                {
+                    await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+                }
 
                 RaiseOnFinished(new LinearGroupTaskEventArgs());
             }

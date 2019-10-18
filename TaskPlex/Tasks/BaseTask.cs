@@ -59,9 +59,13 @@ namespace Aptacode.TaskPlex.Tasks
         protected void RaiseOnFinished(BaseTaskEventArgs args)
         {
             if (_cancellationToken.IsCancellationRequested)
+            {
                 RaiseOnCancelled();
+            }
             else
+            {
                 OnFinished?.Invoke(this, args);
+            }
         }
 
         protected void RaiseOnCancelled()

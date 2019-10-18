@@ -24,8 +24,15 @@ namespace Aptacode.TaskPlex
             lock (_mutex)
             {
                 _isRunning = false;
-                foreach (var pendingTask in _pendingTasks) pendingTask.Cancel();
-                foreach (var runningTask in _runningTasks) runningTask.Cancel();
+                foreach (var pendingTask in _pendingTasks)
+                {
+                    pendingTask.Cancel();
+                }
+
+                foreach (var runningTask in _runningTasks)
+                {
+                    runningTask.Cancel();
+                }
 
                 _pendingTasks.Clear();
                 _runningTasks.Clear();
@@ -36,7 +43,10 @@ namespace Aptacode.TaskPlex
         {
             lock (_mutex)
             {
-                if (!_isRunning) return;
+                if (!_isRunning)
+                {
+                    return;
+                }
 
                 _pendingTasks.Add(action);
             }
@@ -50,10 +60,16 @@ namespace Aptacode.TaskPlex
             {
                 lock (_mutex)
                 {
-                    if (!_isRunning) return;
+                    if (!_isRunning)
+                    {
+                        return;
+                    }
 
                     var readyTasks = GetReadyTasks();
-                    if (readyTasks.Count <= 0) return;
+                    if (readyTasks.Count <= 0)
+                    {
+                        return;
+                    }
 
                     CleanUpPendingTasks(readyTasks);
                     StartTasks(readyTasks);
@@ -66,15 +82,22 @@ namespace Aptacode.TaskPlex
             var readyTasks = new List<BaseTask>();
 
             foreach (var item in _pendingTasks)
+            {
                 if (!_runningTasks.Exists(t => t.CollidesWith(item)) && !readyTasks.Exists(t => t.CollidesWith(item)))
+                {
                     readyTasks.Add(item);
+                }
+            }
 
             return readyTasks;
         }
 
         private void CleanUpPendingTasks(IEnumerable<BaseTask> startedTasks)
         {
-            foreach (var item in startedTasks) _pendingTasks.Remove(item);
+            foreach (var item in startedTasks)
+            {
+                _pendingTasks.Remove(item);
+            }
         }
 
         private void StartTasks(IEnumerable<BaseTask> readyTasks)

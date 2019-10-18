@@ -125,11 +125,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 _rComponentQueue.Count > 0 &&
                 _gComponentQueue.Count > 0 &&
                 _bComponentQueue.Count > 0)
+            {
                 SetValue(Color.FromArgb(
                     _aComponentQueue.Dequeue(),
                     _rComponentQueue.Dequeue(),
                     _gComponentQueue.Dequeue(),
                     _bComponentQueue.Dequeue()));
+            }
         }
     }
 }
