@@ -32,8 +32,8 @@ namespace Aptacode.TaskPlex.Tests
             groupTask.StartAsync().Wait();
 
 
-            Assert.That(Math.Abs((task1StartTime - task2StartTime).TotalMilliseconds) <= 1 );
-            Assert.That(Math.Abs((task2StartTime - task3StartTime).TotalMilliseconds) <= 1 );
+            Assert.That(Math.Abs((task1StartTime - task2StartTime).TotalMilliseconds) <= 2 );
+            Assert.That(Math.Abs((task2StartTime - task3StartTime).TotalMilliseconds) <= 2 );
         }
         
         

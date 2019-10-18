@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
@@ -41,6 +42,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Target.GetHashCode(), Property.GetHashCode()).GetHashCode();
         }
     }
 

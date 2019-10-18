@@ -8,7 +8,8 @@ using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
 {
-    public class PropertyTransformationTests
+    [TestFixture]
+    public class TaskCoordinatorTests
     {
         private TaskCoordinator _taskCoordinator;
 
@@ -21,16 +22,46 @@ namespace Aptacode.TaskPlex.Tests
         [Test]
         [MaxTime(1000)]
         [TestCaseSource(typeof(TaskPlexTestData), "GetParallelTasks")]
-        public void TasksStartedAndFinished(IEnumerable<IBaseTask> tasks)
+        [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
+        public void TasksStarted(IEnumerable<IBaseTask> tasks)
         {
             var tcs = new TaskCompletionSource<bool>();
 
             var startedTaskCount = 0;
+
+            foreach (var baseTask in tasks)
+            {
+                baseTask.OnStarted += (s, e) =>
+                {
+                    if (++startedTaskCount >= tasks.Count())
+                    {
+                        tcs.SetResult(true);
+                    }
+                };
+            }
+
+            foreach (var baseTask in tasks)
+            {
+                _taskCoordinator.Apply(baseTask);
+            }
+
+            tcs.Task.Wait();
+
+            Assert.Pass();
+        } 
+        
+        [Test]
+        [MaxTime(100)]
+        [TestCaseSource(typeof(TaskPlexTestData), "GetParallelTasks")]
+        [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
+        public void TasksFinished(IEnumerable<IBaseTask> tasks)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
             var finishedTaskCount = 0;
 
             foreach (var baseTask in tasks)
             {
-                baseTask.OnStarted += (s, e) => { startedTaskCount++; };
                 baseTask.OnFinished += (s, e) =>
                 {
                     if (++finishedTaskCount >= tasks.Count())
@@ -47,45 +78,6 @@ namespace Aptacode.TaskPlex.Tests
 
             tcs.Task.Wait();
             Assert.Pass();
-        }
-
-        [Test]
-        [MaxTime(1000)]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
-        public void Colliding_Transformations(IEnumerable<IBaseTask> tasks)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            var startTimes = new List<DateTime>();
-            var endTimes = new List<DateTime>();
-            var finishedTaskCount = 0;
-
-            foreach (var baseTask in tasks)
-            {
-                baseTask.OnStarted += (s, e) => { startTimes.Add(DateTime.Now); };
-                baseTask.OnFinished += (s, e) => { };
-                baseTask.OnFinished += (s, e) =>
-                {
-                    endTimes.Add(DateTime.Now);
-                    if (++finishedTaskCount >= tasks.Count())
-                    {
-                        tcs.SetResult(true);
-                    }
-                };
-            }
-
-            foreach (var baseTask in tasks)
-            {
-                _taskCoordinator.Apply(baseTask);
-            }
-
-            tcs.Task.Wait();
-
-
-            for (var i = 1; i < endTimes.Count(); i++)
-            {
-                Assert.That(endTimes[i - 1] < startTimes[i]);
-            }
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Aptacode.TaskPlex.Tasks
             return tasks.Select(t => t.Duration).OrderByDescending(t => t.TotalMilliseconds).FirstOrDefault();
         }
 
+
         protected override async Task InternalTask()
         {
             try

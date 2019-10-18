@@ -54,10 +54,27 @@ namespace Aptacode.TaskPlex.Tests.Data
                 {
                     new List<IBaseTask>
                     {
-                        TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1),
-                        TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 100, 0, 10, 1)
+                        TaskPlexFactory.GetIntTransformation(testRectangle, "Height", 0, 100, 10, 1),
+                        TaskPlexFactory.GetSequentialGroup(new List<IBaseTask>
+                        {
+                            TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1),
+                            TaskPlexFactory.GetIntTransformation(testRectangle, "Height", 0, 100, 10, 1),
+                        }),
                     }
-                }
+                },
+                new object[]
+                {
+                    new List<IBaseTask>
+                    {
+                        TaskPlexFactory.GetSequentialGroup(new List<IBaseTask>
+                        {
+                            TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1),
+                            TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1),
+                        }),
+                        TaskPlexFactory.GetIntTransformation(testRectangle, "Height", 0, 100, 10, 1),
+
+                    }
+                },
             };
         }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -9,10 +9,9 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly CancellationTokenSource _cancellationToken;
-        private readonly object _mutex = new object();
-        private readonly List<IBaseTask> _pendingTasks;
-        private readonly List<IBaseTask> _runningTasks;
-        private bool _isRunning;
+        private readonly ConcurrentDictionary<int, IBaseTask> _runningTasks;
+        private ConcurrentDictionary<int, ConcurrentQueue<IBaseTask>> _pendingTasks;
+
 
         /// <summary>
         ///     Orchestrate the order of execution of tasks
@@ -20,9 +19,8 @@ namespace Aptacode.TaskPlex
         public TaskCoordinator()
         {
             _cancellationToken = new CancellationTokenSource();
-            _pendingTasks = new List<IBaseTask>();
-            _runningTasks = new List<IBaseTask>();
-            _isRunning = true;
+            _runningTasks = new ConcurrentDictionary<int, IBaseTask>();
+            _pendingTasks = new ConcurrentDictionary<int, ConcurrentQueue<IBaseTask>>();
         }
 
         /// <summary>
@@ -30,13 +28,7 @@ namespace Aptacode.TaskPlex
         /// </summary>
         public void Dispose()
         {
-            lock (_mutex)
-            {
-                _isRunning = false;
-                _pendingTasks.Clear();
-                _runningTasks.Clear();
-                _cancellationToken.Cancel();
-            }
+            _cancellationToken.Cancel();
         }
 
         /// <summary>
@@ -45,81 +37,62 @@ namespace Aptacode.TaskPlex
         /// <param name="action"></param>
         public void Apply(IBaseTask task)
         {
-            if (task == null)
+            new TaskFactory().StartNew(() =>
             {
-                return;
-            }
-
-            lock (_mutex)
-            {
-                if (!_isRunning)
+                if (task == null)
                 {
                     return;
                 }
 
-                _pendingTasks.Add(task);
-            }
-
-            UpdateTasks();
-        }
-
-        private void UpdateTasks()
-        {
-            new TaskFactory().StartNew(() =>
-            {
-                lock (_mutex)
+                if (_runningTasks.TryGetValue(task.GetHashCode(), out _))
                 {
-                    if (!_isRunning)
-                    {
-                        return;
-                    }
-
-                    var readyTasks = GetReadyTasks();
-                    if (readyTasks.Count <= 0)
-                    {
-                        return;
-                    }
-
-                    CleanUpPendingTasks(readyTasks);
-                    StartTasks(readyTasks);
+                    AddToPendingTasks(task.GetHashCode(), task);
                 }
+                else
+                {
+                    AddToRunningTasks(task.GetHashCode(), task);
+                }
+            });
+        }
+ 
+        private void AddToRunningTasks(int hashCode, IBaseTask task)
+        {
+            _runningTasks.TryAdd(hashCode, task);
+            StartTask(task);
+        }
+        private void AddToPendingTasks(int hashCode, IBaseTask task)
+        {
+            _pendingTasks.TryGetValue(hashCode, out var pendingTaskQueue);
+            if (pendingTaskQueue == null)
+            {
+                var queue = new ConcurrentQueue<IBaseTask>();
+                queue.Enqueue(task);
+                _pendingTasks.TryAdd(hashCode, queue);
+            }
+            else
+            {
+                pendingTaskQueue.Enqueue(task);
+            }
+        }
+        private void StartTask(IBaseTask task)
+        {
+            task.StartAsync(_cancellationToken).ContinueWith(o =>
+            {
+                RunNextTask(task.GetHashCode());
+
             }).ConfigureAwait(false);
         }
 
-        private List<IBaseTask> GetReadyTasks()
+        private void RunNextTask(int hashCode)
         {
-            var readyTasks = new List<IBaseTask>();
-
-            foreach (var item in _pendingTasks)
+            if (_pendingTasks.TryGetValue(hashCode, out var taskQueue) && taskQueue.TryDequeue(out var nextTask))
             {
-                if (!_runningTasks.Exists(t => t.CollidesWith(item)) && !readyTasks.Exists(t => t.CollidesWith(item)))
-                {
-                    readyTasks.Add(item);
-                }
+                AddToRunningTasks(hashCode, nextTask);
             }
-
-            return readyTasks;
-        }
-
-        private void CleanUpPendingTasks(IEnumerable<IBaseTask> startedTasks)
-        {
-            foreach (var item in startedTasks)
+            else
             {
-                _pendingTasks.Remove(item);
-            }
-        }
-
-        private void StartTasks(IEnumerable<IBaseTask> readyTasks)
-        {
-            foreach (var task in readyTasks)
-            {
-                _runningTasks.Add(task);
-
-                task.StartAsync(_cancellationToken).ContinueWith(o =>
-                {
-                    _runningTasks.Remove(task);
-                    UpdateTasks();
-                }).ConfigureAwait(false);
+                _pendingTasks.TryRemove(hashCode, out _);
+                _runningTasks.TryRemove(hashCode, out _);
             }
         }
     }

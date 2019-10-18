@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -41,7 +42,10 @@ namespace Aptacode.TaskPlex.Tasks
             Tasks.Remove(task);
             Duration = GetTotalDuration(Tasks);
         }
-
+        public IEnumerable<int> GetHashCodes()
+        {
+            return Tasks.Select(p => p.GetHashCode());
+        }
         protected abstract TimeSpan GetTotalDuration(List<IBaseTask> tasks);
     }
 }
