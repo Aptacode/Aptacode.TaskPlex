@@ -25,12 +25,12 @@ namespace Aptacode.TaskPlex.Tests.Data
                 new object[] {TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 10, 25, 20, 1)},
                 new object[]
                 {
-                    TaskPlexFactory.GetSequentialGroup(new List<BaseTask>
+                    TaskPlexFactory.GetSequentialGroup(new List<IBaseTask>
                         {TaskPlexFactory.GetWaitTask(20), TaskPlexFactory.GetWaitTask(20)})
                 },
                 new object[]
                 {
-                    TaskPlexFactory.GetParallelGroup(new List<BaseTask>
+                    TaskPlexFactory.GetParallelGroup(new List<IBaseTask>
                         {TaskPlexFactory.GetWaitTask(20), TaskPlexFactory.GetWaitTask(20)})
                 }
             };
@@ -40,8 +40,8 @@ namespace Aptacode.TaskPlex.Tests.Data
         {
             return new object[]
             {
-                new object[] {new List<BaseTask> {TaskPlexFactory.GetWaitTask(1)}},
-                new object[] {new List<BaseTask> {TaskPlexFactory.GetWaitTask(1), TaskPlexFactory.GetWaitTask(1)}}
+                new object[] {new List<IBaseTask> {TaskPlexFactory.GetWaitTask(1)}},
+                new object[] {new List<IBaseTask> {TaskPlexFactory.GetWaitTask(1), TaskPlexFactory.GetWaitTask(1)}}
             };
         }
 
@@ -52,7 +52,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             {
                 new object[]
                 {
-                    new List<BaseTask>
+                    new List<IBaseTask>
                     {
                         TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 0, 100, 10, 1),
                         TaskPlexFactory.GetIntTransformation(testRectangle, "Width", 100, 0, 10, 1)
