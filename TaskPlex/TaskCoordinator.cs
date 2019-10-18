@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 
@@ -11,32 +12,14 @@ namespace Aptacode.TaskPlex
         private readonly List<BaseTask> _pendingTasks;
         private readonly List<BaseTask> _runningTasks;
         private bool _isRunning;
+        private readonly CancellationTokenSource _cancellationToken;
 
         public TaskCoordinator()
         {
+            _cancellationToken = new CancellationTokenSource();
             _pendingTasks = new List<BaseTask>();
             _runningTasks = new List<BaseTask>();
             _isRunning = true;
-        }
-
-        public void Dispose()
-        {
-            lock (_mutex)
-            {
-                _isRunning = false;
-                foreach (var pendingTask in _pendingTasks)
-                {
-                    pendingTask.Cancel();
-                }
-
-                foreach (var runningTask in _runningTasks)
-                {
-                    runningTask.Cancel();
-                }
-
-                _pendingTasks.Clear();
-                _runningTasks.Clear();
-            }
         }
 
         public void Apply(BaseTask action)
@@ -106,11 +89,21 @@ namespace Aptacode.TaskPlex
             {
                 _runningTasks.Add(task);
 
-                task.StartAsync().ContinueWith(o =>
+                task.StartAsync(_cancellationToken).ContinueWith(o =>
                 {
                     _runningTasks.Remove(task);
                     UpdateTasks();
                 });
+            }
+        }
+        public void Dispose()
+        {
+            lock (_mutex)
+            {
+                _isRunning = false;
+                _pendingTasks.Clear();
+                _runningTasks.Clear();
+                _cancellationToken.Cancel();
             }
         }
     }

@@ -14,6 +14,12 @@ namespace Aptacode.TaskPlex.Tasks
 
     public abstract class BaseTask
     {
+
+        public event EventHandler<BaseTaskEventArgs> OnStarted;
+        public event EventHandler<BaseTaskEventArgs> OnFinished;
+        public event EventHandler<TaskCancellationEventArgs> OnCancelled;
+        public TimeSpan Duration { get; set; }
+        protected CancellationTokenSource _cancellationToken { get; set; }
         protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
@@ -24,11 +30,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
         }
 
-        public TimeSpan Duration { get; set; }
-        protected CancellationTokenSource _cancellationToken { get; set; }
-        public event EventHandler<BaseTaskEventArgs> OnStarted;
-        public event EventHandler<BaseTaskEventArgs> OnFinished;
-        public event EventHandler<TaskCancellationEventArgs> OnCancelled;
+
 
         public abstract bool CollidesWith(BaseTask item);
 
