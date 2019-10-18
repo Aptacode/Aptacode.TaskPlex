@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
@@ -35,17 +34,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            try
-            {
-                RaiseOnStarted(new StringTransformationEventArgs());
-                await Task.Delay(Duration, _cancellationToken.Token).ConfigureAwait(false);
-                SetValue(GetEndValue());
-                RaiseOnFinished(new StringTransformationEventArgs());
-            }
-            catch (TaskCanceledException)
-            {
-                RaiseOnCancelled();
-            }
+            await Task.Delay(Duration, _cancellationToken.Token).ConfigureAwait(false);
+            SetValue(GetEndValue());
         }
     }
 }

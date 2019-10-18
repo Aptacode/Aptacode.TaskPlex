@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public abstract class BaseTask : IBaseTask
+    public abstract class BaseTask
     {
         protected BaseTask(TimeSpan duration)
         {
@@ -14,17 +12,13 @@ namespace Aptacode.TaskPlex.Tasks
             _cancellationToken = new CancellationTokenSource();
         }
 
-        protected BaseTask() : this(TimeSpan.Zero)
-        {
-        }
-
         public TimeSpan Duration { get; set; }
         protected CancellationTokenSource _cancellationToken { get; set; }
 
-        public event EventHandler<System.EventArgs> OnStarted;
-        public event EventHandler<System.EventArgs> OnFinished;
-        public event EventHandler<TaskCancellationEventArgs> OnCancelled;
-        public abstract bool CollidesWith(IBaseTask item);
+        public event EventHandler<EventArgs> OnStarted;
+        public event EventHandler<EventArgs> OnFinished;
+        public event EventHandler<EventArgs> OnCancelled;
+
         /// <summary>
         ///     Start the task
         /// </summary>
@@ -58,14 +52,12 @@ namespace Aptacode.TaskPlex.Tasks
             _cancellationToken.Cancel();
         }
 
-        protected abstract Task InternalTask();
-
-        protected void RaiseOnStarted(System.EventArgs args)
+        internal void RaiseOnStarted(EventArgs args)
         {
             OnStarted?.Invoke(this, args);
         }
 
-        protected void RaiseOnFinished(System.EventArgs args)
+        internal void RaiseOnFinished(EventArgs args)
         {
             if (_cancellationToken.IsCancellationRequested)
             {
@@ -77,11 +69,11 @@ namespace Aptacode.TaskPlex.Tasks
             }
         }
 
-        protected void RaiseOnCancelled()
+        internal void RaiseOnCancelled()
         {
-            OnCancelled?.Invoke(this, new TaskCancellationEventArgs());
+            OnCancelled?.Invoke(this, EventArgs.Empty);
         }
 
-
+        protected abstract Task InternalTask();
     }
 }

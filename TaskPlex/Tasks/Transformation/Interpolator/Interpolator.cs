@@ -31,43 +31,22 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         private T EndValue { get; }
         public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
 
-        public override bool CollidesWith(IBaseTask item)
-        {
-            return false;
-        }
-
         protected abstract T Subtract(T a, T b);
         protected abstract T Add(T a, T b);
         protected abstract T Divide(T a, int incrementCount);
 
         protected override async Task InternalTask()
         {
-            try
+            _stepTimer.Restart();
+            await InterpolateAsync().ConfigureAwait(false);
+            _stepTimer.Stop();
+
+            if (_cancellationToken.IsCancellationRequested)
             {
-                if (_cancellationToken.IsCancellationRequested)
-                {
-                    throw new TaskCanceledException();
-                }
-
-                RaiseOnStarted(new InterpolationEventArgs());
-
-                _stepTimer.Restart();
-                await InterpolateAsync().ConfigureAwait(false);
-                _stepTimer.Stop();
-
-                if (_cancellationToken.IsCancellationRequested)
-                {
-                    throw new TaskCanceledException();
-                }
-
-                OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
-
-                RaiseOnFinished(new InterpolationEventArgs());
+                throw new TaskCanceledException();
             }
-            catch (TaskCanceledException)
-            {
-                RaiseOnCancelled();
-            }
+
+            OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
         }
 
         private async Task InterpolateAsync()

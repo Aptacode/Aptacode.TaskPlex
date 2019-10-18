@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
@@ -45,24 +44,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            try
-            {
-                RaiseOnStarted(new IntTransformationEventArgs());
+            var interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
-                var interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
+            interpolator.Easer = Easer;
 
-                interpolator.Easer = Easer;
-
-                interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
-
-                await Task.WhenAll(interpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
-
-                RaiseOnFinished(new IntTransformationEventArgs());
-            }
-            catch (TaskCanceledException)
-            {
-                RaiseOnCancelled();
-            }
+            interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
+            await Task.WhenAll(interpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
         }
     }
 }

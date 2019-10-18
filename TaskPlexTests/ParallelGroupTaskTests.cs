@@ -15,7 +15,7 @@ namespace Aptacode.TaskPlex.Tests
             var task2StartTime = DateTime.Now;
             var task3StartTime = DateTime.Now;
 
-            var tasks = new List<IBaseTask>();
+            var tasks = new List<BaseTask>();
             var task1 = TaskPlexFactory.GetWaitTask(1);
             var task2 = TaskPlexFactory.GetWaitTask(1);
             var task3 = TaskPlexFactory.GetWaitTask(1);
@@ -32,10 +32,8 @@ namespace Aptacode.TaskPlex.Tests
             groupTask.StartAsync().Wait();
 
 
-            Assert.That(Math.Abs((task1StartTime - task2StartTime).TotalMilliseconds) <= 2 );
-            Assert.That(Math.Abs((task2StartTime - task3StartTime).TotalMilliseconds) <= 2 );
+            Assert.That(Math.Abs((task1StartTime - task2StartTime).TotalMilliseconds) <= 2);
+            Assert.That(Math.Abs((task2StartTime - task3StartTime).TotalMilliseconds) <= 2);
         }
-        
-        
     }
 }

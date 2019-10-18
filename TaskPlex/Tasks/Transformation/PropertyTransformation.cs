@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
@@ -28,21 +27,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         ///     The time between each property update
         /// </summary>
         public TimeSpan StepDuration { get; set; }
-
-        /// <summary>
-        ///     Returns true if the given task is also a PropertyTransformation applied to the same target property
-        /// </summary>
-        /// <param name="otherTask"></param>
-        /// <returns></returns>
-        public override bool CollidesWith(IBaseTask otherTask)
-        {
-            if (otherTask is PropertyTransformation otherTransformation)
-            {
-                return Target == otherTransformation.Target && Property.Name == otherTransformation.Property.Name;
-            }
-
-            return false;
-        }
 
         public override int GetHashCode()
         {

@@ -16,10 +16,8 @@
             {
                 return 1;
             }
-            else
-            {
-                return index / (double) count;
-            }
+
+            return index / (double) count;
         }
     }
 }

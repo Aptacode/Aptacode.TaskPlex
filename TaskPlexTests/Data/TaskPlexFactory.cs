@@ -89,14 +89,14 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static SequentialGroupTask GetSequentialGroup()
         {
             return GetSequentialGroup(
-                new List<IBaseTask>
+                new List<BaseTask>
                 {
                     GetWaitTask(),
                     GetWaitTask()
                 });
         }
 
-        public static SequentialGroupTask GetSequentialGroup(List<IBaseTask> tasks)
+        public static SequentialGroupTask GetSequentialGroup(List<BaseTask> tasks)
         {
             return new SequentialGroupTask(tasks);
         }
@@ -104,14 +104,14 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static ParallelGroupTask GetParallelGroup()
         {
             return GetParallelGroup(
-                new List<IBaseTask>
+                new List<BaseTask>
                 {
                     GetWaitTask(),
                     GetWaitTask()
                 });
         }
 
-        public static ParallelGroupTask GetParallelGroup(List<IBaseTask> tasks)
+        public static ParallelGroupTask GetParallelGroup(List<BaseTask> tasks)
         {
             return new ParallelGroupTask(tasks);
         }

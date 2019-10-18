@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -9,8 +10,8 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly CancellationTokenSource _cancellationToken;
-        private readonly ConcurrentDictionary<int, IBaseTask> _runningTasks;
-        private ConcurrentDictionary<int, ConcurrentQueue<IBaseTask>> _pendingTasks;
+        private readonly ConcurrentDictionary<int, ConcurrentQueue<BaseTask>> _pendingTasks;
+        private readonly ConcurrentDictionary<int, BaseTask> _runningTasks;
 
 
         /// <summary>
@@ -19,8 +20,8 @@ namespace Aptacode.TaskPlex
         public TaskCoordinator()
         {
             _cancellationToken = new CancellationTokenSource();
-            _runningTasks = new ConcurrentDictionary<int, IBaseTask>();
-            _pendingTasks = new ConcurrentDictionary<int, ConcurrentQueue<IBaseTask>>();
+            _runningTasks = new ConcurrentDictionary<int, BaseTask>();
+            _pendingTasks = new ConcurrentDictionary<int, ConcurrentQueue<BaseTask>>();
         }
 
         /// <summary>
@@ -35,15 +36,23 @@ namespace Aptacode.TaskPlex
         ///     Add a task to be executed
         /// </summary>
         /// <param name="action"></param>
-        public void Apply(IBaseTask task)
+        public void Apply(BaseTask task)
         {
-            new TaskFactory().StartNew(() =>
+            if (task == null)
             {
-                if (task == null)
-                {
-                    return;
-                }
+                return;
+            }
 
+            if (task is ParallelGroupTask parallelGroupTask)
+            {
+                ApplyParallel(parallelGroupTask);
+            }
+            else if (task is SequentialGroupTask sequentialGroupTask)
+            {
+                ApplySequential(sequentialGroupTask);
+            }
+            else
+            {
                 if (_runningTasks.TryGetValue(task.GetHashCode(), out _))
                 {
                     AddToPendingTasks(task.GetHashCode(), task);
@@ -52,20 +61,91 @@ namespace Aptacode.TaskPlex
                 {
                     AddToRunningTasks(task.GetHashCode(), task);
                 }
-            });
+            }
         }
- 
-        private void AddToRunningTasks(int hashCode, IBaseTask task)
+
+        private void ApplyParallel(ParallelGroupTask task)
+        {
+            task.RaiseOnStarted(EventArgs.Empty);
+
+            try
+            {
+                new TaskFactory().StartNew(() =>
+                {
+                    foreach (var taskTask in task.Tasks)
+                    {
+                        Apply(taskTask);
+                    }
+                }, _cancellationToken.Token).ContinueWith(o =>
+                {
+                    task.RaiseOnFinished(EventArgs.Empty);
+
+                    RunNextTask(task.GetHashCode());
+                }).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                task.RaiseOnCancelled();
+            }
+        }
+
+        private void ApplySequential(SequentialGroupTask task)
+        {
+            task.RaiseOnStarted(EventArgs.Empty);
+            try
+            {
+                new TaskFactory().StartNew(() =>
+                {
+                    if (task.Tasks.Count == 0)
+                    {
+                        return;
+                    }
+
+                    ConnectSequentialTasks(task.Tasks);
+
+                    var running = true;
+                    task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { running = false; };
+
+                    Apply(task.Tasks[0]);
+
+                    while (running)
+                    {
+                        Task.Delay(1).ConfigureAwait(false);
+                    }
+                }, _cancellationToken.Token).ContinueWith(o =>
+                {
+                    task.RaiseOnFinished(EventArgs.Empty);
+
+                    RunNextTask(task.GetHashCode());
+                }).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                task.RaiseOnCancelled();
+            }
+        }
+
+        private void ConnectSequentialTasks(List<BaseTask> tasks)
+        {
+            for (var i = 1; i < tasks.Count; i++)
+            {
+                var localIndex = i;
+                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
+            }
+        }
+
+        private void AddToRunningTasks(int hashCode, BaseTask task)
         {
             _runningTasks.TryAdd(hashCode, task);
             StartTask(task);
         }
-        private void AddToPendingTasks(int hashCode, IBaseTask task)
+
+        private void AddToPendingTasks(int hashCode, BaseTask task)
         {
             _pendingTasks.TryGetValue(hashCode, out var pendingTaskQueue);
             if (pendingTaskQueue == null)
             {
-                var queue = new ConcurrentQueue<IBaseTask>();
+                var queue = new ConcurrentQueue<BaseTask>();
                 queue.Enqueue(task);
                 _pendingTasks.TryAdd(hashCode, queue);
             }
@@ -74,13 +154,24 @@ namespace Aptacode.TaskPlex
                 pendingTaskQueue.Enqueue(task);
             }
         }
-        private void StartTask(IBaseTask task)
-        {
-            task.StartAsync(_cancellationToken).ContinueWith(o =>
-            {
-                RunNextTask(task.GetHashCode());
 
-            }).ConfigureAwait(false);
+        private void StartTask(BaseTask task)
+        {
+            task.RaiseOnStarted(EventArgs.Empty);
+
+            try
+            {
+                task.StartAsync(_cancellationToken).ContinueWith(o =>
+                {
+                    task.RaiseOnFinished(EventArgs.Empty);
+
+                    RunNextTask(task.GetHashCode());
+                }).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                task.RaiseOnCancelled();
+            }
         }
 
         private void RunNextTask(int hashCode)

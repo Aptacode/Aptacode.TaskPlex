@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
@@ -63,59 +62,48 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            try
+            var startValue = GetStartValue();
+            var endValue = GetEndValue();
+
+            var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, StepDuration);
+            var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration);
+            var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, StepDuration);
+            var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, StepDuration);
+
+            aComponentInterpolator.Easer = Easer;
+            rComponentInterpolator.Easer = Easer;
+            gComponentInterpolator.Easer = Easer;
+            bComponentInterpolator.Easer = Easer;
+
+            aComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                RaiseOnStarted(new ColorTransformationEventArgs());
+                _aComponentQueue.Enqueue(e.Value);
+                ComponentUpdated();
+            };
 
-                var startValue = GetStartValue();
-                var endValue = GetEndValue();
-
-                var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, StepDuration);
-                var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration);
-                var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, StepDuration);
-                var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, StepDuration);
-
-                aComponentInterpolator.Easer = Easer;
-                rComponentInterpolator.Easer = Easer;
-                gComponentInterpolator.Easer = Easer;
-                bComponentInterpolator.Easer = Easer;
-
-                aComponentInterpolator.OnValueChanged += (s, e) =>
-                {
-                    _aComponentQueue.Enqueue(e.Value);
-                    ComponentUpdated();
-                };
-
-                rComponentInterpolator.OnValueChanged += (s, e) =>
-                {
-                    _rComponentQueue.Enqueue(e.Value);
-                    ComponentUpdated();
-                };
-
-                gComponentInterpolator.OnValueChanged += (s, e) =>
-                {
-                    _gComponentQueue.Enqueue(e.Value);
-                    ComponentUpdated();
-                };
-
-                bComponentInterpolator.OnValueChanged += (s, e) =>
-                {
-                    _bComponentQueue.Enqueue(e.Value);
-                    ComponentUpdated();
-                };
-
-                await Task.WhenAll(
-                    aComponentInterpolator.StartAsync(_cancellationToken),
-                    rComponentInterpolator.StartAsync(_cancellationToken),
-                    gComponentInterpolator.StartAsync(_cancellationToken),
-                    bComponentInterpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
-
-                RaiseOnFinished(new ColorTransformationEventArgs());
-            }
-            catch (TaskCanceledException)
+            rComponentInterpolator.OnValueChanged += (s, e) =>
             {
-                RaiseOnCancelled();
-            }
+                _rComponentQueue.Enqueue(e.Value);
+                ComponentUpdated();
+            };
+
+            gComponentInterpolator.OnValueChanged += (s, e) =>
+            {
+                _gComponentQueue.Enqueue(e.Value);
+                ComponentUpdated();
+            };
+
+            bComponentInterpolator.OnValueChanged += (s, e) =>
+            {
+                _bComponentQueue.Enqueue(e.Value);
+                ComponentUpdated();
+            };
+
+            await Task.WhenAll(
+                aComponentInterpolator.StartAsync(_cancellationToken),
+                rComponentInterpolator.StartAsync(_cancellationToken),
+                gComponentInterpolator.StartAsync(_cancellationToken),
+                bComponentInterpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
         }
 
         private void ComponentUpdated()

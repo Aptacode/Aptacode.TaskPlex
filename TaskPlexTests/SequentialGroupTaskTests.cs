@@ -16,7 +16,7 @@ namespace Aptacode.TaskPlex.Tests
             var task2StartTime = DateTime.Now;
             var task2EndTime = DateTime.Now;
 
-            var tasks = new List<IBaseTask>();
+            var tasks = new List<BaseTask>();
             var task1 = TaskPlexFactory.GetWaitTask();
             var task2 = TaskPlexFactory.GetWaitTask();
             tasks.Add(task1);

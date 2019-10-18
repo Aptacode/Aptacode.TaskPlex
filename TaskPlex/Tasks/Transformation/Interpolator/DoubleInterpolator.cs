@@ -28,10 +28,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             {
                 return a;
             }
-            else
-            {
-                return a / incrementCount;
-            }
+
+            return a / incrementCount;
         }
 
         protected override double Subtract(double a, double b)
