@@ -13,7 +13,6 @@ namespace Aptacode.TaskPlex
         private readonly ConcurrentDictionary<int, ConcurrentQueue<BaseTask>> _pendingTasks;
         private readonly ConcurrentDictionary<int, BaseTask> _runningTasks;
 
-
         /// <summary>
         ///     Orchestrate the order of execution of tasks
         /// </summary>
