@@ -3,9 +3,10 @@
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class DoubleInterpolator : Interpolator<double>
-    {        
+    {
         /// <summary>
-        /// Calculates values between the start and end double returning values at the given interval until the specified duration
+        ///     Calculates values between the start and end double returning values at the given interval until the specified
+        ///     duration
         /// </summary>
         /// <param name="startValue"></param>
         /// <param name="endValue"></param>

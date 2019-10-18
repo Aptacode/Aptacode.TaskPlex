@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public class WaitTaskEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class WaitTask : BaseTask
     {
         /// <summary>
-        /// Wait for a specified amount of time
+        ///     Wait for a specified amount of time
         /// </summary>
         /// <param name="duration"></param>
         public WaitTask(TimeSpan duration) : base(duration)
@@ -18,7 +15,7 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         /// <summary>
-        /// Wait task does not have any collisions
+        ///     Wait task does not have any collisions
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>

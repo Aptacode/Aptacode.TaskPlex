@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public class LinearGroupTaskEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class SequentialGroupTask : GroupTask
     {
         /// <summary>
-        /// Execute the specified tasks sequentially in the order they occur in the input list
+        ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
         /// <param name="tasks"></param>
         public SequentialGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
         }
+
         /// <summary>
-        /// Returns true if the input task collides with any of the groups children
+        ///     Returns true if the input task collides with any of the groups children
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
@@ -38,7 +36,6 @@ namespace Aptacode.TaskPlex.Tasks
 
             return totalDuration;
         }
-
 
 
         protected override async Task InternalTask()

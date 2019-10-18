@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class IntTransformationEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class IntTransformation : PropertyTransformation<int>
     {
         /// <summary>
-        /// Transform an int property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform an int property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -24,8 +22,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             Easer = new LinearEaser();
         }
+
         /// <summary>
-        /// Transform an int property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform an int property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -39,7 +39,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         /// <summary>
-        /// Returns the easing function for this transformation
+        ///     Returns the easing function for this transformation
         /// </summary>
         public Easer Easer { get; set; }
 
@@ -51,7 +51,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
                 var interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
-                interpolator.SetEaser(Easer);
+                interpolator.Easer = Easer;
 
                 interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 

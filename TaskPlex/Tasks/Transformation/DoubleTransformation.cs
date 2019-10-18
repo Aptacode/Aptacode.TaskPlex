@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class DoubleTransformationEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class DoubleTransformation : PropertyTransformation<double>
-    {     
+    {
         /// <summary>
-        /// Returns the easing function for this transformation
-        /// </summary>
-        public Easer Easer { get; set; }
-        /// <summary>
-        /// Transform a double property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform a double property on the target object to the value returned by the given Func<> at intervals specified
+        ///     by the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -29,8 +23,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             Easer = new LinearEaser();
         }
+
         /// <summary>
-        /// Transform a double property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform a double property on the target object to the value returned by the given Func<> at intervals specified
+        ///     by the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -43,6 +39,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Easer = new LinearEaser();
         }
 
+        /// <summary>
+        ///     Returns the easing function for this transformation
+        /// </summary>
+        public Easer Easer { get; set; }
+
         protected override async Task InternalTask()
         {
             try
@@ -51,7 +52,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
                 var interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
 
-                interpolator.SetEaser(Easer);
+                interpolator.Easer = Easer;
 
                 interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 

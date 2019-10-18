@@ -8,14 +8,14 @@ namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : IDisposable
     {
+        private readonly CancellationTokenSource _cancellationToken;
         private readonly object _mutex = new object();
         private readonly List<BaseTask> _pendingTasks;
         private readonly List<BaseTask> _runningTasks;
         private bool _isRunning;
-        private readonly CancellationTokenSource _cancellationToken;
 
         /// <summary>
-        /// Orchestrate the order of execution of tasks
+        ///     Orchestrate the order of execution of tasks
         /// </summary>
         public TaskCoordinator()
         {
@@ -26,7 +26,21 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Add a task to be executed
+        ///     Clean up by cancelling all pending & running tasks
+        /// </summary>
+        public void Dispose()
+        {
+            lock (_mutex)
+            {
+                _isRunning = false;
+                _pendingTasks.Clear();
+                _runningTasks.Clear();
+                _cancellationToken.Cancel();
+            }
+        }
+
+        /// <summary>
+        ///     Add a task to be executed
         /// </summary>
         /// <param name="action"></param>
         public void Apply(BaseTask action)
@@ -42,19 +56,6 @@ namespace Aptacode.TaskPlex
             }
 
             UpdateTasks();
-        }
-        /// <summary>
-        /// Clean up by cancelling all pending & running tasks
-        /// </summary>
-        public void Dispose()
-        {
-            lock (_mutex)
-            {
-                _isRunning = false;
-                _pendingTasks.Clear();
-                _runningTasks.Clear();
-                _cancellationToken.Cancel();
-            }
         }
 
         private void UpdateTasks()

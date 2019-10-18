@@ -2,24 +2,23 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class ColorTransformationEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class ColorTransformation : PropertyTransformation<Color>
     {
+        private readonly ConcurrentQueue<int>
+            _aComponentQueue,
+            _rComponentQueue,
+            _gComponentQueue,
+            _bComponentQueue;
 
         /// <summary>
-        /// Returns the easing function for this transformation
-        /// </summary>
-        public Easer Easer { get; set; }
-        /// <summary>
-        /// Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -36,8 +35,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             Easer = new LinearEaser();
         }
+
         /// <summary>
-        /// Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        ///     Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -54,11 +55,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             Easer = new LinearEaser();
         }
-        private readonly ConcurrentQueue<int>
-            _aComponentQueue,
-            _rComponentQueue,
-            _gComponentQueue,
-            _bComponentQueue;
+
+        /// <summary>
+        ///     Returns the easing function for this transformation
+        /// </summary>
+        public Easer Easer { get; set; }
+
         protected override async Task InternalTask()
         {
             try
@@ -119,9 +121,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private void ComponentUpdated()
         {
             if (
-                _aComponentQueue.TryPeek(out int newA)&&
-                _rComponentQueue.TryPeek(out int newR)&&
-                _gComponentQueue.TryPeek(out int newG)&&
+                _aComponentQueue.TryPeek(out var newA) &&
+                _rComponentQueue.TryPeek(out var newR) &&
+                _gComponentQueue.TryPeek(out var newG) &&
                 _bComponentQueue.TryPeek(out var newB))
             {
                 _aComponentQueue.TryDequeue(out _);

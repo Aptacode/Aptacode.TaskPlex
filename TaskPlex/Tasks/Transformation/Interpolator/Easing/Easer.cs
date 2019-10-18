@@ -3,7 +3,7 @@
     public abstract class Easer
     {
         /// <summary>
-        /// Returns a value between 0 and 1 depending on the current index and count
+        ///     Returns a value between 0 and 1 depending on the current index and count
         /// </summary>
         /// <param name="index"></param>
         /// <param name="count"></param>

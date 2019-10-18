@@ -5,7 +5,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
     public class IntInterpolator : Interpolator<int>
     {
         /// <summary>
-        /// Calculates values between the start and end int returning values at the given interval until the specified duration
+        ///     Calculates values between the start and end int returning values at the given interval until the specified duration
         /// </summary>
         /// <param name="startValue"></param>
         /// <param name="endValue"></param>

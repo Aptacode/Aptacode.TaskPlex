@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class StringTransformationEventArgs : BaseTaskEventArgs
-    {
-    }
-
     public class StringTransformation : PropertyTransformation<string>
     {
         /// <summary>
-        /// Update a string property on the target to the value returned by the given Func<string> after the task duration
+        ///     Update a string property on the target to the value returned by the given Func<string> after the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -21,9 +18,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration,
             stepDuration)
         {
-        }        
+        }
+
         /// <summary>
-        /// Update a string property on the target to the specified destination value after the task duration
+        ///     Update a string property on the target to the specified destination value after the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>

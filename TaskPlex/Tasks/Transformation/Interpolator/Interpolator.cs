@@ -2,31 +2,13 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
-    public class InterpolationEventArgs : BaseTaskEventArgs
-    {
-    }
-
-    public class InterpolationValueChangedEventArgs<T> : InterpolationEventArgs
-    {
-        public InterpolationValueChangedEventArgs(T value)
-        {
-            Value = value;
-        }
-
-        public T Value { get; set; }
-    }
-
     public abstract class Interpolator<T> : BaseTask
-    { 
-        public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
-        /// <summary>
-        /// Returns the Easing function
-        /// </summary>
-        public Easer Easer { get; set; }
-        public TimeSpan IntervalDuration { get; set; }
+    {
+        private readonly Stopwatch _stepTimer;
 
         protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : base(duration)
         {
@@ -38,14 +20,21 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             IntervalDuration = intervalDuration;
         }
 
+        /// <summary>
+        ///     Returns the Easing function
+        /// </summary>
+        public Easer Easer { get; set; }
+
+        public TimeSpan IntervalDuration { get; set; }
+        private T StartValue { get; }
+        private T CurrentValue { get; set; }
+        private T EndValue { get; }
+        public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
+
         public override bool CollidesWith(BaseTask item)
         {
             return false;
         }
-        private T StartValue { get; }
-        private T CurrentValue { get; set; }
-        private T EndValue { get; }
-        private readonly Stopwatch _stepTimer;
 
         protected abstract T Subtract(T a, T b);
         protected abstract T Add(T a, T b);

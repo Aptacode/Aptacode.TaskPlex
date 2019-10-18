@@ -12,21 +12,24 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Property = target.GetType().GetProperty(property);
             StepDuration = stepDuration;
         }
+
         /// <summary>
-        /// the object who's property is to be transformed
+        ///     the object who's property is to be transformed
         /// </summary>
         public object Target { get; set; }
+
         /// <summary>
-        /// The property to be updated
+        ///     The property to be updated
         /// </summary>
         public PropertyInfo Property { get; set; }
+
         /// <summary>
-        /// The time between each property update
+        ///     The time between each property update
         /// </summary>
         public TimeSpan StepDuration { get; set; }
 
         /// <summary>
-        /// Returns true if the given task is also a PropertyTransformation applied to the same target property
+        ///     Returns true if the given task is also a PropertyTransformation applied to the same target property
         /// </summary>
         /// <param name="otherTask"></param>
         /// <returns></returns>
@@ -56,7 +59,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         /// <summary>
-        /// When invoked returns the destination value of the transformation
+        ///     When invoked returns the destination value of the transformation
         /// </summary>
         public Func<T> DestinationValue { get; set; }
 

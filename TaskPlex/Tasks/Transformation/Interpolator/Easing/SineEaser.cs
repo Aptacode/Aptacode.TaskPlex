@@ -7,7 +7,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing
         private static readonly double PiOverTwo = Math.PI / 2;
 
         /// <summary>
-        /// Output accelerates up to 0.5 then decelerates up to 1.0 as the index approaches the count
+        ///     Output accelerates up to 0.5 then decelerates up to 1.0 as the index approaches the count
         /// </summary>
         /// <param name="index"></param>
         /// <param name="count"></param>
