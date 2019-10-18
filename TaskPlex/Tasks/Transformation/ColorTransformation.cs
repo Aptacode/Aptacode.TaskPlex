@@ -108,7 +108,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                     aComponentInterpolator.StartAsync(_cancellationToken),
                     rComponentInterpolator.StartAsync(_cancellationToken),
                     gComponentInterpolator.StartAsync(_cancellationToken),
-                    bComponentInterpolator.StartAsync(_cancellationToken));
+                    bComponentInterpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
 
                 RaiseOnFinished(new ColorTransformationEventArgs());
             }

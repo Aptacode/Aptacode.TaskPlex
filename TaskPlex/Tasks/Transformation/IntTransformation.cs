@@ -55,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
                 interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 
-                await Task.WhenAll(interpolator.StartAsync(_cancellationToken));
+                await Task.WhenAll(interpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
 
                 RaiseOnFinished(new IntTransformationEventArgs());
             }

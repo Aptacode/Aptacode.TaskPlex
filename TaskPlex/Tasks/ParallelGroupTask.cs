@@ -37,7 +37,7 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 RaiseOnStarted(new ParallelGroupTaskEventArgs());
 
-                await Task.WhenAll(Tasks.Select(task => task.StartAsync(_cancellationToken)));
+                await Task.WhenAll(Tasks.Select(task => task.StartAsync(_cancellationToken))).ConfigureAwait(false);
 
                 RaiseOnFinished(new ParallelGroupTaskEventArgs());
             }

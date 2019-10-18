@@ -83,7 +83,7 @@ namespace Aptacode.TaskPlex
                     CleanUpPendingTasks(readyTasks);
                     StartTasks(readyTasks);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private List<IBaseTask> GetReadyTasks()
@@ -119,7 +119,7 @@ namespace Aptacode.TaskPlex
                 {
                     _runningTasks.Remove(task);
                     UpdateTasks();
-                });
+                }).ConfigureAwait(false);
             }
         }
     }
