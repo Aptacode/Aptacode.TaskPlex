@@ -18,6 +18,11 @@ namespace Aptacode.TaskPlex.Tasks
         /// <param name="task"></param>
         public void Add(IBaseTask task)
         {
+            if(task == null)
+            {
+                return;
+            }
+
             Tasks.Add(task);
             Duration = GetTotalDuration(Tasks);
         }
@@ -28,6 +33,11 @@ namespace Aptacode.TaskPlex.Tasks
         /// <param name="task"></param>
         public void Remove(IBaseTask task)
         {
+            if (task == null)
+            {
+                return;
+            }
+
             Tasks.Remove(task);
             Duration = GetTotalDuration(Tasks);
         }

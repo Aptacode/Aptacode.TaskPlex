@@ -24,7 +24,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         protected override double Divide(double a, int incrementCount)
         {
-            return a / incrementCount;
+            if (incrementCount <= 1)
+            {
+                return a;
+            }
+            else
+            {
+                return a / incrementCount;
+            }
         }
 
         protected override double Subtract(double a, double b)

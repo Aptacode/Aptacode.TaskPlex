@@ -12,7 +12,14 @@
 
         protected static double Normalize(int index, int count)
         {
-            return index / (double) count;
+            if (count <= 1 || index > count)
+            {
+                return 1;
+            }
+            else
+            {
+                return index / (double) count;
+            }
         }
     }
 }

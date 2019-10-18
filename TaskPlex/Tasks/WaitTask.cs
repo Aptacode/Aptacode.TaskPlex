@@ -12,6 +12,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <param name="duration"></param>
         public WaitTask(TimeSpan duration) : base(duration)
         {
+
         }
 
         /// <summary>

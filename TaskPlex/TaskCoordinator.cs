@@ -10,8 +10,8 @@ namespace Aptacode.TaskPlex
     {
         private readonly CancellationTokenSource _cancellationToken;
         private readonly object _mutex = new object();
-        private readonly List<BaseTask> _pendingTasks;
-        private readonly List<BaseTask> _runningTasks;
+        private readonly List<IBaseTask> _pendingTasks;
+        private readonly List<IBaseTask> _runningTasks;
         private bool _isRunning;
 
         /// <summary>
@@ -20,8 +20,8 @@ namespace Aptacode.TaskPlex
         public TaskCoordinator()
         {
             _cancellationToken = new CancellationTokenSource();
-            _pendingTasks = new List<BaseTask>();
-            _runningTasks = new List<BaseTask>();
+            _pendingTasks = new List<IBaseTask>();
+            _runningTasks = new List<IBaseTask>();
             _isRunning = true;
         }
 
@@ -43,8 +43,13 @@ namespace Aptacode.TaskPlex
         ///     Add a task to be executed
         /// </summary>
         /// <param name="action"></param>
-        public void Apply(BaseTask action)
+        public void Apply(IBaseTask task)
         {
+            if (task == null)
+            {
+                return;
+            }
+
             lock (_mutex)
             {
                 if (!_isRunning)
@@ -52,7 +57,7 @@ namespace Aptacode.TaskPlex
                     return;
                 }
 
-                _pendingTasks.Add(action);
+                _pendingTasks.Add(task);
             }
 
             UpdateTasks();
@@ -81,9 +86,9 @@ namespace Aptacode.TaskPlex
             });
         }
 
-        private List<BaseTask> GetReadyTasks()
+        private List<IBaseTask> GetReadyTasks()
         {
-            var readyTasks = new List<BaseTask>();
+            var readyTasks = new List<IBaseTask>();
 
             foreach (var item in _pendingTasks)
             {
@@ -96,7 +101,7 @@ namespace Aptacode.TaskPlex
             return readyTasks;
         }
 
-        private void CleanUpPendingTasks(IEnumerable<BaseTask> startedTasks)
+        private void CleanUpPendingTasks(IEnumerable<IBaseTask> startedTasks)
         {
             foreach (var item in startedTasks)
             {
@@ -104,7 +109,7 @@ namespace Aptacode.TaskPlex
             }
         }
 
-        private void StartTasks(IEnumerable<BaseTask> readyTasks)
+        private void StartTasks(IEnumerable<IBaseTask> readyTasks)
         {
             foreach (var task in readyTasks)
             {
