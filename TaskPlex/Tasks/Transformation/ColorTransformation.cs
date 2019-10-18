@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
@@ -13,23 +13,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public class ColorTransformation : PropertyTransformation<Color>
     {
-        private readonly Queue<int> _aComponentQueue,
+        private readonly ConcurrentQueue<int> 
+            _aComponentQueue,
             _rComponentQueue,
             _gComponentQueue,
             _bComponentQueue;
-
-        private readonly object _mutex = new object();
+        public Easer Easer { get; set; }
 
         public ColorTransformation(object target, string property, Func<Color> destinationValue, TimeSpan taskDuration,
             TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
-            lock (_mutex)
-            {
-                _aComponentQueue = new Queue<int>();
-                _rComponentQueue = new Queue<int>();
-                _gComponentQueue = new Queue<int>();
-                _bComponentQueue = new Queue<int>();
-            }
+            _aComponentQueue = new ConcurrentQueue<int>();
+            _rComponentQueue = new ConcurrentQueue<int>();
+            _gComponentQueue = new ConcurrentQueue<int>();
+            _bComponentQueue = new ConcurrentQueue<int>();
 
             Easer = new LinearEaser();
         }
@@ -37,18 +34,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration,
             TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
-            lock (_mutex)
-            {
-                _aComponentQueue = new Queue<int>();
-                _rComponentQueue = new Queue<int>();
-                _gComponentQueue = new Queue<int>();
-                _bComponentQueue = new Queue<int>();
-            }
+            _aComponentQueue = new ConcurrentQueue<int>();
+            _rComponentQueue = new ConcurrentQueue<int>();
+            _gComponentQueue = new ConcurrentQueue<int>();
+            _bComponentQueue = new ConcurrentQueue<int>();
 
             Easer = new LinearEaser();
         }
-
-        public Easer Easer { get; set; }
 
         protected override async Task InternalTask()
         {
@@ -71,38 +63,26 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
                 aComponentInterpolator.OnValueChanged += (s, e) =>
                 {
-                    lock (_mutex)
-                    {
-                        _aComponentQueue.Enqueue(e.Value);
-                        ComponentUpdated();
-                    }
+                    _aComponentQueue.Enqueue(e.Value);
+                    ComponentUpdated();
                 };
 
                 rComponentInterpolator.OnValueChanged += (s, e) =>
                 {
-                    lock (_mutex)
-                    {
-                        _rComponentQueue.Enqueue(e.Value);
-                        ComponentUpdated();
-                    }
+                    _rComponentQueue.Enqueue(e.Value);
+                    ComponentUpdated();
                 };
 
                 gComponentInterpolator.OnValueChanged += (s, e) =>
                 {
-                    lock (_mutex)
-                    {
-                        _gComponentQueue.Enqueue(e.Value);
-                        ComponentUpdated();
-                    }
+                    _gComponentQueue.Enqueue(e.Value);
+                    ComponentUpdated();
                 };
 
                 bComponentInterpolator.OnValueChanged += (s, e) =>
                 {
-                    lock (_mutex)
-                    {
-                        _bComponentQueue.Enqueue(e.Value);
-                        ComponentUpdated();
-                    }
+                    _bComponentQueue.Enqueue(e.Value);
+                    ComponentUpdated();
                 };
 
                 await Task.WhenAll(
@@ -121,16 +101,18 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         private void ComponentUpdated()
         {
-            if (_aComponentQueue.Count > 0 &&
-                _rComponentQueue.Count > 0 &&
-                _gComponentQueue.Count > 0 &&
-                _bComponentQueue.Count > 0)
+            if (
+                _aComponentQueue.TryPeek(out int newA)&&
+                _rComponentQueue.TryPeek(out int newR)&&
+                _gComponentQueue.TryPeek(out int newG)&&
+                _bComponentQueue.TryPeek(out var newB))
             {
-                SetValue(Color.FromArgb(
-                    _aComponentQueue.Dequeue(),
-                    _rComponentQueue.Dequeue(),
-                    _gComponentQueue.Dequeue(),
-                    _bComponentQueue.Dequeue()));
+                _aComponentQueue.TryDequeue(out _);
+                _rComponentQueue.TryDequeue(out _);
+                _gComponentQueue.TryDequeue(out _);
+                _bComponentQueue.TryDequeue(out _);
+
+                SetValue(Color.FromArgb(newA, newR, newG, newB));
             }
         }
     }
