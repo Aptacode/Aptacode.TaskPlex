@@ -20,8 +20,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
     }
 
     public abstract class Interpolator<T> : BaseTask
-    {
-        private readonly Stopwatch _stepTimer;
+    { 
+        public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
+        /// <summary>
+        /// Returns the Easing function
+        /// </summary>
+        public Easer Easer { get; set; }
+        public TimeSpan IntervalDuration { get; set; }
 
         protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : base(duration)
         {
@@ -33,22 +38,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             IntervalDuration = intervalDuration;
         }
 
-        public Easer Easer { get; set; }
-        private T StartValue { get; }
-        private T CurrentValue { get; set; }
-        private T EndValue { get; }
-        public TimeSpan IntervalDuration { get; set; }
-        public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
-
-        public void SetEaser(Easer easer)
-        {
-            Easer = easer;
-        }
-
         public override bool CollidesWith(BaseTask item)
         {
             return false;
         }
+        private T StartValue { get; }
+        private T CurrentValue { get; set; }
+        private T EndValue { get; }
+        private readonly Stopwatch _stepTimer;
 
         protected abstract T Subtract(T a, T b);
         protected abstract T Add(T a, T b);

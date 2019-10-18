@@ -13,13 +13,19 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public class ColorTransformation : PropertyTransformation<Color>
     {
-        private readonly ConcurrentQueue<int> 
-            _aComponentQueue,
-            _rComponentQueue,
-            _gComponentQueue,
-            _bComponentQueue;
-        public Easer Easer { get; set; }
 
+        /// <summary>
+        /// Returns the easing function for this transformation
+        /// </summary>
+        public Easer Easer { get; set; }
+        /// <summary>
+        /// Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="property"></param>
+        /// <param name="destinationValue"></param>
+        /// <param name="taskDuration"></param>
+        /// <param name="stepDuration"></param>
         public ColorTransformation(object target, string property, Func<Color> destinationValue, TimeSpan taskDuration,
             TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
@@ -30,7 +36,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             Easer = new LinearEaser();
         }
-
+        /// <summary>
+        /// Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by the step duration up to the task duration
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="property"></param>
+        /// <param name="destinationValue"></param>
+        /// <param name="taskDuration"></param>
+        /// <param name="stepDuration"></param>
         public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration,
             TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
@@ -41,7 +54,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             Easer = new LinearEaser();
         }
-
+        private readonly ConcurrentQueue<int>
+            _aComponentQueue,
+            _rComponentQueue,
+            _gComponentQueue,
+            _bComponentQueue;
         protected override async Task InternalTask()
         {
             try
@@ -56,10 +73,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, StepDuration);
                 var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, StepDuration);
 
-                aComponentInterpolator.SetEaser(Easer);
-                rComponentInterpolator.SetEaser(Easer);
-                gComponentInterpolator.SetEaser(Easer);
-                bComponentInterpolator.SetEaser(Easer);
+                aComponentInterpolator.Easer = Easer;
+                rComponentInterpolator.Easer = Easer;
+                gComponentInterpolator.Easer = Easer;
+                bComponentInterpolator.Easer = Easer;
 
                 aComponentInterpolator.OnValueChanged += (s, e) =>
                 {

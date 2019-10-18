@@ -10,9 +10,22 @@ namespace Aptacode.TaskPlex.Tasks
 
     public class SequentialGroupTask : GroupTask
     {
+        /// <summary>
+        /// Execute the specified tasks sequentially in the order they occur in the input list
+        /// </summary>
+        /// <param name="tasks"></param>
         public SequentialGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
+        }
+        /// <summary>
+        /// Returns true if the input task collides with any of the groups children
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public override bool CollidesWith(BaseTask item)
+        {
+            return Tasks.Exists(t => t.CollidesWith(item));
         }
 
         protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
@@ -26,10 +39,7 @@ namespace Aptacode.TaskPlex.Tasks
             return totalDuration;
         }
 
-        public override bool CollidesWith(BaseTask item)
-        {
-            return Tasks.Exists(t => t.CollidesWith(item));
-        }
+
 
         protected override async Task InternalTask()
         {

@@ -9,10 +9,19 @@ namespace Aptacode.TaskPlex.Tasks
 
     public class WaitTask : BaseTask
     {
+        /// <summary>
+        /// Wait for a specified amount of time
+        /// </summary>
+        /// <param name="duration"></param>
         public WaitTask(TimeSpan duration) : base(duration)
         {
         }
 
+        /// <summary>
+        /// Wait task does not have any collisions
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public override bool CollidesWith(BaseTask item)
         {
             return false;

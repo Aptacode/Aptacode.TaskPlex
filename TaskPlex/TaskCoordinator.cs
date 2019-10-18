@@ -14,6 +14,9 @@ namespace Aptacode.TaskPlex
         private bool _isRunning;
         private readonly CancellationTokenSource _cancellationToken;
 
+        /// <summary>
+        /// Orchestrate the order of execution of tasks
+        /// </summary>
         public TaskCoordinator()
         {
             _cancellationToken = new CancellationTokenSource();
@@ -22,6 +25,10 @@ namespace Aptacode.TaskPlex
             _isRunning = true;
         }
 
+        /// <summary>
+        /// Add a task to be executed
+        /// </summary>
+        /// <param name="action"></param>
         public void Apply(BaseTask action)
         {
             lock (_mutex)
@@ -35,6 +42,19 @@ namespace Aptacode.TaskPlex
             }
 
             UpdateTasks();
+        }
+        /// <summary>
+        /// Clean up by cancelling all pending & running tasks
+        /// </summary>
+        public void Dispose()
+        {
+            lock (_mutex)
+            {
+                _isRunning = false;
+                _pendingTasks.Clear();
+                _runningTasks.Clear();
+                _cancellationToken.Cancel();
+            }
         }
 
         private void UpdateTasks()
@@ -94,16 +114,6 @@ namespace Aptacode.TaskPlex
                     _runningTasks.Remove(task);
                     UpdateTasks();
                 });
-            }
-        }
-        public void Dispose()
-        {
-            lock (_mutex)
-            {
-                _isRunning = false;
-                _pendingTasks.Clear();
-                _runningTasks.Clear();
-                _cancellationToken.Cancel();
             }
         }
     }
