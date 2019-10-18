@@ -19,7 +19,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public override bool CollidesWith(BaseTask item)
+        public override bool CollidesWith(IBaseTask item)
         {
             return false;
         }

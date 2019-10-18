@@ -11,7 +11,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <summary>
         ///     Execute the specified tasks in parallel
         /// </summary>
-        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
+        public ParallelGroupTask(IEnumerable<IBaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
         }
@@ -21,12 +21,12 @@ namespace Aptacode.TaskPlex.Tasks
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public override bool CollidesWith(BaseTask item)
+        public override bool CollidesWith(IBaseTask item)
         {
             return Tasks.Exists(t => t.CollidesWith(item));
         }
 
-        protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
+        protected sealed override TimeSpan GetTotalDuration(IEnumerable<IBaseTask> tasks)
         {
             return tasks.Select(t => t.Duration).OrderByDescending(t => t.TotalMilliseconds).FirstOrDefault();
         }

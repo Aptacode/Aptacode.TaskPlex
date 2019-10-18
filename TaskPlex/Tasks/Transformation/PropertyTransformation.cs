@@ -33,7 +33,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="otherTask"></param>
         /// <returns></returns>
-        public override bool CollidesWith(BaseTask otherTask)
+        public override bool CollidesWith(IBaseTask otherTask)
         {
             if (otherTask is PropertyTransformation otherTransformation)
             {

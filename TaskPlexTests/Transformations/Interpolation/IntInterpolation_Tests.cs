@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
         {
             var interpolator = new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
                 TimeSpan.FromMilliseconds(1));
-            interpolator.SetEaser(easer);
+            interpolator.Easer = easer;
 
             var actualChangeLog = new List<int>();
             interpolator.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };

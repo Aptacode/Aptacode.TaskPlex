@@ -5,7 +5,7 @@ using Aptacode.TaskPlex.Tasks.EventArgs;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public abstract class BaseTask
+    public abstract class BaseTask : IBaseTask
     {
         protected BaseTask(TimeSpan duration)
         {
@@ -20,17 +20,10 @@ namespace Aptacode.TaskPlex.Tasks
         public TimeSpan Duration { get; set; }
         protected CancellationTokenSource _cancellationToken { get; set; }
 
-        public event EventHandler<EventArgs> OnStarted;
-        public event EventHandler<EventArgs> OnFinished;
+        public event EventHandler<System.EventArgs> OnStarted;
+        public event EventHandler<System.EventArgs> OnFinished;
         public event EventHandler<TaskCancellationEventArgs> OnCancelled;
-
-        /// <summary>
-        ///     Returns true if the specified task collides with the instance
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public abstract bool CollidesWith(BaseTask item);
-
+        public abstract bool CollidesWith(IBaseTask item);
         /// <summary>
         ///     Start the task
         /// </summary>
@@ -66,12 +59,12 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected abstract Task InternalTask();
 
-        protected void RaiseOnStarted(EventArgs args)
+        protected void RaiseOnStarted(System.EventArgs args)
         {
             OnStarted?.Invoke(this, args);
         }
 
-        protected void RaiseOnFinished(EventArgs args)
+        protected void RaiseOnFinished(System.EventArgs args)
         {
             if (_cancellationToken.IsCancellationRequested)
             {
@@ -87,5 +80,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             OnCancelled?.Invoke(this, new TaskCancellationEventArgs());
         }
+
+
     }
 }

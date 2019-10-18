@@ -31,7 +31,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         private T EndValue { get; }
         public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
 
-        public override bool CollidesWith(BaseTask item)
+        public override bool CollidesWith(IBaseTask item)
         {
             return false;
         }
