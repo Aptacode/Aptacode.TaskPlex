@@ -155,7 +155,7 @@ namespace Aptacode.TaskPlex
         {
             if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue.TryDequeue(out var nextTask))
             {
-                StartTask(nextTask);
+                StartTask(nextTask).ConfigureAwait(false);
             }
             else
             {
