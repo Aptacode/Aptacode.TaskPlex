@@ -10,8 +10,7 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly CancellationTokenSource _cancellationToken;
-        private readonly ConcurrentDictionary<int, ConcurrentQueue<BaseTask>> _pendingTasks;
-        private readonly ConcurrentDictionary<int, BaseTask> _runningTasks;
+        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
         /// <summary>
         ///     Orchestrate the order of execution of tasks
@@ -19,8 +18,7 @@ namespace Aptacode.TaskPlex
         public TaskCoordinator()
         {
             _cancellationToken = new CancellationTokenSource();
-            _runningTasks = new ConcurrentDictionary<int, BaseTask>();
-            _pendingTasks = new ConcurrentDictionary<int, ConcurrentQueue<BaseTask>>();
+            _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
         }
 
         /// <summary>
@@ -52,14 +50,7 @@ namespace Aptacode.TaskPlex
             }
             else
             {
-                if (_runningTasks.TryGetValue(task.GetHashCode(), out _))
-                {
-                    AddToPendingTasks(task.GetHashCode(), task);
-                }
-                else
-                {
-                    AddToRunningTasks(task.GetHashCode(), task);
-                }
+                TryToStartTask(task);
             }
         }
 
@@ -79,7 +70,7 @@ namespace Aptacode.TaskPlex
                 {
                     task.RaiseOnFinished(EventArgs.Empty);
 
-                    RunNextTask(task.GetHashCode());
+                    RunNextTask(task);
                 }).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
@@ -109,13 +100,14 @@ namespace Aptacode.TaskPlex
 
                     while (running)
                     {
-                        Task.Delay(1).ConfigureAwait(false);
+                        Task.Delay(1).Wait();
                     }
+
                 }, _cancellationToken.Token).ContinueWith(o =>
                 {
                     task.RaiseOnFinished(EventArgs.Empty);
 
-                    RunNextTask(task.GetHashCode());
+                    RunNextTask(task);
                 }).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
@@ -133,24 +125,21 @@ namespace Aptacode.TaskPlex
             }
         }
 
-        private void AddToRunningTasks(int hashCode, BaseTask task)
+        private void TryToStartTask(BaseTask task)
         {
-            _runningTasks.TryAdd(hashCode, task);
-            StartTask(task);
-        }
-
-        private void AddToPendingTasks(int hashCode, BaseTask task)
-        {
-            _pendingTasks.TryGetValue(hashCode, out var pendingTaskQueue);
-            if (pendingTaskQueue == null)
+            if (_tasks.TryGetValue(task, out var taskQueue))
             {
-                var queue = new ConcurrentQueue<BaseTask>();
-                queue.Enqueue(task);
-                _pendingTasks.TryAdd(hashCode, queue);
+                if (taskQueue == null)
+                {
+                    taskQueue = new ConcurrentQueue<BaseTask>();
+                    _tasks.TryAdd(task, taskQueue);
+                }
+
+                taskQueue.Enqueue(task);
             }
             else
             {
-                pendingTaskQueue.Enqueue(task);
+                StartTask(task);
             }
         }
 
@@ -164,7 +153,8 @@ namespace Aptacode.TaskPlex
                 {
                     task.RaiseOnFinished(EventArgs.Empty);
 
-                    RunNextTask(task.GetHashCode());
+                    RunNextTask(task);
+
                 }).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
@@ -173,16 +163,15 @@ namespace Aptacode.TaskPlex
             }
         }
 
-        private void RunNextTask(int hashCode)
+        private void RunNextTask(BaseTask completedTask)
         {
-            if (_pendingTasks.TryGetValue(hashCode, out var taskQueue) && taskQueue.TryDequeue(out var nextTask))
+            if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue.TryDequeue(out var nextTask))
             {
-                AddToRunningTasks(hashCode, nextTask);
+                StartTask(nextTask);
             }
             else
             {
-                _pendingTasks.TryRemove(hashCode, out _);
-                _runningTasks.TryRemove(hashCode, out _);
+                _tasks.TryRemove(completedTask, out _);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Aptacode.TaskPlex.Tests
         private TaskCoordinator _taskCoordinator;
 
         [Test]
-        [MaxTime(100)]
+        [MaxTime(200)]
         [TestCaseSource(typeof(TaskPlexTestData), "GetParallelTasks")]
         [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
         public void TasksFinished(IEnumerable<BaseTask> tasks)
