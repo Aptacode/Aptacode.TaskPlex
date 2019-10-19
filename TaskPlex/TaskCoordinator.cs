@@ -40,89 +40,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            if (task is ParallelGroupTask parallelGroupTask)
-            {
-                ApplyParallel(parallelGroupTask);
-            }
-            else if (task is SequentialGroupTask sequentialGroupTask)
-            {
-                ApplySequential(sequentialGroupTask);
-            }
-            else
-            {
-                TryToStartTask(task);
-            }
-        }
-
-        private void ApplyParallel(ParallelGroupTask task)
-        {
-            task.RaiseOnStarted(EventArgs.Empty);
-
-            try
-            {
-                new TaskFactory().StartNew(() =>
-                {
-                    foreach (var taskTask in task.Tasks)
-                    {
-                        Apply(taskTask);
-                    }
-                }, _cancellationToken.Token).ContinueWith(o =>
-                {
-                    task.RaiseOnFinished(EventArgs.Empty);
-
-                    RunNextTask(task);
-                }).ConfigureAwait(false);
-            }
-            catch (TaskCanceledException)
-            {
-                task.RaiseOnCancelled();
-            }
-        }
-
-        private void ApplySequential(SequentialGroupTask task)
-        {
-            task.RaiseOnStarted(EventArgs.Empty);
-            try
-            {
-                new TaskFactory().StartNew(() =>
-                {
-                    if (task.Tasks.Count == 0)
-                    {
-                        return;
-                    }
-
-                    ConnectSequentialTasks(task.Tasks);
-
-                    var running = true;
-                    task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { running = false; };
-
-                    Apply(task.Tasks[0]);
-
-                    while (running)
-                    {
-                        Task.Delay(1).Wait();
-                    }
-
-                }, _cancellationToken.Token).ContinueWith(o =>
-                {
-                    task.RaiseOnFinished(EventArgs.Empty);
-
-                    RunNextTask(task);
-                }).ConfigureAwait(false);
-            }
-            catch (TaskCanceledException)
-            {
-                task.RaiseOnCancelled();
-            }
-        }
-
-        private void ConnectSequentialTasks(List<BaseTask> tasks)
-        {
-            for (var i = 1; i < tasks.Count; i++)
-            {
-                var localIndex = i;
-                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
-            }
+            TryToStartTask(task);
         }
 
         private void TryToStartTask(BaseTask task)
@@ -139,27 +57,97 @@ namespace Aptacode.TaskPlex
             }
             else
             {
-                StartTask(task);
+                StartTask(task).ConfigureAwait(false);
             }
         }
 
-        private void StartTask(BaseTask task)
+        private async Task StartTask(BaseTask task)
         {
             task.RaiseOnStarted(EventArgs.Empty);
-
             try
             {
-                task.StartAsync(_cancellationToken).ContinueWith(o =>
+                if (task is ParallelGroupTask parallelGroupTask)
                 {
-                    task.RaiseOnFinished(EventArgs.Empty);
+                    await RunParallel(parallelGroupTask).ConfigureAwait(false);
+                }
+                else if (task is SequentialGroupTask sequentialGroupTask)
+                {
+                    await RunSequential(sequentialGroupTask).ConfigureAwait(false);
+                }
+                else
+                {
+                    await Run(task).ConfigureAwait(false);
+                }
 
-                    RunNextTask(task);
-
-                }).ConfigureAwait(false);
+                task.RaiseOnFinished(EventArgs.Empty);
+                RunNextTask(task);
             }
             catch (TaskCanceledException)
             {
                 task.RaiseOnCancelled();
+            }
+        }
+
+        private async Task Run(BaseTask task)
+        {
+            await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task RunParallel(ParallelGroupTask task)
+        {
+            if (task.Tasks.Count == 0)
+            {
+                return;
+            }
+
+            bool isRunning = true;
+
+            int finishedTaskCount = 0;
+            foreach (var taskTask in task.Tasks)
+            {
+                taskTask.OnFinished += (s, e) => {
+                    if (++finishedTaskCount >= task.Tasks.Count)
+                    {
+                        isRunning = false;
+                    }
+                };
+                Apply(taskTask);
+            }
+
+            while (isRunning)
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+            }
+        }
+
+
+        private async Task RunSequential(SequentialGroupTask task)
+        {
+            if (task.Tasks.Count == 0)
+            {
+                return;
+            }
+
+            ConnectSequentialTasks(task.Tasks);
+
+            var isRunning = true;
+            //When the last task finishes set running to false
+            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { isRunning = false; };
+
+            Apply(task.Tasks[0]);
+
+            while (isRunning)
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+            }
+        }
+
+        private void ConnectSequentialTasks(List<BaseTask> tasks)
+        {
+            for (var i = 1; i < tasks.Count; i++)
+            {
+                var localIndex = i;
+                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
             }
         }
 
