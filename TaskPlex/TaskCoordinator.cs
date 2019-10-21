@@ -9,7 +9,7 @@ namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : IDisposable
     {
-        private readonly CancellationTokenSource _cancellationToken;
+        private CancellationTokenSource _cancellationToken;
         private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
         /// <summary>
@@ -27,6 +27,12 @@ namespace Aptacode.TaskPlex
         public void Dispose()
         {
             _cancellationToken.Cancel();
+        }        
+        
+        public void Reset()
+        {
+            _cancellationToken.Cancel();
+            _cancellationToken = new CancellationTokenSource();
         }
 
         /// <summary>
