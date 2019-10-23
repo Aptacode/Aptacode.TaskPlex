@@ -15,7 +15,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            await Task.Delay(Duration, _cancellationToken.Token).ConfigureAwait(false);
+            await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
         }
     }
 }

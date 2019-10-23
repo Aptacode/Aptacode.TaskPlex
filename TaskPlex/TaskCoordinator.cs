@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
+using NLog;
 
 namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private CancellationTokenSource _cancellationToken;
         private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
@@ -17,6 +20,7 @@ namespace Aptacode.TaskPlex
         /// </summary>
         public TaskCoordinator()
         {
+            Logger.Trace("Initialising TaskCoordinator");
             _cancellationToken = new CancellationTokenSource();
             _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
         }
@@ -26,11 +30,13 @@ namespace Aptacode.TaskPlex
         /// </summary>
         public void Dispose()
         {
+            Logger.Trace("Disposing");
             _cancellationToken.Cancel();
         }        
         
         public void Reset()
         {
+            Logger.Trace("Reseting");
             _cancellationToken.Cancel();
             _cancellationToken = new CancellationTokenSource();
         }
@@ -46,6 +52,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
+            Logger.Trace($@"Applying task: {task.ToString()}");
             TryToStartTask(task);
         }
 
@@ -59,7 +66,8 @@ namespace Aptacode.TaskPlex
                     _tasks.TryAdd(task, taskQueue);
                 }
 
-                taskQueue.Enqueue(task);
+                Logger.Trace($@"Queued task: {task.ToString()}");
+                taskQueue?.Enqueue(task);
             }
             else
             {
@@ -72,24 +80,27 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
-                if (task is ParallelGroupTask parallelGroupTask)
+                Logger.Trace($@"Task Started: {task.ToString()}");
+                switch (task)
                 {
-                    await RunParallel(parallelGroupTask).ConfigureAwait(false);
-                }
-                else if (task is SequentialGroupTask sequentialGroupTask)
-                {
-                    await RunSequential(sequentialGroupTask).ConfigureAwait(false);
-                }
-                else
-                {
-                    await Run(task).ConfigureAwait(false);
+                    case ParallelGroupTask parallelGroupTask:
+                        await RunParallel(parallelGroupTask).ConfigureAwait(false);
+                        break;
+                    case SequentialGroupTask sequentialGroupTask:
+                        await RunSequential(sequentialGroupTask).ConfigureAwait(false);
+                        break;
+                    default:
+                        await Run(task).ConfigureAwait(false);
+                        break;
                 }
 
+                Logger.Trace($@"Task Finished: {task.ToString()}");
                 task.RaiseOnFinished(EventArgs.Empty);
                 RunNextTask(task);
             }
             catch (TaskCanceledException)
             {
+                Logger.Trace($@"Task Cancelled: {task.ToString()}");
                 task.RaiseOnCancelled();
             }
         }
@@ -106,12 +117,19 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            bool isRunning = true;
+            var isRunning = true;
+            var finishedTaskCount = 0;
 
-            int finishedTaskCount = 0;
             foreach (var taskTask in task.Tasks)
             {
                 taskTask.OnFinished += (s, e) => {
+                    if (++finishedTaskCount >= task.Tasks.Count)
+                    {
+                        isRunning = false;
+                    }
+                };
+                taskTask.OnCancelled += (s, e) =>
+                {
                     if (++finishedTaskCount >= task.Tasks.Count)
                     {
                         isRunning = false;
@@ -154,6 +172,7 @@ namespace Aptacode.TaskPlex
             {
                 var localIndex = i;
                 tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
+                tasks[localIndex - 1].OnCancelled += (s, e) => { Apply(tasks[localIndex]); };
             }
         }
 

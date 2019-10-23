@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -9,11 +10,11 @@ namespace Aptacode.TaskPlex.Tasks
         protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
-            _cancellationToken = new CancellationTokenSource();
+            CancellationToken = new CancellationTokenSource();
         }
 
         public TimeSpan Duration { get; set; }
-        protected CancellationTokenSource _cancellationToken { get; set; }
+        protected CancellationTokenSource CancellationToken { get; set; }
 
         public event EventHandler<EventArgs> OnStarted;
         public event EventHandler<EventArgs> OnFinished;
@@ -25,7 +26,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <returns></returns>
         public Task StartAsync()
         {
-            return StartAsync(_cancellationToken);
+            return StartAsync(CancellationToken);
         }
 
         /// <summary>
@@ -34,14 +35,14 @@ namespace Aptacode.TaskPlex.Tasks
         /// <returns></returns>
         public Task StartAsync(CancellationTokenSource cancellationToken)
         {
-            _cancellationToken = cancellationToken;
-            if (_cancellationToken.IsCancellationRequested)
+            CancellationToken = cancellationToken;
+            if (!CancellationToken.IsCancellationRequested)
             {
-                RaiseOnCancelled();
-                return Task.FromCanceled(_cancellationToken.Token);
+                return InternalTask();
             }
 
-            return InternalTask();
+            RaiseOnCancelled();
+            return Task.FromCanceled(CancellationToken.Token);
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// </summary>
         public void Cancel()
         {
-            _cancellationToken.Cancel();
+            CancellationToken.Cancel();
         }
 
         internal void RaiseOnStarted(EventArgs args)
@@ -59,7 +60,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         internal void RaiseOnFinished(EventArgs args)
         {
-            if (_cancellationToken.IsCancellationRequested)
+            if (CancellationToken.IsCancellationRequested)
             {
                 RaiseOnCancelled();
             }

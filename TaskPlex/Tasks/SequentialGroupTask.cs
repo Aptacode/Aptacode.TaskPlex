@@ -30,7 +30,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             foreach (var task in Tasks)
             {
-                await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+                await task.StartAsync(CancellationToken).ConfigureAwait(false);
             }
         }
     }

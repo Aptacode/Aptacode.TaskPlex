@@ -41,7 +41,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             await InterpolateAsync().ConfigureAwait(false);
             _stepTimer.Stop();
 
-            if (_cancellationToken.IsCancellationRequested)
+            if (CancellationToken.IsCancellationRequested)
             {
                 throw new TaskCanceledException();
             }
@@ -57,7 +57,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
             for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
-                if (_cancellationToken.IsCancellationRequested)
+                if (CancellationToken.IsCancellationRequested)
                 {
                     throw new TaskCanceledException();
                 }

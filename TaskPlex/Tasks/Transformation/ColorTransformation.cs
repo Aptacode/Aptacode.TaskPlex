@@ -100,10 +100,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             };
 
             await Task.WhenAll(
-                aComponentInterpolator.StartAsync(_cancellationToken),
-                rComponentInterpolator.StartAsync(_cancellationToken),
-                gComponentInterpolator.StartAsync(_cancellationToken),
-                bComponentInterpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
+                aComponentInterpolator.StartAsync(CancellationToken),
+                rComponentInterpolator.StartAsync(CancellationToken),
+                gComponentInterpolator.StartAsync(CancellationToken),
+                bComponentInterpolator.StartAsync(CancellationToken)).ConfigureAwait(false);
         }
 
         private void ComponentUpdated()

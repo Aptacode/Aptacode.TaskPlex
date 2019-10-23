@@ -45,13 +45,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            var interpolator = new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
-
-            interpolator.Easer = Easer;
+            var interpolator =
+                new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration) {Easer = Easer};
 
             interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 
-            await interpolator.StartAsync(_cancellationToken).ConfigureAwait(false);
+            await interpolator.StartAsync(CancellationToken).ConfigureAwait(false);
         }
     }
 }

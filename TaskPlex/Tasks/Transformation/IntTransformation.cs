@@ -49,7 +49,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             interpolator.Easer = Easer;
 
             interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
-            await Task.WhenAll(interpolator.StartAsync(_cancellationToken)).ConfigureAwait(false);
+            await Task.WhenAll(interpolator.StartAsync(CancellationToken)).ConfigureAwait(false);
         }
     }
 }
