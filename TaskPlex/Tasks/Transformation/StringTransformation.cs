@@ -13,8 +13,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="destinationValue"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public StringTransformation(object target, string property, Func<string> destinationValue,
-            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration,
+        public StringTransformation(object target, string property, Func<string> destinationValue, Action<string>setter,
+            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration,
             stepDuration)
         {
         }

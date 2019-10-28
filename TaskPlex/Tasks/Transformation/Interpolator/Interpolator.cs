@@ -37,16 +37,23 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         protected override async Task InternalTask()
         {
-            _stepTimer.Restart();
-            await InterpolateAsync().ConfigureAwait(false);
-            _stepTimer.Stop();
-
-            if (CancellationToken.IsCancellationRequested)
+            try
             {
-                throw new TaskCanceledException();
+                _stepTimer.Restart();
+                await InterpolateAsync().ConfigureAwait(false);
+                _stepTimer.Stop();
             }
-
-            OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
+            catch (Exception exception)
+            {
+                if (CancellationToken.IsCancellationRequested)
+                {
+                    throw new TaskCanceledException();
+                }
+            }
+            finally
+            {
+                OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
+            }
         }
 
         private async Task InterpolateAsync()

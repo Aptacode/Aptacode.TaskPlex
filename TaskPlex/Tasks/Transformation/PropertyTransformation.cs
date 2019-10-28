@@ -16,12 +16,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <summary>
         ///     the object who's property is to be transformed
         /// </summary>
-        public object Target { get; set; }
+        public object Target { get; }
 
         /// <summary>
         ///     The property to be updated
         /// </summary>
-        public PropertyInfo Property { get; set; }
+        public PropertyInfo Property { get; }
 
         /// <summary>
         ///     The time between each property update
@@ -36,16 +36,26 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
+        private readonly Action<T> setter;
         protected PropertyTransformation(object target, string property, Func<T> destinationValue, TimeSpan duration,
             TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = destinationValue;
+            this.setter = null;
+        }
+
+        protected PropertyTransformation(object target, string property, Func<T> destinationValue, Action<T> setter, TimeSpan duration,
+            TimeSpan stepDuration) : base(target, property, duration, stepDuration)
+        {
+            DestinationValue = destinationValue;
+            this.setter = setter;
         }
 
         protected PropertyTransformation(object target, string property, T destinationValue, TimeSpan duration,
             TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             DestinationValue = () => destinationValue;
+            this.setter = null;
         }
 
         /// <summary>
@@ -65,7 +75,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected void SetValue(T value)
         {
-            Property.SetValue(Target, value);
+            if (setter == null)
+            {
+                Property.SetValue(Target, value);
+            }
+            else
+            {
+                setter.Invoke(value);
+            }
         }
     }
 }

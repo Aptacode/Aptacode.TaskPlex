@@ -80,6 +80,7 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
+
                 Logger.Trace($@"Task Started: {task.ToString()}");
                 switch (task)
                 {
