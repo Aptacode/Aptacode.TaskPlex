@@ -1,3 +1,4 @@
+using System.Threading;
 using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Data;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         [TestCaseSource(typeof(TaskPlexTestData), "GetZeroIntervalTransformations")]
         public void TargetsPropertyMatchesExpectedValue(PropertyTransformation task, object expectedEndValue)
         {
-            task.StartAsync().Wait();
+            task.StartAsync(new CancellationTokenSource()).Wait();
             var endValue = task.Property.GetValue(task.Target);
 
             Assert.AreEqual(expectedEndValue, endValue);

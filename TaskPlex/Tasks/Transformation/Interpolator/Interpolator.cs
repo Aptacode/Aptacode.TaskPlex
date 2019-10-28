@@ -37,45 +37,31 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         protected override async Task InternalTask()
         {
-            try
+            await new TaskFactory(CancellationToken.Token).StartNew(() =>
             {
                 _stepTimer.Restart();
-                await InterpolateAsync().ConfigureAwait(false);
-                _stepTimer.Stop();
-            }
-            catch (Exception exception)
-            {
-                if (CancellationToken.IsCancellationRequested)
+                var stepCount = GetStepCount();
+                var incrementValue = GetIncrementValue(StartValue, EndValue, stepCount);
+                var incrementIndex = 0;
+
+                for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
                 {
-                    throw new TaskCanceledException();
+                    if (CancellationToken.IsCancellationRequested)
+                    {
+                        throw new TaskCanceledException();
+                    }
+
+                    var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
+
+                    UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);
+                    incrementIndex = nextIncrementIndex;
+
+                    DelayAsync(stepIndex).Wait();
                 }
-            }
-            finally
-            {
+
                 OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
-            }
-        }
 
-        private async Task InterpolateAsync()
-        {
-            var stepCount = GetStepCount();
-            var incrementValue = GetIncrementValue(StartValue, EndValue, stepCount);
-            var incrementIndex = 0;
-
-            for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
-            {
-                if (CancellationToken.IsCancellationRequested)
-                {
-                    throw new TaskCanceledException();
-                }
-
-                var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
-
-                UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);
-                incrementIndex = nextIncrementIndex;
-
-                await DelayAsync(stepIndex).ConfigureAwait(false);
-            }
+            }).ConfigureAwait(false);
         }
 
         private int GetStepCount()

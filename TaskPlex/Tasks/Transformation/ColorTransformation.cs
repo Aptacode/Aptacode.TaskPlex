@@ -9,6 +9,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 {
     public class ColorTransformation : PropertyTransformation<Color>
     {
+        private readonly object _mutex = new object();
+        private Color endValue;
+        private bool isRunning = true;
         private readonly ConcurrentQueue<int>
             _aComponentQueue,
             _rComponentQueue,
@@ -63,7 +66,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         protected override async Task InternalTask()
         {
             var startValue = GetStartValue();
-            var endValue = GetEndValue();
+            endValue = GetEndValue();
+            isRunning = true;
 
             var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, StepDuration);
             var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration);
@@ -103,23 +107,32 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 aComponentInterpolator.StartAsync(CancellationToken),
                 rComponentInterpolator.StartAsync(CancellationToken),
                 gComponentInterpolator.StartAsync(CancellationToken),
-                bComponentInterpolator.StartAsync(CancellationToken)).ConfigureAwait(false);
+                bComponentInterpolator.StartAsync(CancellationToken)).ContinueWith(o =>
+            {
+                isRunning = false;
+            }).ConfigureAwait(false);
         }
 
         private void ComponentUpdated()
         {
-            if (
-                _aComponentQueue.TryPeek(out var newA) &&
+            if (!isRunning)
+            {
+                return;
+            }
+
+            if (_aComponentQueue.TryPeek(out var newA) &&
                 _rComponentQueue.TryPeek(out var newR) &&
                 _gComponentQueue.TryPeek(out var newG) &&
                 _bComponentQueue.TryPeek(out var newB))
             {
-                _aComponentQueue.TryDequeue(out _);
-                _rComponentQueue.TryDequeue(out _);
-                _gComponentQueue.TryDequeue(out _);
-                _bComponentQueue.TryDequeue(out _);
-
-                SetValue(Color.FromArgb(newA, newR, newG, newB));
+                lock (_mutex)
+                {
+                    _aComponentQueue.TryDequeue(out _);
+                    _rComponentQueue.TryDequeue(out _);
+                    _gComponentQueue.TryDequeue(out _);
+                    _bComponentQueue.TryDequeue(out _);
+                    SetValue(Color.FromArgb(newA, newR, newG, newB));
+                }
             }
         }
     }

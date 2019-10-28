@@ -39,9 +39,10 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 return InternalTask();
             }
-
-            RaiseOnCancelled();
-            return Task.FromCanceled(CancellationToken.Token);
+            else
+            {
+                throw new TaskCanceledException();
+            }
         }
 
         /// <summary>

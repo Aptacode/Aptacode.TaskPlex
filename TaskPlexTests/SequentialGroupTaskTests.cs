@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tests.Data;
 using NUnit.Framework;
@@ -29,7 +30,7 @@ namespace Aptacode.TaskPlex.Tests
 
             var groupTask = TaskPlexFactory.GetSequentialGroup(tasks);
 
-            groupTask.StartAsync().Wait();
+            groupTask.StartAsync(new CancellationTokenSource()).Wait();
 
             Assert.That(task1StartTime < task1EndTime);
             Assert.That(task1EndTime < task2StartTime);

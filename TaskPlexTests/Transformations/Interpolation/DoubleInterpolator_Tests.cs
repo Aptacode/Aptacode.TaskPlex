@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 using Aptacode.TaskPlex.Tests.Data;
@@ -23,7 +24,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
             var actualChangeLog = new List<double>();
             transformation.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };
 
-            transformation.StartAsync().Wait();
+            transformation.StartAsync(new CancellationTokenSource()).Wait();
 
             Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog, new DoubleComparer()));
         }

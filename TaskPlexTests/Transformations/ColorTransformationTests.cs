@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Aptacode.TaskPlex.Tests.Data;
 using Aptacode.TaskPlex.Tests.Utilites;
 using NUnit.Framework;
@@ -20,7 +21,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
 
             testRectangle.OnBackgroundChanged += (s, e) => { actualChangeLog.Add(e.NewValue); };
 
-            transformation.StartAsync().Wait();
+            transformation.StartAsync(new CancellationTokenSource()).Wait();
 
             Assert.That(actualChangeLog.SequenceEqual(expectedChangeLog));
         }

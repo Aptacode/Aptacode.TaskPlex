@@ -1,4 +1,5 @@
-﻿using Aptacode.TaskPlex.Tasks.Transformation;
+﻿using System.Threading;
+using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Data;
 using Aptacode.TaskPlex.Tests.Utilites;
 using NUnit.Framework;
@@ -20,7 +21,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         {
             PropertyTransformation transformation =
                 TaskPlexFactory.GetStringTransformation(_testRectangle, "Name", "Start", "End", 10, 1);
-            transformation.StartAsync().Wait();
+            transformation.StartAsync(new CancellationTokenSource()).Wait();
             Assert.That(_testRectangle.Name == "End");
         }
     }

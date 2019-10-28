@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tests.Data;
 using NUnit.Framework;
@@ -12,7 +13,10 @@ namespace Aptacode.TaskPlex.Tests
         [TestCaseSource(typeof(TaskPlexTestData), "GetNormalTaskExamples")]
         public void CanCancelTask(BaseTask task)
         {
-            new TaskFactory().StartNew(() => { Assert.Catch(() => { task.StartAsync().Wait(); }); });
+            new TaskFactory().StartNew(() =>
+            {
+                Assert.Catch(() => { task.StartAsync().Wait(); });
+            });
 
             task.Cancel();
 
