@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : IDisposable
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
 
         private CancellationTokenSource _cancellationToken;
         private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
@@ -18,9 +18,11 @@ namespace Aptacode.TaskPlex
         /// <summary>
         ///     Orchestrate the order of execution of tasks
         /// </summary>
-        public TaskCoordinator()
+        public TaskCoordinator(ILoggerFactory loggerFactory)
         {
-            Logger.Trace("Initialising TaskCoordinator");
+            _logger = loggerFactory.CreateLogger<TaskCoordinator>();
+
+            _logger.LogTrace("Initialising TaskCoordinator");
             _cancellationToken = new CancellationTokenSource();
             _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
         }
@@ -30,13 +32,13 @@ namespace Aptacode.TaskPlex
         /// </summary>
         public void Dispose()
         {
-            Logger.Trace("Disposing");
+            _logger.LogTrace("Disposing");
             _cancellationToken.Cancel();
         }        
         
         public void Reset()
         {
-            Logger.Trace("Reseting");
+            _logger.LogTrace("Reseting");
             _cancellationToken.Cancel();
             _cancellationToken = new CancellationTokenSource();
         }
@@ -52,7 +54,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            Logger.Trace($@"Applying task: {task.ToString()}");
+            _logger.LogTrace($@"Applying task: {task.ToString()}");
             TryToStartTask(task);
         }
 
@@ -66,7 +68,7 @@ namespace Aptacode.TaskPlex
                     _tasks.TryAdd(task, taskQueue);
                 }
 
-                Logger.Trace($@"Queued task: {task.ToString()}");
+                _logger.LogTrace($@"Queued task: {task.ToString()}");
                 taskQueue?.Enqueue(task);
             }
             else
@@ -80,8 +82,12 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
+<<<<<<< HEAD
 
                 Logger.Trace($@"Task Started: {task.ToString()}");
+=======
+                _logger.LogTrace($@"Task Started: {task.ToString()}");
+>>>>>>> d85105f06ccf1105d045f0aff0ae49c21e206c0a
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
@@ -95,13 +101,13 @@ namespace Aptacode.TaskPlex
                         break;
                 }
 
-                Logger.Trace($@"Task Finished: {task.ToString()}");
+                _logger.LogTrace($@"Task Finished: {task.ToString()}");
                 task.RaiseOnFinished(EventArgs.Empty);
                 RunNextTask(task);
             }
             catch (TaskCanceledException)
             {
-                Logger.Trace($@"Task Cancelled: {task.ToString()}");
+                _logger.LogDebug($@"Task Cancelled: {task.ToString()}");
                 task.RaiseOnCancelled();
             }
         }
