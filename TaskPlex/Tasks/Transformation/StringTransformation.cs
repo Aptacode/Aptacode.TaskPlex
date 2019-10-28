@@ -6,7 +6,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
     public class StringTransformation : PropertyTransformation<string>
     {
         /// <summary>
-        ///     Update a string property on the target to the value returned by the given Func<string> after the task duration
+        ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -15,11 +15,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
         public StringTransformation(
-            object target, 
+            object target,
             string property,
             Func<string> endValue,
             Action<string> valueUpdater,
-            TimeSpan taskDuration, 
+            TimeSpan taskDuration,
             TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
         {
         }

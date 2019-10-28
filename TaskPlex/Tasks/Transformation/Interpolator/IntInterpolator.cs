@@ -15,9 +15,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval) : this(startValue,
             endValue, duration, interval, new LinearEaser())
         {
-        }       
-        
-        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval, Easer easer) : base(startValue,
+        }
+
+        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval, Easer easer) : base(
+            startValue,
             endValue, duration, interval, easer)
         {
         }

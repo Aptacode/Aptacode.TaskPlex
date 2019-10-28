@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
 {
     [TestFixture]
-    public class DoubleEasing_Tests
+    public class DoubleEasingTests
     {
         [TestCaseSource(typeof(TaskPlexTestData), "GetExpectedEaserData")]
         public void DoubleInterpolator_OutputValuesMatchSequence(double startValue, double endValue,

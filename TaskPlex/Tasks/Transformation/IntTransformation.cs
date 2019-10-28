@@ -8,7 +8,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
     public class IntTransformation : PropertyTransformation<int>
     {
         /// <summary>
-        ///     Transform an int property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     Returns the easing function for this transformation
+        /// </summary>
+        private readonly Easer _easer;
+
+        /// <summary>
+        ///     Transform an int property on the target object to the value returned by the given Func at intervals specified by
         ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
@@ -21,17 +26,18 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             object target,
             string property,
             Func<int> endValue,
-            Action<int> valueUpdater, 
+            Action<int> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : this(target, property, endValue, valueUpdater, taskDuration, stepDuration, new LinearEaser())
+            TimeSpan stepDuration) : this(target, property, endValue, valueUpdater, taskDuration, stepDuration,
+            new LinearEaser())
         {
-        }     
-        
+        }
+
         public IntTransformation(
             object target,
             string property,
             Func<int> endValue,
-            Action<int> valueUpdater, 
+            Action<int> valueUpdater,
             TimeSpan taskDuration,
             TimeSpan stepDuration,
             Easer easer) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
@@ -39,16 +45,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             _easer = easer;
         }
 
-        /// <summary>
-        ///     Returns the easing function for this transformation
-        /// </summary>
-        private readonly Easer _easer;
-
         protected override async Task InternalTask()
         {
             var interpolator =
                 new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration, _easer);
-            
+
             interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 
             await interpolator.StartAsync(CancellationToken).ConfigureAwait(false);

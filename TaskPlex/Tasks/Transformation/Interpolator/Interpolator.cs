@@ -9,14 +9,16 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public abstract class Interpolator<T> : BaseTask
     {
-        private readonly Stopwatch _stepTimer;
         private readonly Easer _easer;
+        private readonly Stopwatch _stepTimer;
 
-        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : this(startValue, endValue, duration, intervalDuration, new LinearEaser())
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : this(
+            startValue, endValue, duration, intervalDuration, new LinearEaser())
         {
-        }        
-        
-        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration, Easer easer) : base(duration)
+        }
+
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration, Easer easer) :
+            base(duration)
         {
             _stepTimer = new Stopwatch();
             _easer = easer;
@@ -32,13 +34,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         public TimeSpan IntervalDuration { get; set; }
 
+        private T StartValue { get; }
+        private T CurrentValue { get; set; }
+        private T EndValue { get; }
+
         public List<T> GetValues()
         {
             var values = new List<T>();
             var stepCount = GetStepCount();
             var incrementValue = GetIncrementValue(StartValue, EndValue, stepCount);
             var incrementIndex = 0;
-            T currentValue = StartValue;
+            var currentValue = StartValue;
 
             for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
@@ -51,9 +57,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             return values;
         }
 
-        private T StartValue { get; }
-        private T CurrentValue { get; set; }
-        private T EndValue { get; }
         public event EventHandler<InterpolationValueChangedEventArgs<T>> OnValueChanged;
 
         protected abstract T Subtract(T a, T b);
@@ -81,7 +84,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
                 }
 
                 OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(EndValue));
-
             }).ConfigureAwait(false);
         }
 

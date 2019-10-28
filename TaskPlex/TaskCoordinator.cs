@@ -11,9 +11,9 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly ILogger _logger;
+        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
         private CancellationTokenSource _cancellationToken;
-        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
         /// <summary>
         ///     Orchestrate the order of execution of tasks
@@ -22,7 +22,7 @@ namespace Aptacode.TaskPlex
         {
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
 
-            _logger.LogTrace("Initialising TaskCoordinator");
+            _logger.LogTrace("Initializing TaskCoordinator");
             _cancellationToken = new CancellationTokenSource();
             _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
         }
@@ -34,11 +34,11 @@ namespace Aptacode.TaskPlex
         {
             _logger.LogTrace("Disposing");
             _cancellationToken.Cancel();
-        }        
-        
+        }
+
         public void Reset()
         {
-            _logger.LogTrace("Reseting");
+            _logger.LogTrace("Resetting");
             _cancellationToken.Cancel();
             _cancellationToken = new CancellationTokenSource();
         }
@@ -69,7 +69,7 @@ namespace Aptacode.TaskPlex
                 }
 
                 _logger.LogTrace($@"Queued task: {task}");
-                taskQueue?.Enqueue(task);
+                taskQueue.Enqueue(task);
             }
             else
             {
@@ -137,7 +137,8 @@ namespace Aptacode.TaskPlex
 
             foreach (var taskTask in task.Tasks)
             {
-                taskTask.OnFinished += (s, e) => {
+                taskTask.OnFinished += (s, e) =>
+                {
                     if (++finishedTaskCount >= task.Tasks.Count)
                     {
                         isRunning = false;
@@ -198,10 +199,7 @@ namespace Aptacode.TaskPlex
             for (var i = 1; i < tasks.Count; i++)
             {
                 var localIndex = i;
-                tasks[localIndex - 1].OnFinished += (s, e) =>
-                {
-                    Apply(tasks[localIndex]);
-                };
+                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
             }
         }
 

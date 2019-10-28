@@ -13,7 +13,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             int endValue, int totalTime, int stepTime)
         {
             var property = testObject.GetType().GetProperty(testProperty);
-            property.SetValue(testObject, startValue);
+            property?.SetValue(testObject, startValue);
 
             return GetIntTransformation(testObject, testProperty, endValue, totalTime, stepTime);
         }
@@ -28,9 +28,8 @@ namespace Aptacode.TaskPlex.Tests.Data
                 testObject,
                 testProperty,
                 () => endValue,
-                (value) => property.SetValue(testObject, value),
-
-            TimeSpan.FromMilliseconds(totalTime),
+                value => property?.SetValue(testObject, value),
+                TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
@@ -40,7 +39,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             double startValue, double endValue, int totalTime, int stepTime)
         {
             var property = testObject.GetType().GetProperty(testProperty);
-            property.SetValue(testObject, startValue);
+            property?.SetValue(testObject, startValue);
 
             return GetDoubleTransformation(testObject, testProperty, endValue, totalTime, stepTime);
         }
@@ -53,7 +52,7 @@ namespace Aptacode.TaskPlex.Tests.Data
                 testObject,
                 testProperty,
                 () => endValue,
-                (value) => property.SetValue(testObject, value),
+                value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
@@ -64,14 +63,14 @@ namespace Aptacode.TaskPlex.Tests.Data
             string startValue, string endValue, int totalTime, int stepTime)
         {
             var property = testObject.GetType().GetProperty(testProperty);
-            property.SetValue(testObject, startValue);
+            property?.SetValue(testObject, startValue);
 
             var transformation = new StringTransformation(
                 testObject,
                 testProperty,
                 () => endValue,
-                (value) => property.SetValue(testObject, value),
-            TimeSpan.FromMilliseconds(totalTime),
+                value => property?.SetValue(testObject, value),
+                TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
@@ -81,14 +80,13 @@ namespace Aptacode.TaskPlex.Tests.Data
             Color startValue, Color endValue, int totalTime, int stepTime)
         {
             var property = testObject.GetType().GetProperty(testProperty);
-            property.SetValue(testObject, startValue);
+            property?.SetValue(testObject, startValue);
 
             var transformation = new ColorTransformation(
                 testObject,
                 testProperty,
                 () => endValue,
-                (value) => property.SetValue(testObject, value),
-
+                value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 

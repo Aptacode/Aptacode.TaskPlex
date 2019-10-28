@@ -16,8 +16,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval) : base(
             startValue, endValue, duration, interval)
         {
-        }     
-        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval, Easer easer) : base(
+        }
+
+        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval,
+            Easer easer) : base(
             startValue, endValue, duration, interval, easer)
         {
         }

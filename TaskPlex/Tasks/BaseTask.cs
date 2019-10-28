@@ -39,10 +39,8 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 return InternalTask();
             }
-            else
-            {
-                throw new TaskCanceledException();
-            }
+
+            throw new TaskCanceledException();
         }
 
         /// <summary>

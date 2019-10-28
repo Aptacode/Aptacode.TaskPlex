@@ -4,7 +4,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing
 {
     public class SineEaser : Easer
     {
-        private static readonly double PiOverTwo = Math.PI / 2;
+        private const double PiOverTwo = Math.PI / 2;
 
         /// <summary>
         ///     Output accelerates up to 0.5 then decelerates up to 1.0 as the index approaches the count

@@ -10,17 +10,15 @@ namespace Aptacode.TaskPlex.Tests.Transformations
     [TestFixture]
     public class IntTransformationTests
     {
+        private TestRectangle _testRectangle;
+
         [SetUp]
         public void Setup()
         {
             _testRectangle = new TestRectangle();
         }
 
-        private TestRectangle _testRectangle;
 
-        private static object[] _sourceLists =
-        {
-        };
 
         [TestCaseSource(typeof(TaskPlexTestData), "GetIntInterpolationData")]
         public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue,

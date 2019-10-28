@@ -17,10 +17,7 @@ namespace Aptacode.TaskPlex.Tests
         {
             //setup our DI
             var serviceProvider = new ServiceCollection()
-                .AddLogging(loggingBuilder =>
-                {
-                    loggingBuilder.AddConsole();
-                })
+                .AddLogging(loggingBuilder => { loggingBuilder.AddConsole(); })
                 .BuildServiceProvider();
 
             _taskCoordinator = new TaskCoordinator(serviceProvider.GetService<ILoggerFactory>());
@@ -38,18 +35,19 @@ namespace Aptacode.TaskPlex.Tests
 
             var finishedTaskCount = 0;
 
-            foreach (var baseTask in tasks)
+            var baseTasks = tasks.ToList();
+            foreach (var baseTask in baseTasks)
             {
                 baseTask.OnFinished += (s, e) =>
                 {
-                    if (++finishedTaskCount >= tasks.Count())
+                    if (++finishedTaskCount >= baseTasks.Count())
                     {
                         tcs.SetResult(true);
                     }
                 };
             }
 
-            foreach (var baseTask in tasks)
+            foreach (var baseTask in baseTasks)
             {
                 _taskCoordinator.Apply(baseTask);
             }
@@ -68,18 +66,19 @@ namespace Aptacode.TaskPlex.Tests
 
             var startedTaskCount = 0;
 
-            foreach (var baseTask in tasks)
+            var baseTasks = tasks.ToList();
+            foreach (var baseTask in baseTasks)
             {
                 baseTask.OnStarted += (s, e) =>
                 {
-                    if (++startedTaskCount >= tasks.Count())
+                    if (++startedTaskCount >= baseTasks.Count())
                     {
                         tcs.SetResult(true);
                     }
                 };
             }
 
-            foreach (var baseTask in tasks)
+            foreach (var baseTask in baseTasks)
             {
                 _taskCoordinator.Apply(baseTask);
             }

@@ -230,13 +230,5 @@ namespace Aptacode.TaskPlex.Tests.Data
                 new object[] {1, 1, new List<double> {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, new LinearEaser()}
             };
         }
-
-        public static object[] Template()
-        {
-            var testRectangle = new TestRectangle();
-            return new object[]
-            {
-            };
-        }
     }
 }

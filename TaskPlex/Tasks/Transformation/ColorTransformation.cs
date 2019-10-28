@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
@@ -11,7 +9,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
     public class ColorTransformation : PropertyTransformation<Color>
     {
         /// <summary>
-        ///     Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by
+        ///     Transform a Color property on the target object to the value returned by the given Func at intervals specified by
         ///     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
@@ -22,7 +20,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="stepDuration"></param>
         public ColorTransformation(
             object target,
-            string property, 
+            string property,
             Func<Color> endValue,
             Action<Color> valueUpdater,
             TimeSpan taskDuration,
@@ -60,7 +58,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
 
             SetValue(endValue);
-
         }
     }
 }

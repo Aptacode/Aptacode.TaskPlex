@@ -7,10 +7,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 {
     public abstract class PropertyTransformation : BaseTask
     {
+        protected readonly Stopwatch StepTimer;
+
         protected PropertyTransformation(
             object target,
-            string property, 
-            TimeSpan duration, 
+            string property,
+            TimeSpan duration,
             TimeSpan stepDuration) : base(duration)
         {
             Target = target;
@@ -38,12 +40,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             return (Target.GetHashCode(), Property.GetHashCode()).GetHashCode();
         }
-        protected readonly Stopwatch StepTimer;
 
         protected async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
-                (int)(StepDuration.TotalMilliseconds * currentStep - StepTimer.ElapsedMilliseconds);
+                (int) (StepDuration.TotalMilliseconds * currentStep - StepTimer.ElapsedMilliseconds);
             //the Task.Delay function will only accurately sleep for >8ms
             if (millisecondsAhead > 8)
             {
@@ -58,10 +59,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Action<T> _valueUpdater;
 
         protected PropertyTransformation(
-            object target, 
-            string property, 
+            object target,
+            string property,
             Func<T> endValue,
-            Action<T> valueUpdater, 
+            Action<T> valueUpdater,
             TimeSpan duration,
             TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
@@ -72,7 +73,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <summary>
         ///     When invoked returns the destination value of the transformation
         /// </summary>
-
         protected T GetStartValue()
         {
             return (T) Property.GetValue(Target);
