@@ -1,4 +1,5 @@
 ﻿using System;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
@@ -14,6 +15,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         /// <param name="interval"></param>
         public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval) : base(
             startValue, endValue, duration, interval)
+        {
+        }     
+        public DoubleInterpolator(double startValue, double endValue, TimeSpan duration, TimeSpan interval, Easer easer) : base(
+            startValue, endValue, duration, interval, easer)
         {
         }
 

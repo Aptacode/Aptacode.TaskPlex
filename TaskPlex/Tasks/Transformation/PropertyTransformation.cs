@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
@@ -14,6 +16,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Target = target;
             Property = target.GetType().GetProperty(property);
             StepDuration = stepDuration;
+            StepTimer = new Stopwatch();
         }
 
         /// <summary>
@@ -34,6 +37,18 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public override int GetHashCode()
         {
             return (Target.GetHashCode(), Property.GetHashCode()).GetHashCode();
+        }
+        protected readonly Stopwatch StepTimer;
+
+        protected async Task DelayAsync(int currentStep)
+        {
+            var millisecondsAhead =
+                (int)(StepDuration.TotalMilliseconds * currentStep - StepTimer.ElapsedMilliseconds);
+            //the Task.Delay function will only accurately sleep for >8ms
+            if (millisecondsAhead > 8)
+            {
+                await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
+            }
         }
     }
 

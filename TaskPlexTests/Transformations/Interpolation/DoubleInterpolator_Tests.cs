@@ -18,8 +18,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
             List<double> expectedChangeLog, Easer easer)
         {
             var transformation = new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
-                TimeSpan.FromMilliseconds(1));
-            transformation.Easer = easer;
+                TimeSpan.FromMilliseconds(1), easer);
 
             var actualChangeLog = new List<double>();
             transformation.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };

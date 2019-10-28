@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
@@ -9,11 +10,16 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
     public abstract class Interpolator<T> : BaseTask
     {
         private readonly Stopwatch _stepTimer;
+        private readonly Easer _easer;
 
-        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : base(duration)
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : this(startValue, endValue, duration, intervalDuration, new LinearEaser())
+        {
+        }        
+        
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration, Easer easer) : base(duration)
         {
             _stepTimer = new Stopwatch();
-            Easer = new LinearEaser();
+            _easer = easer;
 
             CurrentValue = StartValue = startValue;
             EndValue = endValue;
@@ -23,9 +29,28 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         /// <summary>
         ///     Returns the Easing function
         /// </summary>
-        public Easer Easer { get; set; }
 
         public TimeSpan IntervalDuration { get; set; }
+
+        public List<T> GetValues()
+        {
+            var values = new List<T>();
+            var stepCount = GetStepCount();
+            var incrementValue = GetIncrementValue(StartValue, EndValue, stepCount);
+            var incrementIndex = 0;
+            T currentValue = StartValue;
+
+            for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
+            {
+                var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
+                currentValue = NextValue(currentValue, incrementIndex, incrementValue, nextIncrementIndex);
+                values.Add(currentValue);
+                incrementIndex = nextIncrementIndex;
+            }
+
+            return values;
+        }
+
         private T StartValue { get; }
         private T CurrentValue { get; set; }
         private T EndValue { get; }
@@ -48,7 +73,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
                 {
                     var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
 
-                    UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);
+                    CurrentValue = NextValue(CurrentValue, incrementIndex, incrementValue, nextIncrementIndex);
+                    OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(CurrentValue));
                     incrementIndex = nextIncrementIndex;
 
                     DelayAsync(stepIndex).Wait();
@@ -71,29 +97,23 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         {
             var difference = Subtract(endValue, startValue);
 
-            if (stepCount <= 1)
-            {
-                return difference;
-            }
-
-
-            return Divide(difference, stepCount);
+            return stepCount <= 1 ? difference : Divide(difference, stepCount);
         }
 
         private int GetNextIncrementIndex(int stepIndex, int stepCount)
         {
-            return (int) Math.Floor(Easer.ProgressAt(stepIndex, stepCount) * stepCount);
+            return (int) Math.Floor(_easer.ProgressAt(stepIndex, stepCount) * stepCount);
         }
 
-        private void UpdateValue(int incrementIndex, T incrementValue, int nextIncrementIndex)
+        private T NextValue(T currentValue, int incrementIndex, T incrementValue, int nextIncrementIndex)
         {
             while (incrementIndex < nextIncrementIndex)
             {
                 incrementIndex++;
-                CurrentValue = Add(CurrentValue, incrementValue);
+                currentValue = Add(currentValue, incrementValue);
             }
 
-            OnValueChanged?.Invoke(this, new InterpolationValueChangedEventArgs<T>(CurrentValue));
+            return currentValue;
         }
 
         private async Task DelayAsync(int currentStep)

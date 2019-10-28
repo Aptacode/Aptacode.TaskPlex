@@ -17,8 +17,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
             List<int> expectedChangeLog, Easer easer)
         {
             var interpolator = new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
-                TimeSpan.FromMilliseconds(1));
-            interpolator.Easer = easer;
+                TimeSpan.FromMilliseconds(1), easer);
 
             var actualChangeLog = new List<int>();
             interpolator.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };

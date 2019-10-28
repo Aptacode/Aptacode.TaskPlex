@@ -23,20 +23,31 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Func<int> endValue,
             Action<int> valueUpdater, 
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
+            TimeSpan stepDuration) : this(target, property, endValue, valueUpdater, taskDuration, stepDuration, new LinearEaser())
         {
-            Easer = new LinearEaser();
+        }     
+        
+        public IntTransformation(
+            object target,
+            string property,
+            Func<int> endValue,
+            Action<int> valueUpdater, 
+            TimeSpan taskDuration,
+            TimeSpan stepDuration,
+            Easer easer) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
+        {
+            _easer = easer;
         }
 
         /// <summary>
         ///     Returns the easing function for this transformation
         /// </summary>
-        public Easer Easer { get; set; }
+        private readonly Easer _easer;
 
         protected override async Task InternalTask()
         {
             var interpolator =
-                new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration) {Easer = Easer};
+                new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration, _easer);
             
             interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
 
