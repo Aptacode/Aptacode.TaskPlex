@@ -162,6 +162,7 @@ namespace Aptacode.TaskPlex
             var isRunning = true;
             //When the last task finishes set running to false
             task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { isRunning = false; };
+            task.Tasks[task.Tasks.Count - 1].OnCancelled += (s, e) => { isRunning = false; };
 
             Apply(task.Tasks[0]);
 
