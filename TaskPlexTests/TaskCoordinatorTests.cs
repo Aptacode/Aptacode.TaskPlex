@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tests.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
@@ -13,7 +15,15 @@ namespace Aptacode.TaskPlex.Tests
         [SetUp]
         public void Setup()
         {
-            _taskCoordinator = new TaskCoordinator();
+            //setup our DI
+            var serviceProvider = new ServiceCollection()
+                .AddLogging(loggingBuilder =>
+                {
+                    loggingBuilder.AddConsole();
+                })
+                .BuildServiceProvider();
+
+            _taskCoordinator = new TaskCoordinator(serviceProvider.GetService<ILoggerFactory>());
         }
 
         private TaskCoordinator _taskCoordinator;
