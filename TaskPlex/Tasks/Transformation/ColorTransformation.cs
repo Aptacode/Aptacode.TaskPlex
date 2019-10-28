@@ -24,8 +24,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="destinationValue"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public ColorTransformation(object target, string property, Func<Color> destinationValue, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public ColorTransformation(object target, string property, Func<Color> destinationValue, Action<Color> setter, TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration, stepDuration)
         {
             _aComponentQueue = new ConcurrentQueue<int>();
             _rComponentQueue = new ConcurrentQueue<int>();

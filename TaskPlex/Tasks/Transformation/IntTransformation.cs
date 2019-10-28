@@ -16,8 +16,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="destinationValue"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public IntTransformation(object target, string property, Func<int> destinationValue, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public IntTransformation(object target, string property, Func<int> destinationValue, Action<int> setter, TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration, stepDuration)
         {
             Easer = new LinearEaser();
         }
@@ -44,9 +44,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            var interpolator = new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration);
+            var interpolator =
+                new IntInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration) {Easer = Easer};
 
-            interpolator.Easer = Easer;
 
             interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
             await Task.WhenAll(interpolator.StartAsync(CancellationToken)).ConfigureAwait(false);

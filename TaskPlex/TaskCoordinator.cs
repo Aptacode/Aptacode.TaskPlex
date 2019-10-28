@@ -82,7 +82,16 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
+<<<<<<< HEAD
                 _logger.LogTrace($@"Task Started: {task}");
+=======
+<<<<<<< HEAD
+
+                Logger.Trace($@"Task Started: {task.ToString()}");
+=======
+                _logger.LogTrace($@"Task Started: {task.ToString()}");
+>>>>>>> d85105f06ccf1105d045f0aff0ae49c21e206c0a
+>>>>>>> 790350259e707734ed7ac94f7e1e1d0311f8e0fc
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:

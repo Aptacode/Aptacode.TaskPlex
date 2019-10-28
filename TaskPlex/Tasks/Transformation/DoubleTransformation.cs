@@ -23,6 +23,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Easer = new LinearEaser();
         }
 
+        public DoubleTransformation(object target, string property, Func<double> destinationValue, Action<double> setter,
+            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration,
+            stepDuration)
+        {
+            Easer = new LinearEaser();
+        }
+
         /// <summary>
         ///     Transform a double property on the target object to the value returned by the given Func<> at intervals specified
         ///     by the step duration up to the task duration
