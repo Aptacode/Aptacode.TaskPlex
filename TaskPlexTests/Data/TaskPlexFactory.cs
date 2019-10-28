@@ -22,11 +22,15 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static IntTransformation GetIntTransformation(object testObject, string testProperty, int endValue,
             int totalTime, int stepTime)
         {
+            var property = testObject.GetType().GetProperty(testProperty);
+
             var transformation = new IntTransformation(
                 testObject,
                 testProperty,
-                endValue,
-                TimeSpan.FromMilliseconds(totalTime),
+                () => endValue,
+                (value) => property.SetValue(testObject, value),
+
+            TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
@@ -44,10 +48,12 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static DoubleTransformation GetDoubleTransformation(object testObject, string testProperty,
             double endValue, int totalTime, int stepTime)
         {
+            var property = testObject.GetType().GetProperty(testProperty);
             var transformation = new DoubleTransformation(
                 testObject,
                 testProperty,
-                endValue,
+                () => endValue,
+                (value) => property.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
@@ -63,8 +69,9 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new StringTransformation(
                 testObject,
                 testProperty,
-                endValue,
-                TimeSpan.FromMilliseconds(totalTime),
+                () => endValue,
+                (value) => property.SetValue(testObject, value),
+            TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 
             return transformation;
@@ -79,7 +86,9 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new ColorTransformation(
                 testObject,
                 testProperty,
-                endValue,
+                () => endValue,
+                (value) => property.SetValue(testObject, value),
+
                 TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
 

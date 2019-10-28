@@ -46,11 +46,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
                 for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
                 {
-                    if (CancellationToken.IsCancellationRequested)
-                    {
-                        throw new TaskCanceledException();
-                    }
-
                     var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount);
 
                     UpdateValue(incrementIndex, incrementValue, nextIncrementIndex);

@@ -13,34 +13,18 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
+        /// <param name="endValue"></param>
+        /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public DoubleTransformation(object target, string property, Func<double> destinationValue,
-            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration,
+        public DoubleTransformation(
+            object target, 
+            string property,
+            Func<double> endValue, 
+            Action<double> valueUpdater,
+            TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration,
             stepDuration)
-        {
-            Easer = new LinearEaser();
-        }
-
-        public DoubleTransformation(object target, string property, Func<double> destinationValue, Action<double> setter,
-            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration,
-            stepDuration)
-        {
-            Easer = new LinearEaser();
-        }
-
-        /// <summary>
-        ///     Transform a double property on the target object to the value returned by the given Func<> at intervals specified
-        ///     by the step duration up to the task duration
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
-        /// <param name="taskDuration"></param>
-        /// <param name="stepDuration"></param>
-        public DoubleTransformation(object target, string property, double destinationValue, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
         {
             Easer = new LinearEaser();
         }

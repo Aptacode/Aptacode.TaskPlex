@@ -10,25 +10,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
+        /// <param name="endValue"></param>
+        /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public StringTransformation(object target, string property, Func<string> destinationValue, Action<string>setter,
-            TimeSpan taskDuration, TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration,
-            stepDuration)
-        {
-        }
-
-        /// <summary>
-        ///     Update a string property on the target to the specified destination value after the task duration
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
-        /// <param name="taskDuration"></param>
-        /// <param name="stepDuration"></param>
-        public StringTransformation(object target, string property, string destinationValue, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public StringTransformation(
+            object target, 
+            string property,
+            Func<string> endValue,
+            Action<string> valueUpdater,
+            TimeSpan taskDuration, 
+            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
         {
         }
 

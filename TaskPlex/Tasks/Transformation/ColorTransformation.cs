@@ -24,31 +24,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
+        /// <param name="endValue"></param>
+        /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public ColorTransformation(object target, string property, Func<Color> destinationValue, Action<Color> setter, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, setter, taskDuration, stepDuration)
-        {
-            _aComponentQueue = new ConcurrentQueue<int>();
-            _rComponentQueue = new ConcurrentQueue<int>();
-            _gComponentQueue = new ConcurrentQueue<int>();
-            _bComponentQueue = new ConcurrentQueue<int>();
-
-            Easer = new LinearEaser();
-        }
-
-        /// <summary>
-        ///     Transform a Color property on the target object to the value returned by the given Func<> at intervals specified by
-        ///     the step duration up to the task duration
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="property"></param>
-        /// <param name="destinationValue"></param>
-        /// <param name="taskDuration"></param>
-        /// <param name="stepDuration"></param>
-        public ColorTransformation(object target, string property, Color destinationValue, TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, destinationValue, taskDuration, stepDuration)
+        public ColorTransformation(
+            object target,
+            string property, 
+            Func<Color> endValue,
+            Action<Color> valueUpdater,
+            TimeSpan taskDuration,
+            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
         {
             _aComponentQueue = new ConcurrentQueue<int>();
             _rComponentQueue = new ConcurrentQueue<int>();
@@ -103,35 +89,49 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 ComponentUpdated();
             };
 
-            await Task.WhenAll(
-                aComponentInterpolator.StartAsync(CancellationToken),
-                rComponentInterpolator.StartAsync(CancellationToken),
-                gComponentInterpolator.StartAsync(CancellationToken),
-                bComponentInterpolator.StartAsync(CancellationToken)).ContinueWith(o =>
+            try
+            {
+                await Task.WhenAll(
+                    aComponentInterpolator.StartAsync(CancellationToken),
+                    rComponentInterpolator.StartAsync(CancellationToken),
+                    gComponentInterpolator.StartAsync(CancellationToken),
+                    bComponentInterpolator.StartAsync(CancellationToken)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
             {
                 isRunning = false;
-            }).ConfigureAwait(false);
+
+                lock (_mutex)
+                {
+                    SetValue(endValue);
+                }
+            }
+            finally
+            {
+
+            }
+
         }
 
         private void ComponentUpdated()
         {
-            if (!isRunning)
+            lock (_mutex)
             {
-                return;
-            }
-
-            if (_aComponentQueue.TryPeek(out var newA) &&
-                _rComponentQueue.TryPeek(out var newR) &&
-                _gComponentQueue.TryPeek(out var newG) &&
-                _bComponentQueue.TryPeek(out var newB))
-            {
-                lock (_mutex)
+                if (_aComponentQueue.TryPeek(out var newA) &&
+                    _rComponentQueue.TryPeek(out var newR) &&
+                    _gComponentQueue.TryPeek(out var newG) &&
+                    _bComponentQueue.TryPeek(out var newB))
                 {
+
                     _aComponentQueue.TryDequeue(out _);
                     _rComponentQueue.TryDequeue(out _);
                     _gComponentQueue.TryDequeue(out _);
                     _bComponentQueue.TryDequeue(out _);
-                    SetValue(Color.FromArgb(newA, newR, newG, newB));
+                    if (isRunning)
+                    {
+                        SetValue(Color.FromArgb(newA, newR, newG, newB));
+                    }
+
                 }
             }
         }
