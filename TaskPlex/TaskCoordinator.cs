@@ -125,6 +125,16 @@ namespace Aptacode.TaskPlex
             var isRunning = true;
             var finishedTaskCount = 0;
 
+            task.OnCancelled += (s, e) =>
+            {
+                foreach (var task1 in task.Tasks)
+                {
+                    task1.Cancel();
+                }
+
+                isRunning = false;
+            };
+
             foreach (var taskTask in task.Tasks)
             {
                 taskTask.OnFinished += (s, e) => {
@@ -157,12 +167,23 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
+
             ConnectSequentialTasks(task.Tasks);
 
             var isRunning = true;
+
+            task.OnCancelled += (s, e) =>
+            {
+                foreach (var task1 in task.Tasks)
+                {
+                    task1.Cancel();
+                }
+
+                isRunning = false;
+            };
+
             //When the last task finishes set running to false
             task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { isRunning = false; };
-            task.Tasks[task.Tasks.Count - 1].OnCancelled += (s, e) => { isRunning = false; };
 
             Apply(task.Tasks[0]);
 
@@ -177,8 +198,10 @@ namespace Aptacode.TaskPlex
             for (var i = 1; i < tasks.Count; i++)
             {
                 var localIndex = i;
-                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
-                tasks[localIndex - 1].OnCancelled += (s, e) => { Apply(tasks[localIndex]); };
+                tasks[localIndex - 1].OnFinished += (s, e) =>
+                {
+                    Apply(tasks[localIndex]);
+                };
             }
         }
 
