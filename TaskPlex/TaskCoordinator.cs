@@ -46,7 +46,7 @@ namespace Aptacode.TaskPlex
         /// <summary>
         ///     Add a task to be executed
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="task"></param>
         public void Apply(BaseTask task)
         {
             if (task == null)
@@ -68,7 +68,7 @@ namespace Aptacode.TaskPlex
                     _tasks.TryAdd(task, taskQueue);
                 }
 
-                _logger.LogTrace($@"Queued task: {task.ToString()}");
+                _logger.LogTrace($@"Queued task: {task}");
                 taskQueue?.Enqueue(task);
             }
             else
@@ -82,7 +82,7 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
-                _logger.LogTrace($@"Task Started: {task.ToString()}");
+                _logger.LogTrace($@"Task Started: {task}");
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
@@ -96,14 +96,17 @@ namespace Aptacode.TaskPlex
                         break;
                 }
 
-                _logger.LogTrace($@"Task Finished: {task.ToString()}");
+                _logger.LogTrace($@"Task Finished: {task}");
                 task.RaiseOnFinished(EventArgs.Empty);
-                RunNextTask(task);
             }
             catch (TaskCanceledException)
             {
-                _logger.LogDebug($@"Task Cancelled: {task.ToString()}");
+                _logger.LogDebug($@"Task Cancelled: {task}");
                 task.RaiseOnCancelled();
+            }
+            finally
+            {
+                RunNextTask(task);
             }
         }
 
