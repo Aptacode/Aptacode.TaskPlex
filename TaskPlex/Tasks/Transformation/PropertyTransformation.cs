@@ -41,6 +41,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             return (Target.GetHashCode(), Property.GetHashCode()).GetHashCode();
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is PropertyTransformation other && StepTimer.Equals(other.StepTimer);
+        }
+
         protected async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
