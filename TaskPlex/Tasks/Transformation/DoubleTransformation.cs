@@ -13,6 +13,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
+        /// <param name="startValue"></param>
         /// <param name="endValue"></param>
         /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
@@ -20,10 +21,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public DoubleTransformation(
             object target, 
             string property,
+            Func<double> startValue, 
             Func<double> endValue, 
             Action<double> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : this(target, property, endValue, valueUpdater, taskDuration, stepDuration, new LinearEaser())
+            TimeSpan stepDuration) : this(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration, new LinearEaser())
         {
 
         }       
@@ -31,10 +33,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public DoubleTransformation(
             object target, 
             string property,
+            Func<double> startValue, 
             Func<double> endValue, 
             Action<double> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration, Easer easer) : base(target, property, endValue, valueUpdater, taskDuration,
+            TimeSpan stepDuration, Easer easer) : base(target, property, startValue,endValue, valueUpdater, taskDuration,
             stepDuration)
         {
             _easer = easer;

@@ -17,10 +17,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public StringTransformation(
             object target,
             string property,
+            Func<string> startValue,
             Func<string> endValue,
             Action<string> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
+            TimeSpan stepDuration) : base(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration)
         {
         }
 

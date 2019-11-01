@@ -14,9 +14,9 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         public void TargetsPropertyMatchesExpectedValue(PropertyTransformation task, object expectedEndValue)
         {
             task.StartAsync(new CancellationTokenSource()).Wait();
-            var endValue = task.Property.GetValue(task.Target);
+            var property = task.Target.GetType().GetProperty(task.Property);
 
-            Assert.AreEqual(expectedEndValue, endValue);
+            Assert.AreEqual(expectedEndValue, property?.GetValue(task.Target));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
             var testRectangle = new TestRectangle {BackgroundColor = startValue};
 
 
-            var transformation = new ColorTransformation(testRectangle, "BackgroundColor", () => endValue,
+            var transformation = new ColorTransformation(testRectangle, "BackgroundColor", () =>startValue, () => endValue,
                 color => { actualChangeLog.Add(color); }, TimeSpan.FromMilliseconds(3), TimeSpan.FromMilliseconds(1));
 
 

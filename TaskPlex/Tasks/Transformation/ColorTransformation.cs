@@ -14,6 +14,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
+        /// <param name="startValue"></param>
         /// <param name="endValue"></param>
         /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
@@ -21,10 +22,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         public ColorTransformation(
             object target,
             string property,
+            Func<Color> startValue,
             Func<Color> endValue,
             Action<Color> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, endValue, valueUpdater, taskDuration, stepDuration)
+            TimeSpan stepDuration) : base(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration)
         {
             Easer = new LinearEaser();
         }

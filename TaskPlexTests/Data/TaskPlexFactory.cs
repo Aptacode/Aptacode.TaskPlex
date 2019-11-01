@@ -27,6 +27,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new IntTransformation(
                 testObject,
                 testProperty,
+                () => (int)property?.GetValue(testObject),
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
@@ -51,6 +52,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new DoubleTransformation(
                 testObject,
                 testProperty,
+                () => (double)property?.GetValue(testObject),
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
@@ -68,6 +70,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new StringTransformation(
                 testObject,
                 testProperty,
+                () => (string)property?.GetValue(testObject),
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
@@ -85,6 +88,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             var transformation = new ColorTransformation(
                 testObject,
                 testProperty,
+                () => (Color)property?.GetValue(testObject),
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
