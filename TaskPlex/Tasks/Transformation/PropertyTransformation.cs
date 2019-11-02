@@ -59,14 +59,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
-        private readonly Func<T> _startValue;
         private readonly Func<T> _endValue;
+        private readonly Func<T> _startValue;
         private readonly Action<T> _valueUpdater;
 
         protected PropertyTransformation(
             object target,
             string property,
-            Func<T> startValue,     
+            Func<T> startValue,
             Func<T> endValue,
             Action<T> valueUpdater,
             TimeSpan duration,

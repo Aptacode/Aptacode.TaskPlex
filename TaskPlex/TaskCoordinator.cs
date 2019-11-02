@@ -89,6 +89,7 @@ namespace Aptacode.TaskPlex
             }
             else
             {
+                _tasks.TryAdd(task, null);
                 StartTask(task).ConfigureAwait(false);
             }
         }
@@ -220,9 +221,12 @@ namespace Aptacode.TaskPlex
 
         private void RunNextTask(BaseTask completedTask)
         {
-            if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue.TryDequeue(out var nextTask))
+            if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue != null)
             {
-                StartTask(nextTask).ConfigureAwait(false);
+                if (taskQueue.TryDequeue(out var nextTask))
+                {
+                    StartTask(nextTask).ConfigureAwait(false);
+                }
             }
             else
             {

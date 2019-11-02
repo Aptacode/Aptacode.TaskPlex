@@ -21,7 +21,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Func<string> endValue,
             Action<string> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration)
+            TimeSpan stepDuration) : base(target, property, startValue, endValue, valueUpdater, taskDuration,
+            stepDuration)
         {
         }
 

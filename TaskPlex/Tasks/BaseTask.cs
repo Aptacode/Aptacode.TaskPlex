@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-
     public enum TaskState
     {
-        Ready, Running, Paused, Stopped
+        Ready,
+        Running,
+        Paused,
+        Stopped
     }
 
     public abstract class BaseTask
@@ -22,11 +24,11 @@ namespace Aptacode.TaskPlex.Tasks
         public TimeSpan Duration { get; protected set; }
         protected CancellationTokenSource CancellationToken { get; private set; }
 
+        public TaskState State { get; private set; }
+
         public event EventHandler<EventArgs> OnStarted;
         public event EventHandler<EventArgs> OnFinished;
         public event EventHandler<EventArgs> OnCancelled;
-
-        public TaskState State { get; private set; }
 
         /// <summary>
         ///     Start the task

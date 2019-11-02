@@ -26,7 +26,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Func<Color> endValue,
             Action<Color> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration)
+            TimeSpan stepDuration) : base(target, property, startValue, endValue, valueUpdater, taskDuration,
+            stepDuration)
         {
             Easer = new LinearEaser();
         }

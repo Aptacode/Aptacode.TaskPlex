@@ -30,7 +30,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Func<int> endValue,
             Action<int> valueUpdater,
             TimeSpan taskDuration,
-            TimeSpan stepDuration) : this(target, property, startValue, endValue, valueUpdater, taskDuration, stepDuration,
+            TimeSpan stepDuration) : this(target, property, startValue, endValue, valueUpdater, taskDuration,
+            stepDuration,
             new LinearEaser())
         {
         }
@@ -43,7 +44,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             Action<int> valueUpdater,
             TimeSpan taskDuration,
             TimeSpan stepDuration,
-            Easer easer) : base(target, property, startValue,endValue, valueUpdater, taskDuration, stepDuration)
+            Easer easer) : base(target, property, startValue, endValue, valueUpdater, taskDuration, stepDuration)
         {
             _easer = easer;
         }
