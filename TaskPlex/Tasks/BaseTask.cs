@@ -4,20 +4,29 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
 {
+
+    public enum TaskState
+    {
+        Ready, Running, Paused, Stopped
+    }
+
     public abstract class BaseTask
     {
         protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
             CancellationToken = new CancellationTokenSource();
+            State = TaskState.Ready;
         }
 
-        public TimeSpan Duration { get; set; }
-        protected CancellationTokenSource CancellationToken { get; set; }
+        public TimeSpan Duration { get; protected set; }
+        protected CancellationTokenSource CancellationToken { get; private set; }
 
         public event EventHandler<EventArgs> OnStarted;
         public event EventHandler<EventArgs> OnFinished;
         public event EventHandler<EventArgs> OnCancelled;
+
+        public TaskState State { get; private set; }
 
         /// <summary>
         ///     Start the task
@@ -48,16 +57,19 @@ namespace Aptacode.TaskPlex.Tasks
         /// </summary>
         public void Cancel()
         {
+            State = TaskState.Stopped;
             CancellationToken.Cancel();
         }
 
         internal void RaiseOnStarted(EventArgs args)
         {
+            State = TaskState.Running;
             OnStarted?.Invoke(this, args);
         }
 
         internal void RaiseOnFinished(EventArgs args)
         {
+            State = TaskState.Stopped;
             if (CancellationToken.IsCancellationRequested)
             {
                 RaiseOnCancelled();
@@ -70,9 +82,28 @@ namespace Aptacode.TaskPlex.Tasks
 
         internal void RaiseOnCancelled()
         {
+            State = TaskState.Stopped;
             OnCancelled?.Invoke(this, EventArgs.Empty);
         }
 
         protected abstract Task InternalTask();
+
+        public void Pause()
+        {
+            State = TaskState.Paused;
+        }
+
+        public void Resume()
+        {
+            State = TaskState.Running;
+        }
+
+        protected async Task WaitUntilResumed()
+        {
+            while (State == TaskState.Paused)
+            {
+                await Task.Delay(10).ConfigureAwait(false);
+            }
+        }
     }
 }

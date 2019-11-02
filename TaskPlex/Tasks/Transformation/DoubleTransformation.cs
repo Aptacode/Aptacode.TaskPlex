@@ -47,12 +47,21 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-            var interpolator =
-                new DoubleInterpolator(GetStartValue(), GetEndValue(), Duration, StepDuration, _easer);
+            var startValue = GetStartValue();
+            var endValue = GetEndValue();
 
-            interpolator.OnValueChanged += (s, e) => { SetValue(e.Value); };
+            var interpolator = new DoubleInterpolator(startValue,endValue,Duration, StepDuration, _easer);
+            var values = interpolator.GetValues();
+            StepTimer.Restart();
 
-            await interpolator.StartAsync(CancellationToken).ConfigureAwait(false);
+            for (var i = 0; i < values.Count; i++)
+            {
+                await WaitUntilResumed();
+                SetValue(values[i]);
+                await DelayAsync(i).ConfigureAwait(false);
+            }
+
+            SetValue(endValue);
         }
     }
 }

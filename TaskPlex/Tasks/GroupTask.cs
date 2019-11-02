@@ -11,7 +11,7 @@ namespace Aptacode.TaskPlex.Tasks
             Tasks = tasks;
         }
 
-        internal List<BaseTask> Tasks { get; set; }
+        internal List<BaseTask> Tasks { get; }
 
         /// <summary>
         ///     Add a task to the group
@@ -48,6 +48,6 @@ namespace Aptacode.TaskPlex.Tasks
             return Tasks.Select(p => p.GetHashCode());
         }
 
-        protected abstract TimeSpan GetTotalDuration(List<BaseTask> tasks);
+        protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
     }
 }

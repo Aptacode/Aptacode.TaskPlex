@@ -55,6 +55,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             for (var i = 0; i < aValues.Count; i++)
             {
+                await WaitUntilResumed();
+
                 SetValue(Color.FromArgb(aValues[i], rValues[i], gValues[i], bValues[i]));
                 await DelayAsync(i).ConfigureAwait(false);
             }

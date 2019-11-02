@@ -43,6 +43,22 @@ namespace Aptacode.TaskPlex
             _cancellationToken = new CancellationTokenSource();
         }
 
+        public void Pause()
+        {
+            foreach (var task in _tasks)
+            {
+                task.Key.Pause();
+            }
+        }
+
+        public void Resume()
+        {
+            foreach (var task in _tasks)
+            {
+                task.Key.Resume();
+            }
+        }
+
         /// <summary>
         ///     Add a task to be executed
         /// </summary>
@@ -167,7 +183,6 @@ namespace Aptacode.TaskPlex
             {
                 return;
             }
-
 
             ConnectSequentialTasks(task.Tasks);
 

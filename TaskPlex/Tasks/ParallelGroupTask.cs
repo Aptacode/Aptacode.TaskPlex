@@ -16,7 +16,7 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
 
-        protected sealed override TimeSpan GetTotalDuration(List<BaseTask> tasks)
+        protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
             return tasks.Select(t => t.Duration).OrderByDescending(t => t.TotalMilliseconds).FirstOrDefault();
         }

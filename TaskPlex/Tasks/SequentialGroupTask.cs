@@ -15,7 +15,7 @@ namespace Aptacode.TaskPlex.Tasks
             Duration = GetTotalDuration(Tasks);
         }
 
-        protected sealed override TimeSpan GetTotalDuration(List<BaseTask> tasks)
+        protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
             var totalDuration = TimeSpan.Zero;
             foreach (var task in tasks)
