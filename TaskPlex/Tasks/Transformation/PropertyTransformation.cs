@@ -8,11 +8,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
     {
         protected readonly Stopwatch StepTimer;
 
-        protected PropertyTransformation(
-            object target,
-            string property,
-            TimeSpan duration,
-            TimeSpan stepDuration) : base(duration)
+        protected PropertyTransformation(object target, string property, TimeSpan duration, TimeSpan stepDuration) : base(duration)
         {
             Target = target;
             Property = property;
@@ -21,36 +17,31 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         /// <summary>
-        ///     the object who's property is to be transformed
+        /// the object who's property is to be transformed
         /// </summary>
         public object Target { get; }
 
         /// <summary>
-        ///     The property to be updated
+        /// The property to be updated
         /// </summary>
         public string Property { get; }
 
         /// <summary>
-        ///     The time between each property update
+        /// The time between each property update
         /// </summary>
         protected TimeSpan StepDuration { get; }
 
-        public override int GetHashCode()
-        {
-            return (Target, Property).GetHashCode();
-        }
+        public override int GetHashCode() => (Target, Property).GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            return obj is PropertyTransformation other && StepTimer.Equals(other.StepTimer);
-        }
+        public override bool Equals(object obj) => (obj is PropertyTransformation other) &&
+            StepTimer.Equals(other.StepTimer);
 
         protected async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
-                (int) (StepDuration.TotalMilliseconds * currentStep - StepTimer.ElapsedMilliseconds);
+                (int)((StepDuration.TotalMilliseconds * currentStep) - StepTimer.ElapsedMilliseconds);
             //the Task.Delay function will only accurately sleep for >8ms
-            if (millisecondsAhead > 8)
+            if(millisecondsAhead > 8)
             {
                 await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
             }
@@ -59,18 +50,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public abstract class PropertyTransformation<T> : PropertyTransformation
     {
-        private readonly Func<T> _endValue;
-        private readonly Func<T> _startValue;
-        private readonly Action<T> _valueUpdater;
+        readonly Func<T> _endValue;
+        readonly Func<T> _startValue;
+        readonly Action<T> _valueUpdater;
 
-        protected PropertyTransformation(
-            object target,
-            string property,
-            Func<T> startValue,
-            Func<T> endValue,
-            Action<T> valueUpdater,
-            TimeSpan duration,
-            TimeSpan stepDuration) : base(target, property, duration, stepDuration)
+        protected PropertyTransformation(object target,
+                                         string property,
+                                         Func<T> startValue,
+                                         Func<T> endValue,
+                                         Action<T> valueUpdater,
+                                         TimeSpan duration,
+                                         TimeSpan stepDuration) : base(target, property, duration, stepDuration)
         {
             _startValue = startValue;
             _endValue = endValue;
@@ -78,21 +68,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         /// <summary>
-        ///     When invoked returns the destination value of the transformation
+        /// When invoked returns the destination value of the transformation
         /// </summary>
-        protected T GetStartValue()
-        {
-            return _startValue.Invoke();
-        }
+        protected T GetStartValue() => _startValue.Invoke();
 
-        protected T GetEndValue()
-        {
-            return _endValue.Invoke();
-        }
+        protected T GetEndValue() => _endValue.Invoke();
 
-        protected void SetValue(T value)
-        {
-            _valueUpdater.Invoke(value);
-        }
+        protected void SetValue(T value) => _valueUpdater.Invoke(value);
     }
 }

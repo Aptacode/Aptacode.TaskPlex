@@ -12,7 +12,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     [TestFixture]
     public class IntInterpolationTests
     {
-        [TestCaseSource(typeof(TaskPlexTestData), "GetLinearEaserData")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetLinearEaserData")]
         public void IntInterpolator_OutputMatchesExpectedValues(int startValue, int endValue,
             List<int> expectedChangeLog, Easer easer)
         {

@@ -27,8 +27,8 @@ namespace Aptacode.TaskPlex.Tests
 
         [Test]
         [MaxTime(300)]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetParallelTasks")]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetParallelTasks")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetCollidingTasks")]
         public void TasksFinished(IEnumerable<BaseTask> tasks)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -58,8 +58,8 @@ namespace Aptacode.TaskPlex.Tests
 
         [Test]
         [MaxTime(1000)]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetParallelTasks")]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetCollidingTasks")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetParallelTasks")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetCollidingTasks")]
         public void TasksStarted(IEnumerable<BaseTask> tasks)
         {
             var tcs = new TaskCompletionSource<bool>();

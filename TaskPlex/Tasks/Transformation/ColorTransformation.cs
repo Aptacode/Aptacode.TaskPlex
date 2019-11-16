@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
+using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
     public class ColorTransformation : PropertyTransformation<Color>
     {
         /// <summary>
-        ///     Transform a Color property on the target object to the value returned by the given Func at intervals specified by
-        ///     the step duration up to the task duration
+        /// Transform a Color property on the target object to the value returned by the given Func at intervals
+        /// specified by     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -19,21 +19,22 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public ColorTransformation(
-            object target,
-            string property,
-            Func<Color> startValue,
-            Func<Color> endValue,
-            Action<Color> valueUpdater,
-            TimeSpan taskDuration,
-            TimeSpan stepDuration) : base(target, property, startValue, endValue, valueUpdater, taskDuration,
-            stepDuration)
-        {
-            Easer = new LinearEaser();
-        }
+        public ColorTransformation(object target,
+                                   string property,
+                                   Func<Color> startValue,
+                                   Func<Color> endValue,
+                                   Action<Color> valueUpdater,
+                                   TimeSpan taskDuration,
+                                   TimeSpan stepDuration) : base(target,
+                                                                 property,
+                                                                 startValue,
+                                                                 endValue,
+                                                                 valueUpdater,
+                                                                 taskDuration,
+                                                                 stepDuration) => Easer = new LinearEaser();
 
         /// <summary>
-        ///     Returns the easing function for this transformation
+        /// Returns the easing function for this transformation
         /// </summary>
         public Easer Easer { get; set; }
 
@@ -54,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             StepTimer.Restart();
 
-            for (var i = 0; i < aValues.Count; i++)
+            for(var i = 0; i < aValues.Count; i++)
             {
                 await WaitUntilResumed();
 

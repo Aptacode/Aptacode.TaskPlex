@@ -6,12 +6,10 @@ namespace Aptacode.TaskPlex.Tasks
     public class WaitTask : BaseTask
     {
         /// <summary>
-        ///     Wait for a specified amount of time
+        /// Wait for a specified amount of time
         /// </summary>
         /// <param name="duration"></param>
-        public WaitTask(TimeSpan duration) : base(duration)
-        {
-        }
+        public WaitTask(TimeSpan duration) : base(duration) { }
 
         protected override async Task InternalTask()
         {

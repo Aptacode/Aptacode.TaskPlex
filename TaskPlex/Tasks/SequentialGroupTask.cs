@@ -7,18 +7,15 @@ namespace Aptacode.TaskPlex.Tasks
     public class SequentialGroupTask : GroupTask
     {
         /// <summary>
-        ///     Execute the specified tasks sequentially in the order they occur in the input list
+        /// Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
         /// <param name="tasks"></param>
-        public SequentialGroupTask(List<BaseTask> tasks) : base(tasks)
-        {
-            Duration = GetTotalDuration(Tasks);
-        }
+        public SequentialGroupTask(List<BaseTask> tasks) : base(tasks) => Duration = GetTotalDuration(Tasks);
 
-        protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
+        protected override sealed TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
             var totalDuration = TimeSpan.Zero;
-            foreach (var task in tasks)
+            foreach(var task in tasks)
             {
                 totalDuration = totalDuration.Add(task.Duration);
             }
@@ -28,7 +25,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            foreach (var task in Tasks)
+            foreach(var task in Tasks)
             {
                 await task.StartAsync(CancellationToken).ConfigureAwait(false);
             }

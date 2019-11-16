@@ -2,11 +2,11 @@
 using System.Drawing;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
-using Aptacode.TaskPlex.Tests.Utilites;
+using Aptacode.TaskPlex.Tests.Utilities;
 
 namespace Aptacode.TaskPlex.Tests.Data
 {
-    public static class TaskPlexTestData
+    public static class TestCaseData
     {
         public static object[] GetNormalTaskExamples()
         {
@@ -36,14 +36,11 @@ namespace Aptacode.TaskPlex.Tests.Data
             };
         }
 
-        public static object[] GetParallelTasks()
-        {
-            return new object[]
+        public static object[] GetParallelTasks() => new object[]
             {
                 new object[] {new List<BaseTask> {TaskPlexFactory.GetWaitTask(1)}},
                 new object[] {new List<BaseTask> {TaskPlexFactory.GetWaitTask(1), TaskPlexFactory.GetWaitTask(1)}}
             };
-        }
 
         public static object[] GetCollidingTasks()
         {
@@ -132,9 +129,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             };
         }
 
-        public static object[] GetColorInterpolationData()
-        {
-            return new object[]
+        public static object[] GetColorInterpolationData() => new object[]
             {
                 new object[]
                 {
@@ -157,42 +152,30 @@ namespace Aptacode.TaskPlex.Tests.Data
                     }
                 }
             };
-        }
 
-        public static object[] GetDoubleInterpolationData()
-        {
-            return new object[]
+        public static object[] GetDoubleInterpolationData() => new object[]
             {
                 new object[] {0, 1, new List<double> {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}},
                 new object[] {0, -1, new List<double> {-0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1.0}},
                 new object[] {1, 1, new List<double> {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}
             };
-        }
 
-        public static object[] GetIntInterpolationData()
-        {
-            return new object[]
+        public static object[] GetIntInterpolationData() => new object[]
             {
                 new object[] {0, 100, new List<int> {10, 20, 30, 40, 50, 60, 70, 80, 90, 100}},
                 new object[] {0, -100, new List<int> {-10, -20, -30, -40, -50, -60, -70, -80, -90, -100}},
                 new object[] {1, 1, new List<int> {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}
             };
-        }
 
-        public static object[] GetLinearEaserData()
-        {
-            return new object[]
+        public static object[] GetLinearEaserData() => new object[]
             {
                 new object[] {0, 100, new List<int> {10, 20, 30, 40, 50, 60, 70, 80, 90, 100}, new LinearEaser()},
                 new object[]
                     {0, -100, new List<int> {-10, -20, -30, -40, -50, -60, -70, -80, -90, -100}, new LinearEaser()},
                 new object[] {1, 1, new List<int> {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, new LinearEaser()}
             };
-        }
 
-        public static object[] GetEaserData()
-        {
-            return new object[]
+        public static object[] GetEaserData() => new object[]
             {
                 new object[]
                     {new CubicInEaser(), new List<double> {0, 0.01, 0.04, 0.09, 0.16, 0.25, 0.36, 0.49, 0.64, 0.81, 1}},
@@ -202,11 +185,8 @@ namespace Aptacode.TaskPlex.Tests.Data
                     new List<double> {0, 0.31622, 0.44721, 0.54772, 0.6324, 0.7071, 0.77454, 0.8366, 0.8944, 0.9486, 1}
                 }
             };
-        }
 
-        public static object[] GetExpectedEaserData()
-        {
-            return new object[]
+        public static object[] GetExpectedEaserData() => new object[]
             {
                 new object[] {0, 1, new List<double> {0, 0, 0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0}, new CubicInEaser()},
                 new object[]
@@ -229,6 +209,5 @@ namespace Aptacode.TaskPlex.Tests.Data
                 },
                 new object[] {1, 1, new List<double> {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, new LinearEaser()}
             };
-        }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 using Aptacode.TaskPlex.Tests.Data;
-using Aptacode.TaskPlex.Tests.Utilites;
+using Aptacode.TaskPlex.Tests.Utilities;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
@@ -13,7 +13,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
     [TestFixture]
     public class DoubleEasingTests
     {
-        [TestCaseSource(typeof(TaskPlexTestData), "GetExpectedEaserData")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetExpectedEaserData")]
         public void DoubleInterpolator_OutputValuesMatchSequence(double startValue, double endValue,
             List<double> expectedChangeLog, Easer easer)
         {

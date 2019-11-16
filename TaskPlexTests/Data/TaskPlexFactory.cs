@@ -49,7 +49,7 @@ namespace Aptacode.TaskPlex.Tests.Data
             double endValue, int totalTime, int stepTime)
         {
             var property = testObject.GetType().GetProperty(testProperty);
-            var transformation = new DoubleTransformation(
+            return new DoubleTransformation(
                 testObject,
                 testProperty,
                 () => (double)property?.GetValue(testObject),
@@ -57,8 +57,6 @@ namespace Aptacode.TaskPlex.Tests.Data
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
                 TimeSpan.FromMilliseconds(stepTime));
-
-            return transformation;
         }
 
         public static StringTransformation GetStringTransformation(object testObject, string testProperty,
@@ -97,56 +95,32 @@ namespace Aptacode.TaskPlex.Tests.Data
             return transformation;
         }
 
-        public static SequentialGroupTask GetSequentialGroup()
-        {
-            return GetSequentialGroup(
+        public static SequentialGroupTask GetSequentialGroup() => GetSequentialGroup(
                 new List<BaseTask>
                 {
                     GetWaitTask(),
                     GetWaitTask()
                 });
-        }
 
-        public static SequentialGroupTask GetSequentialGroup(List<BaseTask> tasks)
-        {
-            return new SequentialGroupTask(tasks);
-        }
+        public static SequentialGroupTask GetSequentialGroup(List<BaseTask> tasks) => new SequentialGroupTask(tasks);
 
-        public static ParallelGroupTask GetParallelGroup()
-        {
-            return GetParallelGroup(
+        public static ParallelGroupTask GetParallelGroup() => GetParallelGroup(
                 new List<BaseTask>
                 {
                     GetWaitTask(),
                     GetWaitTask()
                 });
-        }
 
-        public static ParallelGroupTask GetParallelGroup(List<BaseTask> tasks)
-        {
-            return new ParallelGroupTask(tasks);
-        }
+        public static ParallelGroupTask GetParallelGroup(List<BaseTask> tasks) => new ParallelGroupTask(tasks);
 
-        public static BaseTask GetWaitTask(int duration)
-        {
-            return new WaitTask(TimeSpan.FromMilliseconds(duration));
-        }
+        public static BaseTask GetWaitTask(int duration) => new WaitTask(TimeSpan.FromMilliseconds(duration));
 
-        public static BaseTask GetWaitTask()
-        {
-            return new WaitTask(TimeSpan.FromMilliseconds(0));
-        }
+        public static BaseTask GetWaitTask() => new WaitTask(TimeSpan.FromMilliseconds(0));
 
-        public static object GetIntInterpolator(int startValue, int endValue, int total, int interval)
-        {
-            return new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
+        public static object GetIntInterpolator(int startValue, int endValue, int total, int interval) => new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
                 TimeSpan.FromMilliseconds(interval));
-        }
 
-        public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval)
-        {
-            return new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
+        public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval) => new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
                 TimeSpan.FromMilliseconds(interval));
-        }
     }
 }

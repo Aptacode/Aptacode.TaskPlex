@@ -1,20 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
+using System;
+using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
     public class IntTransformation : PropertyTransformation<int>
     {
         /// <summary>
-        ///     Returns the easing function for this transformation
+        /// Returns the easing function for this transformation
         /// </summary>
-        private readonly Easer _easer;
+        readonly Easer _easer;
 
         /// <summary>
-        ///     Transform an int property on the target object to the value returned by the given Func at intervals specified by
-        ///     the step duration up to the task duration
+        /// Transform an int property on the target object to the value returned by the given Func at intervals
+        /// specified by     the step duration up to the task duration
         /// </summary>
         /// <param name="target"></param>
         /// <param name="property"></param>
@@ -23,31 +23,36 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public IntTransformation(
-            object target,
-            string property,
-            Func<int> startValue,
-            Func<int> endValue,
-            Action<int> valueUpdater,
-            TimeSpan taskDuration,
-            TimeSpan stepDuration) : this(target, property, startValue, endValue, valueUpdater, taskDuration,
-            stepDuration,
-            new LinearEaser())
-        {
-        }
+        public IntTransformation(object target,
+                                 string property,
+                                 Func<int> startValue,
+                                 Func<int> endValue,
+                                 Action<int> valueUpdater,
+                                 TimeSpan taskDuration,
+                                 TimeSpan stepDuration) : this(target,
+                                                               property,
+                                                               startValue,
+                                                               endValue,
+                                                               valueUpdater,
+                                                               taskDuration,
+                                                               stepDuration,
+                                                               new LinearEaser())
+        { }
 
-        public IntTransformation(
-            object target,
-            string property,
-            Func<int> startValue,
-            Func<int> endValue,
-            Action<int> valueUpdater,
-            TimeSpan taskDuration,
-            TimeSpan stepDuration,
-            Easer easer) : base(target, property, startValue, endValue, valueUpdater, taskDuration, stepDuration)
-        {
-            _easer = easer;
-        }
+        public IntTransformation(object target,
+                                 string property,
+                                 Func<int> startValue,
+                                 Func<int> endValue,
+                                 Action<int> valueUpdater,
+                                 TimeSpan taskDuration,
+                                 TimeSpan stepDuration,
+                                 Easer easer) : base(target,
+                                                     property,
+                                                     startValue,
+                                                     endValue,
+                                                     valueUpdater,
+                                                     taskDuration,
+                                                     stepDuration) => _easer = easer;
 
         protected override async Task InternalTask()
         {
@@ -58,7 +63,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             var values = interpolator.GetValues();
             StepTimer.Restart();
 
-            for (var i = 0; i < values.Count; i++)
+            for(var i = 0; i < values.Count; i++)
             {
                 await WaitUntilResumed();
                 SetValue(values[i]);

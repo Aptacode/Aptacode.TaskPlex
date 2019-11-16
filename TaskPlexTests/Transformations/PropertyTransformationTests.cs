@@ -8,9 +8,9 @@ namespace Aptacode.TaskPlex.Tests.Transformations
     public class PropertyTransformationTests
     {
         [Test]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetNonZeroTransformationAndInterval")]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetInstantTransformations")]
-        [TestCaseSource(typeof(TaskPlexTestData), "GetZeroIntervalTransformations")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetNonZeroTransformationAndInterval")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetInstantTransformations")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetZeroIntervalTransformations")]
         public void TargetsPropertyMatchesExpectedValue(PropertyTransformation task, object expectedEndValue)
         {
             task.StartAsync(new CancellationTokenSource()).Wait();

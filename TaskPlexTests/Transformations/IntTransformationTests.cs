@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Aptacode.TaskPlex.Tests.Data;
-using Aptacode.TaskPlex.Tests.Utilites;
+using Aptacode.TaskPlex.Tests.Utilities;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Transformations
@@ -13,14 +13,11 @@ namespace Aptacode.TaskPlex.Tests.Transformations
         private TestRectangle _testRectangle;
 
         [SetUp]
-        public void Setup()
-        {
-            _testRectangle = new TestRectangle();
-        }
+        public void Setup() => _testRectangle = new TestRectangle();
 
 
 
-        [TestCaseSource(typeof(TaskPlexTestData), "GetIntInterpolationData")]
+        [TestCaseSource(typeof(Data.TestCaseData), "GetIntInterpolationData")]
         public void IntInterpolation_OutputMatchesExpectedValues(int startValue, int endValue,
             List<int> expectedChangeLog)
         {

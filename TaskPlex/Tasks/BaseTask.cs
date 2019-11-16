@@ -4,14 +4,6 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public enum TaskState
-    {
-        Ready,
-        Running,
-        Paused,
-        Stopped
-    }
-
     public abstract class BaseTask
     {
         protected BaseTask(TimeSpan duration)
@@ -22,31 +14,31 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         public TimeSpan Duration { get; protected set; }
+
         protected CancellationTokenSource CancellationToken { get; private set; }
 
         public TaskState State { get; private set; }
 
         public event EventHandler<EventArgs> OnStarted;
+
         public event EventHandler<EventArgs> OnFinished;
+
         public event EventHandler<EventArgs> OnCancelled;
 
         /// <summary>
-        ///     Start the task
+        /// Start the task
         /// </summary>
         /// <returns></returns>
-        public Task StartAsync()
-        {
-            return StartAsync(CancellationToken);
-        }
+        public Task StartAsync() => StartAsync(CancellationToken);
 
         /// <summary>
-        ///     Start the task with the given CancellationToken
+        /// Start the task with the given CancellationToken
         /// </summary>
         /// <returns></returns>
         public Task StartAsync(CancellationTokenSource cancellationToken)
         {
             CancellationToken = cancellationToken;
-            if (!CancellationToken.IsCancellationRequested)
+            if(!CancellationToken.IsCancellationRequested)
             {
                 return InternalTask();
             }
@@ -55,7 +47,7 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         /// <summary>
-        ///     Interrupt the task
+        /// Interrupt the task
         /// </summary>
         public void Cancel()
         {
@@ -72,11 +64,10 @@ namespace Aptacode.TaskPlex.Tasks
         internal void RaiseOnFinished(EventArgs args)
         {
             State = TaskState.Stopped;
-            if (CancellationToken.IsCancellationRequested)
+            if(CancellationToken.IsCancellationRequested)
             {
                 RaiseOnCancelled();
-            }
-            else
+            } else
             {
                 OnFinished?.Invoke(this, args);
             }
@@ -90,21 +81,15 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected abstract Task InternalTask();
 
-        public void Pause()
-        {
-            State = TaskState.Paused;
-        }
+        public void Pause() => State = TaskState.Paused;
 
-        public void Resume()
-        {
-            State = TaskState.Running;
-        }
+        public void Resume() => State = TaskState.Running;
 
         protected async Task WaitUntilResumed()
         {
-            while (State == TaskState.Paused)
+            while(State == TaskState.Paused)
             {
-                await Task.Delay(10).ConfigureAwait(false);
+                await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }
         }
     }
