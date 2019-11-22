@@ -46,9 +46,10 @@ Each task has an started and finished event.
 //The function will be evaluated when the transformation is ran by the TaskCoordinator.
 //The transformation will occur over 100ms and will update the property every 10ms.
 
-  PropertyTransformation transformation = new DoubleTransformation(
+  var transformation = new DoubleTransformation(
       myObject,
       "Width",
+      () => myObject.Width,
       () =>
       {
           if(Orientation == Orientation.Horizontal)
@@ -56,6 +57,10 @@ Each task has an started and finished event.
           else
             return 50;
       },
+      (int value) => 
+      {
+        myobject.Width = value;
+      }
       TimeSpan.FromMilliseconds(100),
       TimeSpan.FromMilliseconds(10));
 
