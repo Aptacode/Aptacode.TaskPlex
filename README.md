@@ -1,4 +1,4 @@
-# TaskPlex
+# Aptacode.TaskPlex
 A simple library for changing / interpolating .Net properties over time
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d25f0cea83384aacada81fa9790679c8)](https://www.codacy.com/manual/Timmoth/AptacodeTaskPlex?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Timmoth/AptacodeTaskPlex&amp;utm_campaign=Badge_Grade)
