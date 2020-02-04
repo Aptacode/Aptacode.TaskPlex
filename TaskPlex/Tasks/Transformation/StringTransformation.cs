@@ -20,13 +20,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                                     Func<string> endValue,
                                     Action<string> valueUpdater,
                                     TimeSpan taskDuration,
-                                    TimeSpan stepDuration) : base(target,
+                                    RefreshRate refreshRate) : base(target,
                                                                   property,
                                                                   startValue,
                                                                   endValue,
                                                                   valueUpdater,
                                                                   taskDuration,
-                                                                  stepDuration)
+                                                                  refreshRate)
         { }
 
         protected override async Task InternalTask()

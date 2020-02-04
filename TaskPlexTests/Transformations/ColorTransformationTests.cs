@@ -22,7 +22,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations
 
 
             var transformation = new ColorTransformation(testRectangle, "BackgroundColor", () => startValue, () => endValue,
-                color => { actualChangeLog.Add(color); }, TimeSpan.FromMilliseconds(3), TimeSpan.FromMilliseconds(1));
+                color => { actualChangeLog.Add(color); }, TimeSpan.FromMilliseconds(3), RefreshRate.Highest);
 
 
             transformation.StartAsync(new CancellationTokenSource()).Wait();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
 using Aptacode.TaskPlex.Tests.Data;
@@ -18,7 +19,7 @@ namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
             List<double> expectedChangeLog, Easer easer)
         {
             var transformation = new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(10),
-                TimeSpan.FromMilliseconds(1), easer);
+                RefreshRate.Highest, easer);
 
             var actualChangeLog = new List<double>();
             transformation.OnValueChanged += (s, e) => { actualChangeLog.Add(e.Value); };

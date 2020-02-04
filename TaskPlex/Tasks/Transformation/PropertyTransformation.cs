@@ -4,15 +4,20 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
+    public enum RefreshRate
+    {
+        Low = 32, Normal = 16, High = 8, Highest = 1
+    }
+
     public abstract class PropertyTransformation : BaseTask
     {
         protected readonly Stopwatch StepTimer;
 
-        protected PropertyTransformation(object target, string property, TimeSpan duration, TimeSpan stepDuration) : base(duration)
+        protected PropertyTransformation(object target, string property, TimeSpan duration, RefreshRate refreshRate) : base(duration)
         {
             Target = target;
             Property = property;
-            StepDuration = stepDuration;
+            RefreshRate = refreshRate;
             StepTimer = new Stopwatch();
         }
 
@@ -29,7 +34,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <summary>
         /// The time between each property update
         /// </summary>
-        protected TimeSpan StepDuration { get; }
+        protected RefreshRate RefreshRate { get; }
 
         public override int GetHashCode() => (Target, Property).GetHashCode();
 
@@ -38,8 +43,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected async Task DelayAsync(int currentStep)
         {
-            var millisecondsAhead =
-                (int)((StepDuration.TotalMilliseconds * currentStep) - StepTimer.ElapsedMilliseconds);
+            int millisecondsAhead =
+                ((int)RefreshRate * currentStep) - (int)StepTimer.ElapsedMilliseconds;
             //the Task.Delay function will only accurately sleep for >8ms
             if(millisecondsAhead > 8)
             {
@@ -60,7 +65,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                                          Func<T> endValue,
                                          Action<T> valueUpdater,
                                          TimeSpan duration,
-                                         TimeSpan stepDuration) : base(target, property, duration, stepDuration)
+                                         RefreshRate refreshRate) : base(target, property, duration, refreshRate)
         {
             _startValue = startValue;
             _endValue = endValue;

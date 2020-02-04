@@ -22,13 +22,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                                     Func<double> endValue,
                                     Action<double> valueUpdater,
                                     TimeSpan taskDuration,
-                                    TimeSpan stepDuration) : this(target,
+                                    RefreshRate refreshRate) : this(target,
                                                                   property,
                                                                   startValue,
                                                                   endValue,
                                                                   valueUpdater,
                                                                   taskDuration,
-                                                                  stepDuration,
+                                                                  refreshRate,
                                                                   new LinearEaser())
         { }
 
@@ -38,21 +38,21 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                                     Func<double> endValue,
                                     Action<double> valueUpdater,
                                     TimeSpan taskDuration,
-                                    TimeSpan stepDuration,
+                                    RefreshRate refreshRate,
                                     Easer easer) : base(target,
                                                         property,
                                                         startValue,
                                                         endValue,
                                                         valueUpdater,
                                                         taskDuration,
-                                                        stepDuration) => _easer = easer;
+                                                        refreshRate) => _easer = easer;
 
         protected override async Task InternalTask()
         {
             var startValue = GetStartValue();
             var endValue = GetEndValue();
 
-            var interpolator = new DoubleInterpolator(startValue, endValue, Duration, StepDuration, _easer);
+            var interpolator = new DoubleInterpolator(startValue, endValue, Duration, RefreshRate, _easer);
             var values = interpolator.GetValues();
             StepTimer.Restart();
 

@@ -12,28 +12,28 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         readonly Easer _easer;
         readonly Stopwatch _stepTimer;
 
-        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration) : this(startValue,
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, RefreshRate refreshRate) : this(startValue,
                                                                                                               endValue,
                                                                                                               duration,
-                                                                                                              intervalDuration,
+                                                                                                              refreshRate,
                                                                                                               new LinearEaser())
         { }
 
-        protected Interpolator(T startValue, T endValue, TimeSpan duration, TimeSpan intervalDuration, Easer easer) : base(duration)
+        protected Interpolator(T startValue, T endValue, TimeSpan duration, RefreshRate refreshRate, Easer easer) : base(duration)
         {
             _stepTimer = new Stopwatch();
             _easer = easer;
 
             CurrentValue = StartValue = startValue;
             EndValue = endValue;
-            IntervalDuration = intervalDuration;
+            RefreshRate = refreshRate;
         }
 
         /// <summary>
         /// Returns the Easing function
         /// </summary>
 
-        public TimeSpan IntervalDuration { get; set; }
+        public RefreshRate RefreshRate { get; set; }
 
         T StartValue { get; }
 
@@ -101,8 +101,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         int GetStepCount()
         {
             var taskDurationMilliSeconds = (int)Duration.TotalMilliseconds;
-            var stepDurationMilliSeconds =
-                (IntervalDuration.TotalMilliseconds >= 1) ? ((int)IntervalDuration.TotalMilliseconds) : 1;
+            var stepDurationMilliSeconds = (int)RefreshRate;
             return (int)Math.Floor(((double)taskDurationMilliSeconds) / stepDurationMilliSeconds);
         }
 
@@ -131,7 +130,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
-                (int)((IntervalDuration.TotalMilliseconds * currentStep) - _stepTimer.ElapsedMilliseconds);
+                (int)(((int)RefreshRate * currentStep) - _stepTimer.ElapsedMilliseconds);
             //the Task.Delay function will only accuratly sleep for >8ms
             if(millisecondsAhead > 8)
             {

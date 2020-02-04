@@ -25,13 +25,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                                    Func<Color> endValue,
                                    Action<Color> valueUpdater,
                                    TimeSpan taskDuration,
-                                   TimeSpan stepDuration) : base(target,
+                                   RefreshRate refreshRate) : base(target,
                                                                  property,
                                                                  startValue,
                                                                  endValue,
                                                                  valueUpdater,
                                                                  taskDuration,
-                                                                 stepDuration) => Easer = new LinearEaser();
+                                                                 refreshRate) => Easer = new LinearEaser();
 
         /// <summary>
         /// Returns the easing function for this transformation
@@ -43,10 +43,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             var startValue = GetStartValue();
             var endValue = GetEndValue();
 
-            var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, StepDuration, Easer);
-            var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, StepDuration, Easer);
-            var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, StepDuration, Easer);
-            var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, StepDuration, Easer);
+            var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, RefreshRate, Easer);
+            var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, RefreshRate, Easer);
+            var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, RefreshRate, Easer);
+            var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, RefreshRate, Easer);
 
             var aValues = aComponentInterpolator.GetValues();
             var rValues = rComponentInterpolator.GetValues();

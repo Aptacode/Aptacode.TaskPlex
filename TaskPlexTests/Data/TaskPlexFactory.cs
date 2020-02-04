@@ -31,7 +31,7 @@ namespace Aptacode.TaskPlex.Tests.Data
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
-                TimeSpan.FromMilliseconds(stepTime));
+                RefreshRate.Highest);
 
             return transformation;
         }
@@ -56,7 +56,7 @@ namespace Aptacode.TaskPlex.Tests.Data
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
-                TimeSpan.FromMilliseconds(stepTime));
+                RefreshRate.Highest);
         }
 
         public static StringTransformation GetStringTransformation(object testObject, string testProperty,
@@ -72,7 +72,7 @@ namespace Aptacode.TaskPlex.Tests.Data
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
-                TimeSpan.FromMilliseconds(stepTime));
+                RefreshRate.Highest);
 
             return transformation;
         }
@@ -90,7 +90,7 @@ namespace Aptacode.TaskPlex.Tests.Data
                 () => endValue,
                 value => property?.SetValue(testObject, value),
                 TimeSpan.FromMilliseconds(totalTime),
-                TimeSpan.FromMilliseconds(stepTime));
+                RefreshRate.Highest);
 
             return transformation;
         }
@@ -118,9 +118,9 @@ namespace Aptacode.TaskPlex.Tests.Data
         public static BaseTask GetWaitTask() => new WaitTask(TimeSpan.FromMilliseconds(0));
 
         public static object GetIntInterpolator(int startValue, int endValue, int total, int interval) => new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
-                TimeSpan.FromMilliseconds(interval));
+                RefreshRate.Highest);
 
         public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval) => new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
-                TimeSpan.FromMilliseconds(interval));
+                RefreshRate.Highest);
     }
 }

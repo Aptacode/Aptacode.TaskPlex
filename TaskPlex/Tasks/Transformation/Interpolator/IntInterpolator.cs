@@ -13,17 +13,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         /// <param name="endValue"></param>
         /// <param name="duration"></param>
         /// <param name="interval"></param>
-        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval) : this(startValue,
+        public IntInterpolator(int startValue, int endValue, TimeSpan duration, RefreshRate refreshRate) : this(startValue,
                                                                                                           endValue,
                                                                                                           duration,
-                                                                                                          interval,
+                                                                                                          refreshRate,
                                                                                                           new LinearEaser())
         { }
 
-        public IntInterpolator(int startValue, int endValue, TimeSpan duration, TimeSpan interval, Easer easer) : base(startValue,
+        public IntInterpolator(int startValue, int endValue, TimeSpan duration, RefreshRate refreshRate, Easer easer) : base(startValue,
                                                                                                                        endValue,
                                                                                                                        duration,
-                                                                                                                       interval,
+                                                                                                                       refreshRate,
                                                                                                                        easer)
         { }
 
