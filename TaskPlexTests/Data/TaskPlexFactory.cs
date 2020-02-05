@@ -71,8 +71,8 @@ namespace Aptacode.TaskPlex.Tests.Data
                 () => (string)property?.GetValue(testObject),
                 () => endValue,
                 value => property?.SetValue(testObject, value),
-                TimeSpan.FromMilliseconds(totalTime),
-                RefreshRate.Highest);
+                TimeSpan.FromMilliseconds(totalTime)
+                );
 
             return transformation;
         }

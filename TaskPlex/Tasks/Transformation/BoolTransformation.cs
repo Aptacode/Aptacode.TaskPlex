@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class StringTransformation : PropertyTransformation<string>
+    public class BoolTransformation : PropertyTransformation<string>
     {
         /// <summary>
         /// Update a string property on the target to the value returned by the given Func after the task duration
@@ -14,7 +14,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <param name="valueUpdater"></param>
         /// <param name="taskDuration"></param>
         /// <param name="stepDuration"></param>
-        public StringTransformation(object target,
+        public BoolTransformation(object target,
                                     string property,
                                     Func<string> startValue,
                                     Func<string> endValue,
