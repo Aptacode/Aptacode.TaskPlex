@@ -3,30 +3,34 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class StringTransformation : PropertyTransformation<string>
+    public class StringTransformation<TClass> : PropertyTransformation<TClass, string> where TClass : class
     {
         /// <summary>
-        /// Update a string property on the target to the value returned by the given Func after the task duration
+        ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="property"></param>
-        /// <param name="endValue"></param>
-        /// <param name="valueUpdater"></param>
-        /// <param name="taskDuration"></param>
-        /// <param name="stepDuration"></param>
-        public StringTransformation(object target,
-                                    string property,
-                                    Func<string> startValue,
-                                    Func<string> endValue,
-                                    Action<string> valueUpdater,
-                                    TimeSpan taskDuration) : base(target,
-                                                                  property,
-                                                                  startValue,
-                                                                  endValue,
-                                                                  valueUpdater,
-                                                                  taskDuration,
-                                                                  RefreshRate.Low)
-        { }
+        public StringTransformation(TClass target,
+            string property,
+            string endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
+
+        public StringTransformation(TClass target,
+            string property,
+            Func<string> endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
 
         protected override async Task InternalTask()
         {

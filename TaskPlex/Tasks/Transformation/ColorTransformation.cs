@@ -1,46 +1,49 @@
-﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class ColorTransformation : PropertyTransformation<Color>
+    public class ColorTransformation<TClass> : PropertyTransformation<TClass, Color> where TClass : class
     {
         /// <summary>
-        /// Transform a Color property on the target object to the value returned by the given Func at intervals
-        /// specified by     the step duration up to the task duration
+        ///     Transform a Color property on the target object to the value returned by the given Func at intervals
+        ///     specified by     the step duration up to the task duration
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="property"></param>
-        /// <param name="startValue"></param>
-        /// <param name="endValue"></param>
-        /// <param name="valueUpdater"></param>
-        /// <param name="taskDuration"></param>
-        /// <param name="stepDuration"></param>
-        public ColorTransformation(object target,
-                                   string property,
-                                   Func<Color> startValue,
-                                   Func<Color> endValue,
-                                   Action<Color> valueUpdater,
-                                   TimeSpan taskDuration,
-                                   RefreshRate refreshRate) : base(target,
-                                                                 property,
-                                                                 startValue,
-                                                                 endValue,
-                                                                 valueUpdater,
-                                                                 taskDuration,
-                                                                 refreshRate) => Easer = new LinearEaser();
+        public ColorTransformation(TClass target,
+            string property,
+            Color endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
+
+        public ColorTransformation(TClass target,
+            string property,
+            Func<Color> endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
 
         /// <summary>
-        /// Returns the easing function for this transformation
+        ///     Returns the easing function for this transformation
         /// </summary>
-        public Easer Easer { get; set; }
+        public Easer Easer { get; set; } = new LinearEaser();
 
         protected override async Task InternalTask()
         {
-            var startValue = GetStartValue();
+            var startValue = GetValue();
             var endValue = GetEndValue();
             var stepCount = GetStepCount();
 
@@ -52,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             StepTimer.Restart();
 
-            for(var i = 0; i < aValues.Count; i++)
+            for (var i = 0; i < aValues.Count; i++)
             {
                 await WaitUntilResumed();
 

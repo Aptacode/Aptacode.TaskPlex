@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Aptacode.TaskPlex.Tasks
+﻿namespace Aptacode.TaskPlex.Tasks
 {
     public enum TaskState
     {

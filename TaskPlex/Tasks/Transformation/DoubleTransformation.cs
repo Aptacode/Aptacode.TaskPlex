@@ -1,62 +1,53 @@
-﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class DoubleTransformation : PropertyTransformation<double>
+    public class DoubleTransformation<TClass> : PropertyTransformation<TClass, double> where TClass : class
     {
-        readonly Easer _easer;
-
         /// <summary>
-        /// Transform a double property on the target object to the value returned by the given Func<>at intervals
-        /// specified by the step duration up to the task duration</summary> <param name="target"></param> <param
-        /// name="property"></param> <param name="startValue"></param> <param name="endValue"></param> <param
-        /// name="valueUpdater"></param> <param name="taskDuration"></param> <param name="stepDuration"></param>
-      
-        
-        public DoubleTransformation(object target,
-                                    string property,
-                                    Func<double> startValue,
-                                    Func<double> endValue,
-                                    Action<double> valueUpdater,
-                                    TimeSpan taskDuration,
-                                    RefreshRate refreshRate) : this(target,
-                                                                  property,
-                                                                  startValue,
-                                                                  endValue,
-                                                                  valueUpdater,
-                                                                  taskDuration,
-                                                                  refreshRate,
-                                                                  new LinearEaser())
-        { }
+        ///     Transform a double property on the target object to the value returned by the given Func<>at intervals
+        ///     specified by the step duration up to the task duration
+        /// </summary>
+        /// <summary>
+        public DoubleTransformation(TClass target,
+            string property,
+            double endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
 
-        public DoubleTransformation(object target,
-                                    string property,
-                                    Func<double> startValue,
-                                    Func<double> endValue,
-                                    Action<double> valueUpdater,
-                                    TimeSpan taskDuration,
-                                    RefreshRate refreshRate,
-                                    Easer easer) : base(target,
-                                                        property,
-                                                        startValue,
-                                                        endValue,
-                                                        valueUpdater,
-                                                        taskDuration,
-                                                        refreshRate) => _easer = easer;
+        public DoubleTransformation(TClass target,
+            string property,
+            Func<double> endValue,
+            TimeSpan taskDuration,
+            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            property,
+            endValue,
+            taskDuration,
+            refreshRate)
+        {
+        }
+
+        public Easer Easer { get; set; } = new LinearEaser();
 
         protected override async Task InternalTask()
         {
-            var startValue = GetStartValue();
+            var startValue = GetValue();
             var endValue = GetEndValue();
             var stepCount = GetStepCount();
 
-            var values = new DoubleInterpolator().Interpolate(startValue, endValue, stepCount, _easer);
+            var values = new DoubleInterpolator().Interpolate(startValue, endValue, stepCount, Easer);
             StepTimer.Restart();
 
-            for(var i = 0; i < values.Count; i++)
+            for (var i = 0; i < values.Count; i++)
             {
                 await WaitUntilResumed();
                 SetValue(values[i]);

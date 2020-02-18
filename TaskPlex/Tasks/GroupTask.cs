@@ -6,17 +6,20 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected GroupTask(List<BaseTask> tasks) : base(TimeSpan.Zero) => Tasks = tasks;
+        protected GroupTask(List<BaseTask> tasks) : base(TimeSpan.Zero)
+        {
+            Tasks = tasks;
+        }
 
         internal List<BaseTask> Tasks { get; }
 
         /// <summary>
-        /// Add a task to the group
+        ///     Add a task to the group
         /// </summary>
         /// <param name="task"></param>
         public void Add(BaseTask task)
         {
-            if(task == null)
+            if (task == null)
             {
                 return;
             }
@@ -26,12 +29,12 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         /// <summary>
-        /// Remove a task from the group
+        ///     Remove a task from the group
         /// </summary>
         /// <param name="task"></param>
         public void Remove(BaseTask task)
         {
-            if(task == null)
+            if (task == null)
             {
                 return;
             }
@@ -40,7 +43,10 @@ namespace Aptacode.TaskPlex.Tasks
             Duration = GetTotalDuration(Tasks);
         }
 
-        public IEnumerable<int> GetHashCodes() => Tasks.Select(p => p.GetHashCode());
+        public IEnumerable<int> GetHashCodes()
+        {
+            return Tasks.Select(p => p.GetHashCode());
+        }
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
     }

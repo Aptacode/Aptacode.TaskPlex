@@ -1,22 +1,22 @@
-﻿using Aptacode.TaskPlex.Tasks;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : IDisposable
     {
-        readonly ILogger _logger;
-        readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
+        private readonly ILogger _logger;
+        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
-        CancellationTokenSource _cancellationToken;
+        private CancellationTokenSource _cancellationToken;
 
         /// <summary>
-        /// Orchestrate the order of execution of tasks
+        ///     Orchestrate the order of execution of tasks
         /// </summary>
         public TaskCoordinator(ILoggerFactory loggerFactory)
         {
@@ -28,7 +28,7 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Clean up by cancelling all pending & running tasks
+        ///     Clean up by cancelling all pending & running tasks
         /// </summary>
         public void Dispose()
         {
@@ -45,7 +45,7 @@ namespace Aptacode.TaskPlex
 
         public void Pause()
         {
-            foreach(var task in _tasks)
+            foreach (var task in _tasks)
             {
                 task.Key.Pause();
             }
@@ -53,19 +53,19 @@ namespace Aptacode.TaskPlex
 
         public void Resume()
         {
-            foreach(var task in _tasks)
+            foreach (var task in _tasks)
             {
                 task.Key.Resume();
             }
         }
 
         /// <summary>
-        /// Add a task to be executed
+        ///     Add a task to be executed
         /// </summary>
         /// <param name="task"></param>
         public void Apply(BaseTask task)
         {
-            if(task == null)
+            if (task == null)
             {
                 return;
             }
@@ -74,19 +74,19 @@ namespace Aptacode.TaskPlex
             TryRunTask(task);
         }
 
-        void TryRunTask(BaseTask task)
+        private void TryRunTask(BaseTask task)
         {
-            if(CanRunTask(task))
+            if (CanRunTask(task))
             {
                 StartTask(task).ConfigureAwait(false);
             }
         }
 
-        bool CanRunTask(BaseTask task)
+        private bool CanRunTask(BaseTask task)
         {
-            if(_tasks.TryGetValue(task, out var taskQueue))
+            if (_tasks.TryGetValue(task, out var taskQueue))
             {
-                if(taskQueue == null)
+                if (taskQueue == null)
                 {
                     taskQueue = new ConcurrentQueue<BaseTask>();
                     _tasks.TryAdd(task, taskQueue);
@@ -95,13 +95,12 @@ namespace Aptacode.TaskPlex
                 _logger.LogTrace($@"Queued task: {task}");
                 taskQueue.Enqueue(task);
                 return false;
-            } else
-            {
-                return true;
             }
+
+            return true;
         }
 
-        async Task StartTask(BaseTask task)
+        private async Task StartTask(BaseTask task)
         {
             _tasks.TryAdd(task, null);
 
@@ -109,7 +108,7 @@ namespace Aptacode.TaskPlex
             try
             {
                 _logger.LogTrace($@"Task Started: {task}");
-                switch(task)
+                switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
                         await RunParallel(parallelGroupTask).ConfigureAwait(false);
@@ -124,21 +123,26 @@ namespace Aptacode.TaskPlex
 
                 _logger.LogTrace($@"Task Finished: {task}");
                 task.RaiseOnFinished(EventArgs.Empty);
-            } catch(TaskCanceledException)
+            }
+            catch (TaskCanceledException)
             {
                 _logger.LogDebug($@"Task Cancelled: {task}");
                 task.RaiseOnCancelled();
-            } finally
+            }
+            finally
             {
                 RunNextTask(task);
             }
         }
 
-        async Task Run(BaseTask task) => await task.StartAsync(_cancellationToken).ConfigureAwait(false);
-
-        async Task RunParallel(ParallelGroupTask task)
+        private async Task Run(BaseTask task)
         {
-            if(task.Tasks.Count == 0)
+            await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task RunParallel(ParallelGroupTask task)
+        {
+            if (task.Tasks.Count == 0)
             {
                 return;
             }
@@ -148,7 +152,7 @@ namespace Aptacode.TaskPlex
 
             task.OnCancelled += (s, e) =>
             {
-                foreach(var task1 in task.Tasks)
+                foreach (var task1 in task.Tasks)
                 {
                     task1.Cancel();
                 }
@@ -158,24 +162,24 @@ namespace Aptacode.TaskPlex
 
             var runnableTasks = new List<Task>();
 
-            foreach(var childTask in task.Tasks)
+            foreach (var childTask in task.Tasks)
             {
                 childTask.OnFinished += (s, e) =>
                 {
-                    if(++finishedTaskCount >= task.Tasks.Count)
+                    if (++finishedTaskCount >= task.Tasks.Count)
                     {
                         isRunning = false;
                     }
                 };
                 childTask.OnCancelled += (s, e) =>
                 {
-                    if(++finishedTaskCount >= task.Tasks.Count)
+                    if (++finishedTaskCount >= task.Tasks.Count)
                     {
                         isRunning = false;
                     }
                 };
 
-                if(CanRunTask(childTask))
+                if (CanRunTask(childTask))
                 {
                     runnableTasks.Add(StartTask(childTask));
                 }
@@ -184,16 +188,16 @@ namespace Aptacode.TaskPlex
             await Task.WhenAll(runnableTasks).ConfigureAwait(false);
 
 
-            while(isRunning)
+            while (isRunning)
             {
                 await Task.Delay(1).ConfigureAwait(false);
             }
         }
 
 
-        async Task RunSequential(SequentialGroupTask task)
+        private async Task RunSequential(SequentialGroupTask task)
         {
-            if(task.Tasks.Count == 0)
+            if (task.Tasks.Count == 0)
             {
                 return;
             }
@@ -204,7 +208,7 @@ namespace Aptacode.TaskPlex
 
             task.OnCancelled += (s, e) =>
             {
-                foreach(var task1 in task.Tasks)
+                foreach (var task1 in task.Tasks)
                 {
                     task1.Cancel();
                 }
@@ -213,40 +217,35 @@ namespace Aptacode.TaskPlex
             };
 
             //When the last task finishes set running to false
-            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) =>
-            {
-                isRunning = false;
-            };
+            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { isRunning = false; };
 
             Apply(task.Tasks[0]);
 
-            while(isRunning)
+            while (isRunning)
             {
                 await Task.Delay(1).ConfigureAwait(false);
             }
         }
 
-        void ConnectSequentialTasks(List<BaseTask> tasks)
+        private void ConnectSequentialTasks(List<BaseTask> tasks)
         {
-            for(var i = 1; i < tasks.Count; i++)
+            for (var i = 1; i < tasks.Count; i++)
             {
                 var localIndex = i;
-                tasks[localIndex - 1].OnFinished += (s, e) =>
-                {
-                    Apply(tasks[localIndex]);
-                };
+                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
             }
         }
 
-        void RunNextTask(BaseTask completedTask)
+        private void RunNextTask(BaseTask completedTask)
         {
-            if(_tasks.TryGetValue(completedTask, out var taskQueue) && (taskQueue != null))
+            if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue != null)
             {
-                if(taskQueue.TryDequeue(out var nextTask))
+                if (taskQueue.TryDequeue(out var nextTask))
                 {
                     StartTask(nextTask).ConfigureAwait(false);
                 }
-            } else
+            }
+            else
             {
                 _tasks.TryRemove(completedTask, out _);
             }

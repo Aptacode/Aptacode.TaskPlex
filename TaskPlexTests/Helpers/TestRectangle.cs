@@ -1,8 +1,20 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Aptacode.TaskPlex.Tests.OldTests.Utilites
+namespace Aptacode.TaskPlex.Tests.Helpers
 {
+    public class ValueUpdateArgs<T> : EventArgs
+    {
+        public ValueUpdateArgs(T oldValue, T newValue)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+
+        public T OldValue { get; set; }
+        public T NewValue { get; set; }
+    }
+
     public class TestRectangle
     {
         private Color _backgroundColor;
@@ -16,8 +28,8 @@ namespace Aptacode.TaskPlex.Tests.OldTests.Utilites
 
         public TestRectangle()
         {
-            Width = 10;
-            Height = 20;
+            Width = 0;
+            Height = 0;
             Opacity = 0;
             BackgroundColor = Color.White;
         }

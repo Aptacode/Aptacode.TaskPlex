@@ -6,13 +6,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public abstract class Interpolator<T>
     {
-
         public List<T> Interpolate(T startValue, T endValue, int stepCount, Easer easer)
         {
             var values = new List<T>();
 
             if (stepCount == 0)
+            {
                 return values;
+            }
 
             var incrementValue = GetIncrementValue(startValue, endValue, stepCount);
             var incrementIndex = 0;
@@ -41,14 +42,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
         {
             var difference = Subtract(endValue, startValue);
 
-            return (stepCount <= 1) ? difference : Divide(difference, stepCount);
+            return stepCount <= 1 ? difference : Divide(difference, stepCount);
         }
 
-        private static int GetNextIncrementIndex(int stepIndex, int stepCount, Easer easer) => (int)Math.Floor(easer.ProgressAt(stepIndex, stepCount) * stepCount);
+        private static int GetNextIncrementIndex(int stepIndex, int stepCount, Easer easer)
+        {
+            return (int) Math.Floor(easer.ProgressAt(stepIndex, stepCount) * stepCount);
+        }
 
         private T NextValue(T currentValue, int incrementIndex, T incrementValue, int nextIncrementIndex)
         {
-            while(incrementIndex < nextIncrementIndex)
+            while (incrementIndex < nextIncrementIndex)
             {
                 incrementIndex++;
                 currentValue = Add(currentValue, incrementValue);

@@ -3,7 +3,7 @@
     public abstract class Easer
     {
         /// <summary>
-        /// Returns a value between 0 and 1 depending on the current index and total
+        ///     Returns a value between 0 and 1 depending on the current index and total
         /// </summary>
         /// <param name="index"></param>
         /// <param name="total"></param>
@@ -22,7 +22,7 @@
                 return 1;
             }
 
-            return index / ((double)total);
+            return index / (double) total;
         }
     }
 }
