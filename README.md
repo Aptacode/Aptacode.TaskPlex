@@ -46,27 +46,14 @@ Each task has an started and finished event.
 ```csharp
 
 //Create a DoubleTransformation on the 'Width' property of 'myObject'.
-//Transform the Width property from its current value to the result of the specified function.
-//The function will be evaluated when the transformation is ran by the TaskCoordinator.
-//The transformation will occur over 100ms and will update the property every 10ms.
+//Transform the Width property from its current value to the 10.5
+//The transformation will occur over 100ms
 
   var transformation = new DoubleTransformation(
       myObject,
       "Width",
-      () => myObject.Width,
-      () =>
-      {
-          if(Orientation == Orientation.Horizontal)
-            return 100;
-          else
-            return 50;
-      },
-      (int value) => 
-      {
-        myobject.Width = value;
-      }
-      TimeSpan.FromMilliseconds(100),
-      TimeSpan.FromMilliseconds(10));
+      10.5,
+      TimeSpan.FromMilliseconds(100));
 
 //When applied the TaskCoordinator checks if there are currently no running tasks which conflict with the given task
 //If there is a confliction the given task is added to a list of 'Pending tasks' and executed when there are no coflicts
@@ -77,41 +64,10 @@ Each task has an started and finished event.
 
 ## Built in Tasks
 
-### Interpolator  
-
-
--  Incrementally transition from a start value to an end value at the given interval. 
-
-*Note you can set a custom easing function as shown below, the default is 'LinearEaser'
-
-```csharp
-
-//Interpolate between 10.0 -> 50.0 over 10ms updating the value every 1ms.
-DoubleInterpolator exampleDoubleInterpolator = 
-      new DoubleInterpolator(10.0, 50.0, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(1));
-      
-exampleDoubleInterpolator.SetEaser(new CubicInEaser());
-
-
-IntInterpolator exampleIntInterpolator = 
-      new IntInterpolator(10, 0, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(10));   
-      
-  exampleIntInterpolator.SetEaser(new CubicOutEaser());
-
-exampleDoubleInterpolator.OnValueChanged += (s, e) =>
-{
-    UpdatedValue = e.Value;
-};
-
-exampleDoubleInterpolator.StartAsync();
-exampleInterpolator.StartAsync();
-
-```
-
 ### PropertyTransformation
 
 
--  Incrementally transition a property from its initil value to the specified end value at the given interval.
+-  Incrementally transition a property from its initil value to the specified end value.
 
 ```csharp
 
@@ -119,29 +75,26 @@ PropertyTransformation xTransformation = new DoubleTransformation(
                 testObject,
                 "X",
                 100,
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(10));
+                TimeSpan.FromMilliseconds(100));
                                 
 PropertyTransformation widthTransformation = new IntTransformation(
                 testObject,
                 "Width",
                 100,
                 TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(10));
+                RefreshRate.Highest);
                 
 PropertyTransformation backgroundTransformation = new ColorTransformation(
                 testObject,
                 "BackgroundColor",
                 Color.FromARGB(255,100,150,200),
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(10));
+                TimeSpan.FromMilliseconds(100));
                 
 PropertyTransformation titleTransformation = new StringTransformation(
                 testObject,
                 "Title",
                 "Hello, World!",
-                TimeSpan.FromMilliseconds(100),
-                TimeSpan.FromMilliseconds(10));
+                TimeSpan.FromMilliseconds(100));
                 
 ```
 
