@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
-using Aptacode.TaskPlex.Tests.Utilities;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tests.OldTests.Utilites;
 
-namespace Aptacode.TaskPlex.Tests.Data
+namespace Aptacode.TaskPlex.Tests.OldTests.Data
 {
     public static class TestCaseData
     {

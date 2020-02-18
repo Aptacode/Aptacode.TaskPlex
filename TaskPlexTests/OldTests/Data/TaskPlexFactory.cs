@@ -5,7 +5,7 @@ using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 
-namespace Aptacode.TaskPlex.Tests.Data
+namespace Aptacode.TaskPlex.Tests.OldTests.Data
 {
     public static class TaskPlexFactory
     {

@@ -4,12 +4,11 @@ using System.Linq;
 using System.Threading;
 using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
-using Aptacode.TaskPlex.Tests.Data;
-using Aptacode.TaskPlex.Tests.Utilities;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tests.OldTests.Utilites;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests.Transformations.Interpolation
+namespace Aptacode.TaskPlex.Tests.OldTests.Transformations.Interpolation
 {
     [TestFixture]
     public class DoubleEasingTests

@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tests.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests
+namespace Aptacode.TaskPlex.Tests.OldTests
 {
     [TestFixture]
     public class TaskCoordinatorTests

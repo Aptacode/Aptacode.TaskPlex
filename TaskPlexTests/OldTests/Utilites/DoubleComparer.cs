@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Aptacode.TaskPlex.Tests.Utilities
+namespace Aptacode.TaskPlex.Tests.OldTests.Utilites
 {
     public class DoubleComparer : IEqualityComparer<double>
     {

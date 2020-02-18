@@ -1,16 +1,16 @@
-﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easing;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.EventArgs;
+﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public abstract class Interpolator<T> : BaseTask
     {
-        readonly Easer _easer;
-        readonly Stopwatch _stepTimer;
+        private readonly Easer _easer;
+        private readonly Stopwatch _stepTimer;
 
         protected Interpolator(T startValue, T endValue, TimeSpan duration, RefreshRate refreshRate) : this(startValue,
                                                                                                               endValue,
@@ -35,11 +35,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
         public RefreshRate RefreshRate { get; set; }
 
-        T StartValue { get; }
+        private T StartValue { get; }
 
-        T CurrentValue { get; set; }
+        private T CurrentValue { get; set; }
 
-        T EndValue { get; }
+        private T EndValue { get; }
 
         public List<T> GetValues()
         {
@@ -98,25 +98,25 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
                                                         })
             .ConfigureAwait(false);
 
-        int GetStepCount()
+        private int GetStepCount()
         {
             var taskDurationMilliSeconds = (int)Duration.TotalMilliseconds;
             var stepDurationMilliSeconds = (int)RefreshRate;
             return (int)Math.Floor(((double)taskDurationMilliSeconds) / stepDurationMilliSeconds);
         }
 
-        T GetIncrementValue(T startValue, T endValue, int stepCount)
+        private T GetIncrementValue(T startValue, T endValue, int stepCount)
         {
             var difference = Subtract(endValue, startValue);
 
             return (stepCount <= 1) ? difference : Divide(difference, stepCount);
         }
 
-        int GetNextIncrementIndex(int stepIndex, int stepCount) => (int)Math.Floor(_easer.ProgressAt(stepIndex,
+        private int GetNextIncrementIndex(int stepIndex, int stepCount) => (int)Math.Floor(_easer.ProgressAt(stepIndex,
                                                                                                      stepCount) *
             stepCount);
 
-        T NextValue(T currentValue, int incrementIndex, T incrementValue, int nextIncrementIndex)
+        private T NextValue(T currentValue, int incrementIndex, T incrementValue, int nextIncrementIndex)
         {
             while(incrementIndex < nextIncrementIndex)
             {
@@ -127,11 +127,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             return currentValue;
         }
 
-        async Task DelayAsync(int currentStep)
+        private async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
                 (int)(((int)RefreshRate * currentStep) - _stepTimer.ElapsedMilliseconds);
-            //the Task.Delay function will only accuratly sleep for >8ms
+            //the Task.Delay function will only accurately sleep for >8ms
             if(millisecondsAhead > 8)
             {
                 await Task.Delay(millisecondsAhead).ConfigureAwait(false);

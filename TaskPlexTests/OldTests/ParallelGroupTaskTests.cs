@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tests.Data;
+using Aptacode.TaskPlex.Tests.OldTests.Data;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests
+namespace Aptacode.TaskPlex.Tests.OldTests
 {
     public class ParallelGroupTaskTests
     {

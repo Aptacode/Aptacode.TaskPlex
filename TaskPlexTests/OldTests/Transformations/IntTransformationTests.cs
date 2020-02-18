@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Aptacode.TaskPlex.Tests.Data;
-using Aptacode.TaskPlex.Tests.Utilities;
+using Aptacode.TaskPlex.Tests.OldTests.Data;
+using Aptacode.TaskPlex.Tests.OldTests.Utilites;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests.Transformations
+namespace Aptacode.TaskPlex.Tests.OldTests.Transformations
 {
     [TestFixture]
     public class IntTransformationTests

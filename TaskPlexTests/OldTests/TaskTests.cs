@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tests.Data;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests
+namespace Aptacode.TaskPlex.Tests.OldTests
 {
     public class TaskTests
     {

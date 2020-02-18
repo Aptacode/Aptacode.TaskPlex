@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aptacode.TaskPlex.Tests.Utilities
+namespace Aptacode.TaskPlex.Tests.OldTests.Utilites
 {
     public class ValueUpdateArgs<T> : EventArgs
     {
