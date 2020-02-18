@@ -14,7 +14,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = IntTransformation<TestRectangle>.Create(testRectangle, "Width", 100, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
+            var transformation = TransformationFactory.Create(testRectangle, "Width", 100, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
 
             //Assert
             Assert.AreEqual(testRectangle, transformation.Target);
@@ -27,11 +27,11 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = DoubleTransformation<TestRectangle>.Create(testRectangle, "Opacity", 10.5, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
+            var transformation = TransformationFactory.Create(testRectangle, "Opacity", 10.5, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
 
             //Assert
             Assert.AreEqual(testRectangle, transformation.Target);
-            Assert.AreEqual("Width", transformation.Property);
+            Assert.AreEqual("Opacity", transformation.Property);
             Assert.AreEqual(TimeSpan.FromMilliseconds(10), transformation.Duration);
             Assert.AreEqual(TaskState.Ready, transformation.State);
 
