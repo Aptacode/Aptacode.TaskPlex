@@ -117,10 +117,5 @@ namespace Aptacode.TaskPlex.Tests.OldTests.Data
 
         public static BaseTask GetWaitTask() => new WaitTask(TimeSpan.FromMilliseconds(0));
 
-        public static object GetIntInterpolator(int startValue, int endValue, int total, int interval) => new IntInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
-                RefreshRate.Highest);
-
-        public static object GetDoubleInterpolator(double startValue, double endValue, int total, int interval) => new DoubleInterpolator(startValue, endValue, TimeSpan.FromMilliseconds(total),
-                RefreshRate.Highest);
     }
 }

@@ -58,9 +58,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             var startValue = GetStartValue();
             var endValue = GetEndValue();
+            var stepCount = GetStepCount();
 
-            var interpolator = new IntInterpolator(startValue, endValue, Duration, RefreshRate, _easer);
-            var values = interpolator.GetValues();
+
+            var values = new IntInterpolator().Interpolate(startValue, endValue, stepCount, _easer);
             StepTimer.Restart();
 
             for(var i = 0; i < values.Count; i++)

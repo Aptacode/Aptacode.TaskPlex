@@ -42,16 +42,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             var startValue = GetStartValue();
             var endValue = GetEndValue();
+            var stepCount = GetStepCount();
 
-            var aComponentInterpolator = new IntInterpolator(startValue.A, endValue.A, Duration, RefreshRate, Easer);
-            var rComponentInterpolator = new IntInterpolator(startValue.R, endValue.R, Duration, RefreshRate, Easer);
-            var gComponentInterpolator = new IntInterpolator(startValue.G, endValue.G, Duration, RefreshRate, Easer);
-            var bComponentInterpolator = new IntInterpolator(startValue.B, endValue.B, Duration, RefreshRate, Easer);
-
-            var aValues = aComponentInterpolator.GetValues();
-            var rValues = rComponentInterpolator.GetValues();
-            var gValues = gComponentInterpolator.GetValues();
-            var bValues = bComponentInterpolator.GetValues();
+            var intInterpolator = new IntInterpolator();
+            var aValues = intInterpolator.Interpolate(startValue.A, endValue.A, stepCount, Easer);
+            var rValues = intInterpolator.Interpolate(startValue.R, endValue.R, stepCount, Easer);
+            var gValues = intInterpolator.Interpolate(startValue.G, endValue.G, stepCount, Easer);
+            var bValues = intInterpolator.Interpolate(startValue.B, endValue.B, stepCount, Easer);
 
             StepTimer.Restart();
 

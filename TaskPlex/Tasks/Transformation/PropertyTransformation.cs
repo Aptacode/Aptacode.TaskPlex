@@ -51,6 +51,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
             }
         }
+
+        protected int GetStepCount() => (int)Math.Floor(((double)Duration.TotalMilliseconds) / (int)RefreshRate);
     }
 
     public abstract class PropertyTransformation<T> : PropertyTransformation

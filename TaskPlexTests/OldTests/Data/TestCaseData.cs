@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using Aptacode.TaskPlex.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 using Aptacode.TaskPlex.Tests.OldTests.Utilites;
 
@@ -14,8 +15,6 @@ namespace Aptacode.TaskPlex.Tests.OldTests.Data
             return new object[]
             {
                 new object[] {TaskPlexFactory.GetWaitTask(1)},
-                new[] {TaskPlexFactory.GetIntInterpolator(10, 25, 20, 1)},
-                new[] {TaskPlexFactory.GetDoubleInterpolator(10, 25.5, 20, 1)},
                 new object[]
                 {
                     TaskPlexFactory.GetColorTransformation(testRectangle, "BackgroundColor", Color.Aqua, Color.Aqua, 20,
