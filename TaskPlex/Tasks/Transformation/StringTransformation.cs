@@ -3,16 +3,17 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class StringTransformation<TClass> : PropertyTransformation<TClass, string> where TClass : class
+    public sealed class StringTransformation<TClass> : PropertyTransformation<TClass, string> where TClass : class
     {
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
-        public StringTransformation(TClass target,
+
+        private StringTransformation(TClass target,
             string property,
-            string endValue,
+            Func<string> endValue,
             TimeSpan taskDuration,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            RefreshRate refreshRate) : base(target,
             property,
             endValue,
             taskDuration,
@@ -20,16 +21,22 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
         }
 
-        public StringTransformation(TClass target,
-            string property,
-            Func<string> endValue,
-            TimeSpan taskDuration,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
-            property,
-            endValue,
-            taskDuration,
-            refreshRate)
+        public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration,
+            RefreshRate refreshRate) where T : class
         {
+            return StringTransformation<T>.Create(target, property, () => endValue, duration, refreshRate);
+        }
+
+        public static StringTransformation<T> Create<T>(T target, string property, Func<string> endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        {
+            try
+            {
+                return new StringTransformation<T>(target, property, endValue, duration, refreshRate);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         protected override async Task InternalTask()

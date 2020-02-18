@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
 
-            await WaitUntilResumed();
+            await WaitUntilResumed().ConfigureAwait(false);
         }
     }
 }

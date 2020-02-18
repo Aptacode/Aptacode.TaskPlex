@@ -4,93 +4,46 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public enum RefreshRate
-    {
-        Low = 32,
-        Normal = 16,
-        High = 8,
-        Highest = 1
-    }
-
     public abstract class PropertyTransformation : BaseTask
     {
-        protected readonly Stopwatch StepTimer;
-
-        protected PropertyTransformation(TimeSpan duration, RefreshRate refreshRate) : base(duration)
+        protected PropertyTransformation(TimeSpan duration) : base(duration)
         {
-            RefreshRate = refreshRate;
-            StepTimer = new Stopwatch();
-        }
 
-        /// <summary>
-        ///     The time between each property update
-        /// </summary>
-        protected RefreshRate RefreshRate { get; }
+        }
 
         public new abstract int GetHashCode();
-
-        public override bool Equals(object obj)
-        {
-            return obj is PropertyTransformation other &&
-                   StepTimer.Equals(other.StepTimer);
-        }
-
-        protected async Task DelayAsync(int currentStep)
-        {
-            var millisecondsAhead =
-                (int) RefreshRate * currentStep - (int) StepTimer.ElapsedMilliseconds;
-            //the Task.Delay function will only accurately sleep for >8ms
-            if (millisecondsAhead > 8)
-            {
-                await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
-            }
-        }
-
-        protected int GetStepCount()
-        {
-            return (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
-        }
     }
 
     public abstract class PropertyTransformation<TClass, TPropertyType> : PropertyTransformation where TClass : class
     {
+        public TClass Target { get; }
+        public string Property { get; }
+        protected RefreshRate RefreshRate { get; }
+
         private readonly Func<TPropertyType> _endValue;
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
 
-        protected PropertyTransformation(TClass target,
-            string property,
-            TPropertyType endValue,
-            TimeSpan duration,
-            RefreshRate refreshRate) : this(target, property, () => endValue, duration, refreshRate)
-        {
-        }
+        protected readonly Stopwatch Stopwatch = new Stopwatch();
 
         protected PropertyTransformation(TClass target,
             string property,
             Func<TPropertyType> endValue,
             TimeSpan duration,
-            RefreshRate refreshRate) : base(duration, refreshRate)
+            RefreshRate refreshRate) : base(duration)
         {
             Target = target;
             Property = property;
+            var propertyInfo = typeof(TClass).GetProperty(Property);
+
             _setter = (Action<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Action<TClass, TPropertyType>),
-                null, typeof(TClass).GetProperty(Property).GetSetMethod());
-            _getter = (Func<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Func<TClass, TPropertyType>), null,
-                typeof(TClass).GetProperty(Property).GetGetMethod());
+                null, propertyInfo.GetSetMethod());
+            _getter = (Func<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Func<TClass, TPropertyType>),
+                null,
+                propertyInfo.GetGetMethod());
             _endValue = endValue;
+            RefreshRate = refreshRate;
         }
-
-
-        /// <summary>
-        ///     the object who's property is to be transformed
-        /// </summary>
-        public TClass Target { get; }
-
-        /// <summary>
-        ///     The property to be updated
-        /// </summary>
-        public string Property { get; }
 
         public override int GetHashCode()
         {
@@ -110,6 +63,29 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         protected TPropertyType GetEndValue()
         {
             return _endValue.Invoke();
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return obj is PropertyTransformation<TClass,TPropertyType> other &&
+                   Stopwatch.Equals(other.Stopwatch);
+        }
+
+        protected async Task DelayAsync(int currentStep)
+        {
+            var millisecondsAhead =
+                (int)RefreshRate * currentStep - (int)Stopwatch.ElapsedMilliseconds;
+            //the Task.Delay function will only accurately sleep for >8ms
+            if (millisecondsAhead > 8)
+            {
+                await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
+            }
+        }
+
+        protected int GetStepCount()
+        {
+            return (int)Math.Floor(Duration.TotalMilliseconds / (int)RefreshRate);
         }
     }
 }

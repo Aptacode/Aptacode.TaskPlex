@@ -84,20 +84,21 @@ namespace Aptacode.TaskPlex
 
         private bool CanRunTask(BaseTask task)
         {
-            if (_tasks.TryGetValue(task, out var taskQueue))
+            if (!_tasks.TryGetValue(task, out var taskQueue))
             {
-                if (taskQueue == null)
-                {
-                    taskQueue = new ConcurrentQueue<BaseTask>();
-                    _tasks.TryAdd(task, taskQueue);
-                }
-
-                _logger.LogTrace($@"Queued task: {task}");
-                taskQueue.Enqueue(task);
-                return false;
+                return true;
             }
 
-            return true;
+            if (taskQueue == null)
+            {
+                taskQueue = new ConcurrentQueue<BaseTask>();
+                _tasks.TryAdd(task, taskQueue);
+            }
+
+            _logger.LogTrace($"Queued task: {task}");
+            taskQueue.Enqueue(task);
+            return false;
+
         }
 
         private async Task StartTask(BaseTask task)
@@ -107,7 +108,7 @@ namespace Aptacode.TaskPlex
             task.RaiseOnStarted(EventArgs.Empty);
             try
             {
-                _logger.LogTrace($@"Task Started: {task}");
+                _logger.LogTrace($"Task Started: {task}");
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
@@ -121,12 +122,12 @@ namespace Aptacode.TaskPlex
                         break;
                 }
 
-                _logger.LogTrace($@"Task Finished: {task}");
+                _logger.LogTrace($"Task Finished: {task}");
                 task.RaiseOnFinished(EventArgs.Empty);
             }
             catch (TaskCanceledException)
             {
-                _logger.LogDebug($@"Task Cancelled: {task}");
+                _logger.LogDebug($"Task Cancelled: {task}");
                 task.RaiseOnCancelled();
             }
             finally
@@ -217,7 +218,7 @@ namespace Aptacode.TaskPlex
             };
 
             //When the last task finishes set running to false
-            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => { isRunning = false; };
+            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => isRunning = false;
 
             Apply(task.Tasks[0]);
 

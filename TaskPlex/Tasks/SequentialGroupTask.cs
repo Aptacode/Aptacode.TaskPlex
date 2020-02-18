@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
@@ -17,13 +18,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
-            var totalDuration = TimeSpan.Zero;
-            foreach (var task in tasks)
-            {
-                totalDuration = totalDuration.Add(task.Duration);
-            }
-
-            return totalDuration;
+            return tasks.Aggregate(TimeSpan.Zero, (current, task) => current.Add(task.Duration));
         }
 
         protected override async Task InternalTask()

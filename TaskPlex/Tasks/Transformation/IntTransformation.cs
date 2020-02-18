@@ -5,34 +5,36 @@ using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
-    public class IntTransformation<TClass> : PropertyTransformation<TClass, int> where TClass : class
+    public sealed class IntTransformation<TClass> : PropertyTransformation<TClass, int> where TClass : class
     {
         /// <summary>
         ///     Transform an int property on the target object to the value returned by the given Func at intervals
         ///     specified by     the step duration up to the task duration
         /// </summary>
-        public IntTransformation(TClass target,
-            string property,
-            int endValue,
-            TimeSpan taskDuration,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
-            property,
-            endValue,
-            taskDuration,
-            refreshRate)
+
+        public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
+            try
+            {
+                return new IntTransformation<T>(target, property, () => endValue, duration, refreshRate);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public IntTransformation(TClass target,
+        private IntTransformation(TClass target,
             string property,
             Func<int> endValue,
-            TimeSpan taskDuration,
+            TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal) : base(target,
             property,
             endValue,
-            taskDuration,
+            duration,
             refreshRate)
         {
+
         }
 
         /// <summary>
@@ -48,11 +50,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
 
             var values = new IntInterpolator().Interpolate(startValue, endValue, stepCount, Easer);
-            StepTimer.Restart();
+            Stopwatch.Restart();
 
             for (var i = 0; i < values.Count; i++)
             {
-                await WaitUntilResumed();
+                await WaitUntilResumed().ConfigureAwait(false);
                 SetValue(values[i]);
                 await DelayAsync(i).ConfigureAwait(false);
             }
