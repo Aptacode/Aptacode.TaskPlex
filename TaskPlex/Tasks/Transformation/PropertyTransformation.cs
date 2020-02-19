@@ -49,20 +49,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             return (Target, Property).GetHashCode();
         }
 
-        protected TPropertyType GetValue()
-        {
-            return _getter(Target);
-        }
+        protected TPropertyType GetValue() => _getter(Target);
 
-        protected void SetValue(TPropertyType value)
-        {
-            _setter(Target, value);
-        }
+        protected void SetValue(TPropertyType value) => _setter(Target, value);
 
-        protected TPropertyType GetEndValue()
-        {
-            return _endValue.Invoke();
-        }
+        protected TPropertyType GetEndValue() => _endValue.Invoke();
 
 
         public override bool Equals(object obj)
@@ -74,9 +65,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         protected async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
-                (int) RefreshRate * currentStep - (int) Stopwatch.ElapsedMilliseconds;
+                ((int) RefreshRate * currentStep) - (int) Stopwatch.ElapsedMilliseconds;
+
             //the Task.Delay function will only accurately sleep for >8ms
-            if (millisecondsAhead > 8)
+            if (millisecondsAhead > 10)
             {
                 await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
             }
