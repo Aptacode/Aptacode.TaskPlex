@@ -19,7 +19,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             refreshRate)
         {
         }
-        public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+
+        public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             try
             {

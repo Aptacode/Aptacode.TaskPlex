@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
@@ -12,7 +13,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         ///     Transform a Color property on the target object to the value returned by the given Func at intervals
         ///     specified by     the step duration up to the task duration
         /// </summary>
-
         private ColorTransformation(TClass target,
             string property,
             Func<Color> endValue,
@@ -25,7 +25,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
         }
 
-        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        /// <summary>
+        ///     Returns the easing function for this transformation
+        /// </summary>
+        public Easer Easer { get; set; } = new LinearEaser();
+
+        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             try
             {
@@ -36,11 +42,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 return null;
             }
         }
-
-        /// <summary>
-        ///     Returns the easing function for this transformation
-        /// </summary>
-        public Easer Easer { get; set; } = new LinearEaser();
 
         protected override async Task InternalTask()
         {
@@ -56,11 +57,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
             Stopwatch.Restart();
 
-            for (var i = 0; i < aValues.Count; i++)
+            for (var i = 0; i < aValues.Count(); i++)
             {
                 await WaitUntilResumed().ConfigureAwait(false);
 
-                SetValue(Color.FromArgb(aValues[i], rValues[i], gValues[i], bValues[i]));
+                SetValue(Color.FromArgb(aValues.ElementAt(i), rValues.ElementAt(i), gValues.ElementAt(i),
+                    bValues.ElementAt(i)));
                 await DelayAsync(i).ConfigureAwait(false);
             }
 

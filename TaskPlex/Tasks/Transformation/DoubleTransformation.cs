@@ -12,7 +12,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         ///     specified by the step duration up to the task duration
         /// </summary>
         /// <summary>
-
         private DoubleTransformation(TClass target,
             string property,
             Func<double> endValue,
@@ -25,7 +24,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
         }
 
-        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        public Easer Easer { get; set; } = new LinearEaser();
+
+        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             try
             {
@@ -37,22 +39,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
         }
 
-        public Easer Easer { get; set; } = new LinearEaser();
-
         protected override async Task InternalTask()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
             var stepCount = GetStepCount();
 
-            var values = new DoubleInterpolator().Interpolate(startValue, endValue, stepCount, Easer);
             Stopwatch.Restart();
 
-            for (var i = 0; i < values.Count; i++)
+            var stepIndex = 0;
+            foreach (var value in new DoubleInterpolator().Interpolate(startValue, endValue, stepCount, Easer))
             {
                 await WaitUntilResumed().ConfigureAwait(false);
-                SetValue(values[i]);
-                await DelayAsync(i).ConfigureAwait(false);
+                SetValue(value);
+                await DelayAsync(stepIndex++).ConfigureAwait(false);
             }
 
             SetValue(endValue);

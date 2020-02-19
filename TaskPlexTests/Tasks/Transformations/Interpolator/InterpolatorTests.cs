@@ -29,7 +29,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
             Assert.That(result.Count(), Is.EqualTo(steps.Length));
             for (var i = 0; i < result.Count(); i++)
             {
-                Assert.That(result[i], Is.EqualTo(steps[i]).Within(0.01));
+                Assert.That(result.ElementAt(i), Is.EqualTo(steps[i]).Within(0.01));
             }
         }
 

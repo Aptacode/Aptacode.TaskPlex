@@ -8,7 +8,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
-
         private StringTransformation(TClass target,
             string property,
             Func<string> endValue,
@@ -27,7 +26,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             return StringTransformation<T>.Create(target, property, () => endValue, duration, refreshRate);
         }
 
-        public static StringTransformation<T> Create<T>(T target, string property, Func<string> endValue, TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        public static StringTransformation<T> Create<T>(T target, string property, Func<string> endValue,
+            TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             try
             {

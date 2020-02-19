@@ -98,7 +98,6 @@ namespace Aptacode.TaskPlex
             _logger.LogTrace($"Queued task: {task}");
             taskQueue.Enqueue(task);
             return false;
-
         }
 
         private async Task StartTask(BaseTask task)

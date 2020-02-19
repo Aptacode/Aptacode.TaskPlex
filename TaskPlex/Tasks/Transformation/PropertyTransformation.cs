@@ -8,7 +8,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
     {
         protected PropertyTransformation(TimeSpan duration) : base(duration)
         {
-
         }
 
         public new abstract int GetHashCode();
@@ -16,10 +15,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
     public abstract class PropertyTransformation<TClass, TPropertyType> : PropertyTransformation where TClass : class
     {
-        public TClass Target { get; }
-        public string Property { get; }
-        protected RefreshRate RefreshRate { get; }
-
         private readonly Func<TPropertyType> _endValue;
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
@@ -45,6 +40,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             RefreshRate = refreshRate;
         }
 
+        public TClass Target { get; }
+        public string Property { get; }
+        protected RefreshRate RefreshRate { get; }
+
         public override int GetHashCode()
         {
             return (Target, Property).GetHashCode();
@@ -68,14 +67,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         public override bool Equals(object obj)
         {
-            return obj is PropertyTransformation<TClass,TPropertyType> other &&
+            return obj is PropertyTransformation<TClass, TPropertyType> other &&
                    Stopwatch.Equals(other.Stopwatch);
         }
 
         protected async Task DelayAsync(int currentStep)
         {
             var millisecondsAhead =
-                (int)RefreshRate * currentStep - (int)Stopwatch.ElapsedMilliseconds;
+                (int) RefreshRate * currentStep - (int) Stopwatch.ElapsedMilliseconds;
             //the Task.Delay function will only accurately sleep for >8ms
             if (millisecondsAhead > 8)
             {
@@ -85,7 +84,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected int GetStepCount()
         {
-            return (int)Math.Floor(Duration.TotalMilliseconds / (int)RefreshRate);
+            return (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
         }
     }
 }

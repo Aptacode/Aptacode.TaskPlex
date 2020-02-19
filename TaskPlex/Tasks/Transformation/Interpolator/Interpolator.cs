@@ -6,13 +6,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public abstract class Interpolator<T>
     {
-        public List<T> Interpolate(T startValue, T endValue, int stepCount, Easer easer)
+        public IEnumerable<T> Interpolate(T startValue, T endValue, int stepCount, Easer easer)
         {
-            var values = new List<T>();
-
-            if (stepCount == 0)
+            if (stepCount <= 0)
             {
-                return values;
+                yield break;
             }
 
             var incrementValue = GetIncrementValue(startValue, endValue, stepCount);
@@ -23,13 +21,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             {
                 var nextIncrementIndex = GetNextIncrementIndex(stepIndex, stepCount, easer);
                 currentValue = NextValue(currentValue, incrementIndex, incrementValue, nextIncrementIndex);
-                values.Add(currentValue);
+
+                yield return currentValue;
+
                 incrementIndex = nextIncrementIndex;
             }
 
-            values.Add(endValue);
-
-            return values;
+            yield return endValue;
         }
 
         protected abstract T Subtract(T a, T b);
