@@ -16,7 +16,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = TaskFactory.Create(testRectangle, "Opacity", 10.5,
+            var transformation = TaskPlexFactory.Create(testRectangle, "Opacity", 10.5,
                 TimeSpan.FromMilliseconds(10), RefreshRate.High);
 
             //Assert
@@ -31,7 +31,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = TaskFactory.Create(testRectangle, "Width", 100,
+            var transformation = TaskPlexFactory.Create(testRectangle, "Width", 100,
                 TimeSpan.FromMilliseconds(10), RefreshRate.High);
 
             //Assert
@@ -46,7 +46,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = TaskFactory.Create(testRectangle, "Width", 100,
+            var transformation = TaskPlexFactory.Create(testRectangle, "Width", 100,
                 TimeSpan.FromMilliseconds(1000), RefreshRate.High);
 
             var intervals = new List<(int, int)>();

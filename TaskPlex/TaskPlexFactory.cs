@@ -6,7 +6,7 @@ using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex
 {
-    public static class TaskFactory
+    public static class TaskPlexFactory
     {
         public static SequentialGroupTask Sequential(params BaseTask[] tasks)
         {
@@ -64,6 +64,12 @@ namespace Aptacode.TaskPlex
             RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             return ColorTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+        }
+
+        public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        {
+            return PointTransformation<T>.Create(target, property, endValue, duration, refreshRate);
         }
 
         public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration,

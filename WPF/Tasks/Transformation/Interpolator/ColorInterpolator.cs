@@ -24,14 +24,15 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
             var bValueIterator = componentInterpolator.Interpolate(startValue.B, endValue.B, stepCount, easer)
                 .GetEnumerator();
 
-            for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
+            for (var stepIndex = 0; stepIndex < stepCount; stepIndex++)
             {
-                yield return Color.FromArgb((byte) aValueIterator.Current, (byte) rValueIterator.Current,
-                    (byte) gValueIterator.Current, (byte) bValueIterator.Current);
                 aValueIterator.MoveNext();
                 rValueIterator.MoveNext();
                 gValueIterator.MoveNext();
                 bValueIterator.MoveNext();
+
+                yield return Color.FromArgb((byte) aValueIterator.Current, (byte) rValueIterator.Current,
+                    (byte) gValueIterator.Current, (byte) bValueIterator.Current);
             }
 
             aValueIterator.Dispose();

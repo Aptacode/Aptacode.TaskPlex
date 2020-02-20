@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
-namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
+namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class PointInterpolator : Interpolator<Point>
     {
@@ -14,7 +15,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
                 yield break;
             }
 
-            var componentInterpolator = new DoubleInterpolator();
+            var componentInterpolator = new IntInterpolator();
             var xValueIterator = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer)
                 .GetEnumerator();
             var yValueIterator = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer)
@@ -24,7 +25,6 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
             {
                 xValueIterator.MoveNext();
                 yValueIterator.MoveNext();
-
                 yield return new Point(xValueIterator.Current, yValueIterator.Current);
             }
 

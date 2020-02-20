@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
@@ -15,16 +14,25 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
             }
 
             var componentInterpolator = new DoubleInterpolator();
-            var aValues = componentInterpolator.Interpolate(startValue.A, endValue.A, stepCount, easer);
-            var rValues = componentInterpolator.Interpolate(startValue.R, endValue.R, stepCount, easer);
-            var gValues = componentInterpolator.Interpolate(startValue.G, endValue.G, stepCount, easer);
-            var bValues = componentInterpolator.Interpolate(startValue.B, endValue.B, stepCount, easer);
+            var aValues = componentInterpolator.Interpolate(startValue.A, endValue.A, stepCount, easer).GetEnumerator();
+            var rValues = componentInterpolator.Interpolate(startValue.R, endValue.R, stepCount, easer).GetEnumerator();
+            var gValues = componentInterpolator.Interpolate(startValue.G, endValue.G, stepCount, easer).GetEnumerator();
+            var bValues = componentInterpolator.Interpolate(startValue.B, endValue.B, stepCount, easer).GetEnumerator();
 
-            for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
+            for (var stepIndex = 0; stepIndex < stepCount; stepIndex++)
             {
-                yield return Color.FromArgb((byte) aValues.ElementAt(stepIndex), (byte) rValues.ElementAt(stepIndex),
-                    (byte) gValues.ElementAt(stepIndex), (byte) bValues.ElementAt(stepIndex));
+                aValues.MoveNext();
+                rValues.MoveNext();
+                gValues.MoveNext();
+                bValues.MoveNext();
+
+                yield return Color.FromArgb((byte) aValues.Current, (byte) rValues.Current, (byte) gValues.Current, (byte) bValues.Current);
             }
+            aValues.Dispose();
+            rValues.Dispose();
+            gValues.Dispose();
+            bValues.Dispose();
+
 
             yield return endValue;
         }

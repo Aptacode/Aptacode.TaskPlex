@@ -16,7 +16,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Timer _timer;
         private SynchronizationContext _context;
         private IEnumerator<TProperty> _interpolationEnumerator;
-        private int _interpolationIndex;
 
         protected InterpolatedTransformation(TClass target,
             string property,
@@ -49,8 +48,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             State = TaskState.Running;
 
-            //Update First value
-            _interpolationIndex = 0;
             _timer.Start();
 
             while (State == TaskState.Running)
@@ -70,21 +67,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 return;
             }
 
-            if (_interpolationIndex > StepCount)
+            if (!_interpolationEnumerator.MoveNext())
             {
                 State = TaskState.Stopped;
                 return;
             }
 
-            UpdateValue(NextValue());
-        }
-
-        private TProperty NextValue()
-        {
-            var value = _interpolationEnumerator.Current;
-            _interpolationEnumerator.MoveNext();
-            _interpolationIndex++;
-            return value;
+            UpdateValue(_interpolationEnumerator.Current);
         }
 
         private void UpdateValue(TProperty value)
