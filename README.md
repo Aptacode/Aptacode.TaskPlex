@@ -30,84 +30,27 @@ I hope you find some use in it!
 TaskCoordinator taskCoordinator = new TaskCoordinator();
 
 //Create tasks
-var transformation1 = TransformationFactory.Create(myRectangle, "X", 100, TimeSpan.FromMilliseconds(250));
-var transformation2 = TransformationFactory.Create(myRectangle, "Opacity", 0.0, TimeSpan.FromMilliseconds(250));
-var hideRectangle = new ParallelGroupTask(transformation1, transformation2});
+
+//Move myRectangle to x position 100 over 250ms, wait for 100ms then set myRectangle's opacity to 0.0 over 250 ms
+var transformation1 = TaskFactory.Create(myRectangle, "X", 100, TimeSpan.FromMilliseconds(250));
+var waitTask        = TaskFactory.Wait(TimeSpan.FromMilliseconds(100));
+var transformation2 = TaskFactory.Create(myRectangle, "Opacity", 0.0, TimeSpan.FromMilliseconds(250));
+var hideRectangle   = TaskFactory.Sequential(transformation1, transformation2});
+
+//Set myRectangles width & height to 50 over 100ms at the SAME time
+var transformation3 = TaskFactory.Create(myRectangle, "Width", 50, TimeSpan.FromMilliseconds(100));
+var transformation4 = TaskFactory.Create(myRectangle, "Height", 50, TimeSpan.FromMilliseconds(100));
+var shrinkRectangle = TaskFactory.Parallel(transformation1, transformation2});
 
 ...
 
 //Apply task's whenever necessary
 taskCoordinator.Apply(hideRectangle);
+taskCoordinator.Apply(shrinkRectangle);
 
 ...
 
 //Clean up
 taskCoordinator.Dispose();
-
-```
-
-### Tasks
-
--  A task is a unit of work to be executed over a duration.
-Each task has an started and finished event.
-'OnStarted' is triggered when the task coordinator decides to run the task.
-'OnFinished' is triggered just after the task finishes.
-
-```csharp
-
-//Create a DoubleTransformation on the 'Width' property of 'myObject'.
-//Transform the Width property from its current value to the 10.5
-//The transformation will occur over 100ms
-
-  var transformation = TransformationFactory.Create(
-      myObject,
-      "Width",
-      10.5,
-      TimeSpan.FromMilliseconds(100));
-
-//When applied the TaskCoordinator checks if there are currently no running tasks which conflict with the given task
-//If there is a confliction the given task is added to a list of 'Pending tasks' and executed when there are no coflicts
-
-  taskCoordinator.Apply(transformation);
-  
- ```
-
-## Built in Tasks
-
-### PropertyTransformation
-
-
--  Incrementally transition a property from its initil value to the specified end value.
-
-```csharp
-
-var xTransformation = TransformationFactory.Create(
-                testObject,
-                "X",
-                100,
-                TimeSpan.FromMilliseconds(100));
-                
-```
-
-### GroupTasks
-
-
--  Group together tasks to be executed sequentially or in parallel
-
-```csharp
-
-var animation1 = TaskFactory.Sequential(transformation1 , wait1, transformation3);
-var animation2 = TaskFactory.Parallel(transformation4, transformation5);
-
-```
-
-### WaitTask
-
-
--  Wait for the specified amount of time
-
-```csharp
-
-var wait = TaskFactory.Wait(TimeSpan.FromMilliseconds(100));
 
 ```
