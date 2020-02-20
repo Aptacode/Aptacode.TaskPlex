@@ -4,6 +4,6 @@
     {
         Low = 40,
         Normal = 30,
-        High = 16
+        High = 15
     }
 }

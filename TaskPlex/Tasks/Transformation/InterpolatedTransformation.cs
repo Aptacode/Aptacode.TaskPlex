@@ -16,7 +16,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Interpolator<TProperty> _interpolator;
         private readonly Timer _timer;
         private SynchronizationContext _context;
-        private IEnumerable<TProperty> _interpolatedValues;
+        private IEnumerator<TProperty> _interpolationEnumerator;
         private int _interpolationIndex;
 
         protected InterpolatedTransformation(TClass target,
@@ -32,6 +32,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             _interpolator = interpolator;
             _timer = new Timer((int) RefreshRate);
+            _timer.Elapsed += Timer_Elapsed;
         }
 
         /// <summary>
@@ -41,22 +42,26 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
+
             var startValue = GetValue();
             var endValue = GetEndValue();
 
-            Stopwatch.Restart();
             _context = SynchronizationContext.Current;
-            _interpolatedValues = _interpolator.Interpolate(startValue, endValue, StepCount, Easer);
-            _interpolationIndex = 0;
+            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             State = TaskState.Running;
 
-            _timer.Elapsed += Timer_Elapsed;
+            //Update First value
+            _interpolationIndex = 0;
             _timer.Start();
 
             while (State == TaskState.Running)
             {
-                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(15, CancellationToken.Token).ConfigureAwait(false);
             }
+
+            _timer.Stop();
+            _timer.Dispose();
+            _interpolationEnumerator.Dispose();
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -66,15 +71,21 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 return;
             }
 
-            if (_interpolationIndex >= StepCount)
+            if (_interpolationIndex > StepCount)
             {
-                _timer.Stop();
-                _timer.Dispose();
                 State = TaskState.Stopped;
                 return;
             }
 
-            UpdateValue(_interpolatedValues.ElementAt(_interpolationIndex++));
+            UpdateValue(NextValue());
+        }
+
+        private TProperty NextValue()
+        {
+            var value = _interpolationEnumerator.Current;
+            _interpolationEnumerator.MoveNext();
+            _interpolationIndex++;
+            return value;
         }
 
         private void UpdateValue(TProperty value)

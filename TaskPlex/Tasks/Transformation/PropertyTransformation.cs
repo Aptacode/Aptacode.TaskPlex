@@ -20,8 +20,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Action<TClass, TPropertyType> _setter;
         protected readonly int StepCount;
 
-        protected readonly Stopwatch Stopwatch = new Stopwatch();
-
         protected PropertyTransformation(TClass target,
             string property,
             Func<TPropertyType> endValue,
@@ -64,25 +62,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         protected TPropertyType GetEndValue()
         {
             return _endValue.Invoke();
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            return obj is PropertyTransformation<TClass, TPropertyType> other &&
-                   Stopwatch.Equals(other.Stopwatch);
-        }
-
-        protected async Task DelayAsync(int currentStep)
-        {
-            var millisecondsAhead = (int) RefreshRate * currentStep - (int) Stopwatch.ElapsedMilliseconds;
-
-            //the Task.Delay function will only accurately sleep for >8ms
-
-            if (millisecondsAhead > (int) RefreshRate)
-            {
-                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
-            }
         }
     }
 }

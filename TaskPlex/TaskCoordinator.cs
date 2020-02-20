@@ -28,7 +28,7 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        ///     Clean up by cancelling all pending & running tasks
+        ///     Clean up by canceling all pending & running tasks
         /// </summary>
         public void Dispose()
         {
@@ -190,7 +190,7 @@ namespace Aptacode.TaskPlex
 
             while (isRunning)
             {
-                await Task.Delay(1).ConfigureAwait(false);
+                await Task.Delay(15).ConfigureAwait(false);
             }
         }
 
@@ -223,7 +223,7 @@ namespace Aptacode.TaskPlex
 
             while (isRunning)
             {
-                await Task.Delay(1).ConfigureAwait(false);
+                await Task.Delay(15).ConfigureAwait(false);
             }
         }
 

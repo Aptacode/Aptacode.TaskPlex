@@ -16,13 +16,19 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
             }
 
             var componentInterpolator = new DoubleInterpolator();
-            var xValues = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer);
-            var yValues = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer);
+            var xValueIterator = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer).GetEnumerator();
+            var yValueIterator = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer).GetEnumerator();
 
             for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
-                yield return new Point(xValues.ElementAt(stepIndex), yValues.ElementAt(stepIndex));
+                yield return new Point(xValueIterator.Current, yValueIterator.Current);
+                xValueIterator.MoveNext();
+                yValueIterator.MoveNext();
             }
+
+            xValueIterator.Dispose();
+            yValueIterator.Dispose();
+
 
             yield return endValue;
         }

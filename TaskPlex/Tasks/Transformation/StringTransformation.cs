@@ -42,6 +42,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         protected override async Task InternalTask()
         {
             await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
+            await  WaitUntilResumed().ConfigureAwait(false);
             SetValue(GetEndValue());
         }
     }
