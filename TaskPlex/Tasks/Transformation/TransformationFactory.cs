@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
@@ -16,6 +17,25 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         {
             return DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate);
         }
+
+        public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
+            Easer easer,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        {
+            var transformation = IntTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            transformation.Easer = easer;
+            return transformation;
+        }
+
+        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
+            Easer easer,
+            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+        {
+            var transformation = DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            transformation.Easer = easer;
+            return transformation;
+        }
+
 
         public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal) where T : class

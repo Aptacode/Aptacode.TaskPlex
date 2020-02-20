@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Drawing;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+using System.Windows.Media;
+using Aptacode.TaskPlex.Tasks.Transformation;
+using Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
 {
     public sealed class ColorTransformation<TClass> : InterpolatedTransformation<TClass, Color> where TClass : class
     {

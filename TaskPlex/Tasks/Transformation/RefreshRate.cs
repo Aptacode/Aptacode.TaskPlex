@@ -2,9 +2,8 @@
 {
     public enum RefreshRate
     {
-        Low = 32,
-        Normal = 16,
-        High = 8,
-        Highest = 1
+        Low = 40,
+        Normal = 30,
+        High = 16
     }
 }

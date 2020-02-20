@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected CancellationTokenSource CancellationToken { get; private set; }
 
-        public TaskState State { get; private set; }
+        public TaskState State { get; protected set; }
 
         public event EventHandler<EventArgs> OnStarted;
 

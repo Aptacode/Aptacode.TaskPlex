@@ -18,6 +18,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Func<TPropertyType> _endValue;
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
+        protected readonly int StepCount;
 
         protected readonly Stopwatch Stopwatch = new Stopwatch();
 
@@ -38,6 +39,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
                 propertyInfo.GetGetMethod());
             _endValue = endValue;
             RefreshRate = refreshRate;
+            StepCount = (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
         }
 
         public TClass Target { get; }
@@ -49,11 +51,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             return (Target, Property).GetHashCode();
         }
 
-        protected TPropertyType GetValue() => _getter(Target);
+        protected TPropertyType GetValue()
+        {
+            return _getter(Target);
+        }
 
-        protected void SetValue(TPropertyType value) => _setter(Target, value);
+        protected void SetValue(TPropertyType value)
+        {
+            _setter(Target, value);
+        }
 
-        protected TPropertyType GetEndValue() => _endValue.Invoke();
+        protected TPropertyType GetEndValue()
+        {
+            return _endValue.Invoke();
+        }
 
 
         public override bool Equals(object obj)
@@ -64,19 +75,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected async Task DelayAsync(int currentStep)
         {
-            var millisecondsAhead =
-                ((int) RefreshRate * currentStep) - (int) Stopwatch.ElapsedMilliseconds;
+            var millisecondsAhead = (int) RefreshRate * currentStep - (int) Stopwatch.ElapsedMilliseconds;
 
             //the Task.Delay function will only accurately sleep for >8ms
-            if (millisecondsAhead > 10)
-            {
-                await Task.Delay(millisecondsAhead, CancellationToken.Token).ConfigureAwait(false);
-            }
-        }
 
-        protected int GetStepCount()
-        {
-            return (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
+            if (millisecondsAhead > (int) RefreshRate)
+            {
+                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
+            }
         }
     }
 }

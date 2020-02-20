@@ -10,11 +10,27 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
     public class TransformationTests
     {
         [Test]
+        public void DoubleTransformationConstructorTests()
+        {
+            //Arrange
+            var testRectangle = new TestRectangle();
+            var transformation = TransformationFactory.Create(testRectangle, "Opacity", 10.5,
+                TimeSpan.FromMilliseconds(10), RefreshRate.High);
+
+            //Assert
+            Assert.AreEqual(testRectangle, transformation.Target);
+            Assert.AreEqual("Opacity", transformation.Property);
+            Assert.AreEqual(TimeSpan.FromMilliseconds(10), transformation.Duration);
+            Assert.AreEqual(TaskState.Ready, transformation.State);
+        }
+
+        [Test]
         public void IntTransformationConstructorTests()
         {
             //Arrange
             var testRectangle = new TestRectangle();
-            var transformation = TransformationFactory.Create(testRectangle, "Width", 100, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
+            var transformation = TransformationFactory.Create(testRectangle, "Width", 100,
+                TimeSpan.FromMilliseconds(10), RefreshRate.High);
 
             //Assert
             Assert.AreEqual(testRectangle, transformation.Target);
@@ -22,20 +38,28 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
             Assert.AreEqual(TimeSpan.FromMilliseconds(10), transformation.Duration);
             Assert.AreEqual(TaskState.Ready, transformation.State);
         }
-        [Test]
-        public void DoubleTransformationConstructorTests()
-        {
-            //Arrange
-            var testRectangle = new TestRectangle();
-            var transformation = TransformationFactory.Create(testRectangle, "Opacity", 10.5, TimeSpan.FromMilliseconds(10), RefreshRate.Highest);
 
-            //Assert
-            Assert.AreEqual(testRectangle, transformation.Target);
-            Assert.AreEqual("Opacity", transformation.Property);
-            Assert.AreEqual(TimeSpan.FromMilliseconds(10), transformation.Duration);
-            Assert.AreEqual(TaskState.Ready, transformation.State);
+        //[Test]
+        //public void IntTransformationConstructorTests2()
+        //{
+        //    //Arrange
+        //    var testRectangle = new TestRectangle();
+        //    var transformation = TransformationFactory.Create(testRectangle, "Width", 100,
+        //        TimeSpan.FromMilliseconds(100), RefreshRate.High);
 
-        }
+        //    var intervals = new List<(int, int)>();
 
+        //    var lastTime = DateTime.Now;
+
+        //    testRectangle.OnWidthChange += (sender, args) =>
+        //    {
+        //        intervals.Add(((DateTime.Now - lastTime).Milliseconds, args.NewValue));
+        //        lastTime = DateTime.Now;
+        //    };
+
+        //    transformation.StartAsync(new CancellationTokenSource());
+        //    //Assert
+        //    Assert.That(() => intervals.Count == 200, Is.True.After(1200));
+        //}
     }
 }

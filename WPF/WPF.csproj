@@ -1,31 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net4.7.2;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>Aptacode.TaskPlex</AssemblyName>
-    <RootNamespace>Aptacode.TaskPlex</RootNamespace>
+    <TargetFramework>net4.7.2</TargetFramework>
+    <AssemblyName>Aptacode.TaskPlex.WPF</AssemblyName>
+    <RootNamespace>Aptacode.TaskPlex.WPF</RootNamespace>
     <Authors>Timothy Jones</Authors>
     <Company>Aptacode</Company>
-    <Product>TaskPlex</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Timmoth/Aptacode.TaskPlex</PackageProjectUrl>
     <PackageIcon>TaskPlexLogo.png</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
-    <Description>A simple library for changing / interpolating .Net properties over time</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.8.0</AssemblyVersion>
-    <FileVersion>1.0.8.0</FileVersion>
-    <Version>1.0.8</Version>
+    <Product>TaskPlex</Product>
+    <Version>1.0.0</Version>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\Build\Debug</OutputPath>
     <Optimize>false</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <OutputPath>..\Build\Release</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,11 +34,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.1" />
+    <ProjectReference Include="..\TaskPlex\TaskPlex.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 
 </Project>
