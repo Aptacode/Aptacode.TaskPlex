@@ -29,10 +29,17 @@ I hope you find some use in it!
 //Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
 
-//Add tasks as they occur
-taskCoordinator.Apply(transformation1);
+//Create tasks
+var transformation1 = TransformationFactory.Create(myRectangle, "X", 100, TimeSpan.FromMilliseconds(250));
+var transformation2 = TransformationFactory.Create(myRectangle, "Opacity", 0.0, TimeSpan.FromMilliseconds(250));
+var hideRectangle = new ParallelGroupTask(transformation1, transformation2});
+
 ...
-taskCoordinator.Apply(transformation2);
+
+//Apply task's whenever necessary
+taskCoordinator.Apply(hideRectangle);
+
+...
 
 //Clean up
 taskCoordinator.Dispose();
@@ -40,7 +47,6 @@ taskCoordinator.Dispose();
 ```
 
 ### Tasks
-
 
 -  A task is a unit of work to be executed over a duration.
 Each task has an started and finished event.
@@ -53,7 +59,7 @@ Each task has an started and finished event.
 //Transform the Width property from its current value to the 10.5
 //The transformation will occur over 100ms
 
-  var transformation = new DoubleTransformation(
+  var transformation = TransformationFactory.Create(
       myObject,
       "Width",
       10.5,
@@ -75,29 +81,10 @@ Each task has an started and finished event.
 
 ```csharp
 
-PropertyTransformation xTransformation = new DoubleTransformation(
+var xTransformation = TransformationFactory.Create(
                 testObject,
                 "X",
                 100,
-                TimeSpan.FromMilliseconds(100));
-                                
-PropertyTransformation widthTransformation = new IntTransformation(
-                testObject,
-                "Width",
-                100,
-                TimeSpan.FromMilliseconds(100),
-                RefreshRate.Highest);
-                
-PropertyTransformation backgroundTransformation = new ColorTransformation(
-                testObject,
-                "BackgroundColor",
-                Color.FromARGB(255,100,150,200),
-                TimeSpan.FromMilliseconds(100));
-                
-PropertyTransformation titleTransformation = new StringTransformation(
-                testObject,
-                "Title",
-                "Hello, World!",
                 TimeSpan.FromMilliseconds(100));
                 
 ```
@@ -109,9 +96,8 @@ PropertyTransformation titleTransformation = new StringTransformation(
 
 ```csharp
 
-GroupTask animation1 = new SequentialGroupTask(new List<BaseTask>() { transformation1 , wait1, transformation3 });
-
-GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformation4, transformation5});
+var animation1 = TaskFactory.Sequential(transformation1 , wait1, transformation3);
+var animation2 = TaskFactory.Parallel(transformation4, transformation5);
 
 ```
 
@@ -122,6 +108,6 @@ GroupTask animation2 = new ParallelGroupTask(new List<BaseTask>() { transformati
 
 ```csharp
 
-WaitTask wait = new WaitTask(TimeSpan.FromMilliseconds(100));
+var wait = TaskFactory.Wait(TimeSpan.FromMilliseconds(100));
 
 ```
