@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,7 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly ILogger _logger;
-        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
+        private readonly Dictionary<BaseTask, Queue<BaseTask>> _tasks;
 
         private CancellationTokenSource _cancellationToken;
 
@@ -24,7 +23,7 @@ namespace Aptacode.TaskPlex
 
             _logger.LogTrace("Initializing TaskCoordinator");
             _cancellationToken = new CancellationTokenSource();
-            _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
+            _tasks = new Dictionary<BaseTask, Queue<BaseTask>>();
         }
 
         /// <summary>
@@ -91,8 +90,8 @@ namespace Aptacode.TaskPlex
 
             if (taskQueue == null)
             {
-                taskQueue = new ConcurrentQueue<BaseTask>();
-                _tasks.TryAdd(task, taskQueue);
+                taskQueue = new Queue<BaseTask>();
+                _tasks.Add(task, taskQueue);
             }
 
             _logger.LogTrace($"Queued task: {task}");
@@ -102,7 +101,7 @@ namespace Aptacode.TaskPlex
 
         private async Task StartTask(BaseTask task)
         {
-            _tasks.TryAdd(task, null);
+            _tasks.Add(task, null);
 
             task.RaiseOnStarted(EventArgs.Empty);
             try
@@ -240,14 +239,14 @@ namespace Aptacode.TaskPlex
         {
             if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue != null)
             {
-                if (taskQueue.TryDequeue(out var nextTask))
+                if (taskQueue.Count > 0)
                 {
-                    StartTask(nextTask).ConfigureAwait(false);
+                    StartTask(taskQueue.Dequeue()).ConfigureAwait(false);
                 }
             }
             else
             {
-                _tasks.TryRemove(completedTask, out _);
+                _tasks.Remove(completedTask);
             }
         }
     }
