@@ -70,6 +70,7 @@ namespace Aptacode.TaskPlex
             }
 
             _logger.LogTrace($"Applying task: {task}");
+
             TryRunTask(task);
         }
 
@@ -91,7 +92,7 @@ namespace Aptacode.TaskPlex
             if (taskQueue == null)
             {
                 taskQueue = new Queue<BaseTask>();
-                _tasks.Add(task, taskQueue);
+                _tasks[task] = taskQueue;
             }
 
             _logger.LogTrace($"Queued task: {task}");
@@ -101,7 +102,7 @@ namespace Aptacode.TaskPlex
 
         private async Task StartTask(BaseTask task)
         {
-            _tasks.Add(task, null);
+            _tasks[task] = null;
 
             task.RaiseOnStarted(EventArgs.Empty);
             try
