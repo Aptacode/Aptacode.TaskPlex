@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img width="640" height="320" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/dev/Resources/Images/TaskPlexBanner.png">
+  <img width="640" height="320" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/TaskPlexBanner.png">
 </p>
 
 A simple library for changing / interpolating .Net properties over time
