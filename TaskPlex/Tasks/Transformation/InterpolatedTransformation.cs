@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -42,12 +41,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
 
         protected override async Task InternalTask()
         {
-
             var startValue = GetValue();
             var endValue = GetEndValue();
 
             _context = SynchronizationContext.Current;
-            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
+            _interpolationEnumerator =
+                _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             State = TaskState.Running;
 
             //Update First value

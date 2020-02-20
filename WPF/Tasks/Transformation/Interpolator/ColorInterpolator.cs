@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
@@ -16,14 +15,19 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
             }
 
             var componentInterpolator = new DoubleInterpolator();
-            var aValueIterator = componentInterpolator.Interpolate(startValue.A, endValue.A, stepCount, easer).GetEnumerator();
-            var rValueIterator = componentInterpolator.Interpolate(startValue.R, endValue.R, stepCount, easer).GetEnumerator();
-            var gValueIterator = componentInterpolator.Interpolate(startValue.G, endValue.G, stepCount, easer).GetEnumerator();
-            var bValueIterator = componentInterpolator.Interpolate(startValue.B, endValue.B, stepCount, easer).GetEnumerator();
+            var aValueIterator = componentInterpolator.Interpolate(startValue.A, endValue.A, stepCount, easer)
+                .GetEnumerator();
+            var rValueIterator = componentInterpolator.Interpolate(startValue.R, endValue.R, stepCount, easer)
+                .GetEnumerator();
+            var gValueIterator = componentInterpolator.Interpolate(startValue.G, endValue.G, stepCount, easer)
+                .GetEnumerator();
+            var bValueIterator = componentInterpolator.Interpolate(startValue.B, endValue.B, stepCount, easer)
+                .GetEnumerator();
 
             for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {
-                yield return Color.FromArgb((byte) aValueIterator.Current, (byte) rValueIterator.Current, (byte) gValueIterator.Current, (byte) bValueIterator.Current);
+                yield return Color.FromArgb((byte) aValueIterator.Current, (byte) rValueIterator.Current,
+                    (byte) gValueIterator.Current, (byte) bValueIterator.Current);
                 aValueIterator.MoveNext();
                 rValueIterator.MoveNext();
                 gValueIterator.MoveNext();

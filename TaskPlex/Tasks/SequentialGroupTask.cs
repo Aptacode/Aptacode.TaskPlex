@@ -11,7 +11,7 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
         /// <param name="tasks"></param>
-        public SequentialGroupTask(List<BaseTask> tasks) : base(tasks)
+        public SequentialGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
         }

@@ -1,11 +1,28 @@
 ﻿using System;
 using System.Drawing;
+using Aptacode.TaskPlex.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex
 {
-    public static class TransformationFactory
+    public static class TaskFactory
     {
+        public static SequentialGroupTask Sequential(params BaseTask[] tasks)
+        {
+            return new SequentialGroupTask(tasks);
+        }
+
+        public static ParallelGroupTask Parallel(params BaseTask[] tasks)
+        {
+            return new ParallelGroupTask(tasks);
+        }
+
+        public static WaitTask Wait(TimeSpan duration)
+        {
+            return new WaitTask(duration);
+        }
+
         public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {

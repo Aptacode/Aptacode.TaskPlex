@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
 using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
@@ -16,8 +15,10 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
             }
 
             var componentInterpolator = new DoubleInterpolator();
-            var xValueIterator = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer).GetEnumerator();
-            var yValueIterator = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer).GetEnumerator();
+            var xValueIterator = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer)
+                .GetEnumerator();
+            var yValueIterator = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer)
+                .GetEnumerator();
 
             for (var stepIndex = 1; stepIndex < stepCount; stepIndex++)
             {

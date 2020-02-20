@@ -10,7 +10,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <summary>
         ///     Execute the specified tasks in parallel
         /// </summary>
-        public ParallelGroupTask(List<BaseTask> tasks) : base(tasks)
+        public ParallelGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
         {
             Duration = GetTotalDuration(Tasks);
         }

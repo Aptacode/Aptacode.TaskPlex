@@ -70,7 +70,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            _logger.LogTrace($@"Applying task: {task}");
+            _logger.LogTrace($"Applying task: {task}");
             TryRunTask(task);
         }
 
@@ -232,7 +232,7 @@ namespace Aptacode.TaskPlex
             for (var i = 1; i < tasks.Count; i++)
             {
                 var localIndex = i;
-                tasks[localIndex - 1].OnFinished += (s, e) => { Apply(tasks[localIndex]); };
+                tasks[localIndex - 1].OnFinished += (s, e) => Apply(tasks[localIndex]);
             }
         }
 

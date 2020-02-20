@@ -6,9 +6,9 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected GroupTask(List<BaseTask> tasks) : base(TimeSpan.Zero)
+        protected GroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
         {
-            Tasks = tasks;
+            Tasks = tasks.ToList();
         }
 
         internal List<BaseTask> Tasks { get; }
