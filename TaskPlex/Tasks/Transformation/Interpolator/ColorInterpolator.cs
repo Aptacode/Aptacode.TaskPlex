@@ -26,8 +26,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
                 gValues.MoveNext();
                 bValues.MoveNext();
 
-                yield return Color.FromArgb((byte) aValues.Current, (byte) rValues.Current, (byte) gValues.Current, (byte) bValues.Current);
+                yield return Color.FromArgb((byte) aValues.Current, (byte) rValues.Current, (byte) gValues.Current,
+                    (byte) bValues.Current);
             }
+
             aValues.Dispose();
             rValues.Dispose();
             gValues.Dispose();

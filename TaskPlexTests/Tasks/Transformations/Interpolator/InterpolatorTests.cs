@@ -41,7 +41,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
         [TestCase(0, 1, 1, new[] {1})]
         [TestCase(1, 0, 1, new[] {0})]
         [TestCase(0, 0, 2, new[] {0, 0})]
-        [TestCase(0, 1, 2, new[] {0, 1})]
+        [TestCase(0, 1, 2, new[] {1, 1})]
         [TestCase(1, 0, 2, new[] {1, 0})]
         [TestCase(0, 100, 10, new[] {10, 20, 30, 40, 50, 60, 70, 80, 90, 100})]
         [TestCase(100, 0, 10, new[] {90, 80, 70, 60, 50, 40, 30, 20, 10, 0})]
