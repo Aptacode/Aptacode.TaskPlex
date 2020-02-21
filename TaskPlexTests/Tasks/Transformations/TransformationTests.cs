@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Helpers;
@@ -39,30 +41,26 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
             Assert.AreEqual(TaskState.Ready, transformation.State);
         }
 
-        //[Test]
-        //public void IntTransformationConstructorTests2()
-        //{
-        //    //Arrange
-        //    var testRectangle = new TestRectangle();
-        //    var transformation = TaskPlexFactory.Create(testRectangle, "Width", 100, TimeSpan.FromMilliseconds(2000), RefreshRate.High);
+        [Test]
+        public void TransformationStartFinishEvents()
+        {
+            //Arrange
+            var testRectangle = new TestRectangle();
+            var transformation = TaskPlexFactory.Create(testRectangle, "Width", 100,
+                TimeSpan.FromMilliseconds(10), RefreshRate.High);
 
-        //    var intervals = new List<(int, int)>();
+            var hasStarted = false;
+            var hasFinished = false;
+            transformation.OnStarted += (s, e) => { hasStarted = true; };
+            transformation.OnFinished += (s, e) => { hasFinished = true;};
 
-        //    var lastTime = DateTime.Now;
+            //Action
+            var task = Task.Run(async () => await transformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false));
+            task.Wait();
 
-        //    var startTime = DateTime.Now;
-        //    var total = DateTime.Now - startTime;
-
-        //    testRectangle.OnWidthChange += (sender, args) =>
-        //    {
-        //        intervals.Add(((DateTime.Now - lastTime).Milliseconds, args.NewValue));
-        //        lastTime = DateTime.Now;
-        //        total = DateTime.Now - startTime;
-        //    };
-
-        //    transformation.StartAsync(new CancellationTokenSource());
-        //    //Assert
-        //    Assert.That(() => intervals.Count == 200, Is.True.After(3000));
-        //}
+            //Assert
+            Assert.IsTrue(hasStarted, "OnStarted should be fired");
+            Assert.IsTrue(hasFinished, "OnFinished should be fired");
+        }
     }
 }

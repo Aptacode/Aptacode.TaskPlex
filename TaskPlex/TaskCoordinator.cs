@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -107,8 +108,6 @@ namespace Aptacode.TaskPlex
         {
             _tasks.TryAdd(task, null);
 
-            await task.RaiseOnStarted(EventArgs.Empty).ConfigureAwait(false);
-
             try
             {
                 _logger.LogTrace($"Task Started: {task}");
@@ -117,7 +116,7 @@ namespace Aptacode.TaskPlex
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
-                        await RunParallel(parallelGroupTask).ConfigureAwait(false);
+                        await parallelGroupTask.InternalTask(this).ConfigureAwait(false);
                         break;
                     case SequentialGroupTask sequentialGroupTask:
                         await RunSequential(sequentialGroupTask).ConfigureAwait(false);
@@ -128,12 +127,10 @@ namespace Aptacode.TaskPlex
                 }
 
                 _logger.LogTrace($"Task Finished: {task}");
-                await task.RaiseOnFinished(EventArgs.Empty).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
                 _logger.LogDebug($"Task Canceled: {task}");
-                await task.RaiseOnCancelled().ConfigureAwait(false);
             }
             finally
             {
@@ -153,52 +150,22 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            var isRunning = true;
-            var finishedTaskCount = 0;
-
             task.OnCancelled += (s, e) =>
             {
                 foreach (var task1 in task.Tasks)
                 {
                     task1.Cancel();
                 }
-
-                isRunning = false;
             };
 
-            var runnableTasks = new List<Task>();
 
-            foreach (var childTask in task.Tasks)
-            {
-                childTask.OnFinished += (s, e) =>
-                {
-                    if (++finishedTaskCount >= task.Tasks.Count)
-                    {
-                        isRunning = false;
-                    }
-                };
-                childTask.OnCancelled += (s, e) =>
-                {
-                    if (++finishedTaskCount >= task.Tasks.Count)
-                    {
-                        isRunning = false;
-                    }
-                };
+            var pTask = Task.Run(async () => { await task.StartAsync(new CancellationTokenSource()).ConfigureAwait(false); });
+                    
+            task.Tasks.ForEach(TryRunTask);
 
-                if (CanRunTask(childTask))
-                {
-                    runnableTasks.Add(StartTask(childTask));
-                }
-            }
+            pTask.Wait();
 
-            await Task.WhenAll(runnableTasks).ConfigureAwait(false);
-
-
-            while (isRunning)
-            {
-                await Task.Delay(15).ConfigureAwait(false);
-            }
-        }
+         }
 
 
         private async Task RunSequential(SequentialGroupTask task)

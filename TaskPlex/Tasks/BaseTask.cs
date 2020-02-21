@@ -41,12 +41,21 @@ namespace Aptacode.TaskPlex.Tasks
             CancellationToken = cancellationToken;
             if (!CancellationToken.IsCancellationRequested)
             {
+                State = TaskState.Running;
+
+                OnStarted?.Invoke(this, EventArgs.Empty);
+
                 await InternalTask().ConfigureAwait(false);
             }
             else
             {
-                throw new TaskCanceledException();
+                State = TaskState.Stopped;
+                OnCancelled?.Invoke(this, EventArgs.Empty);
+                return;
             }
+
+            State = TaskState.Stopped;
+            OnFinished?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -56,34 +65,6 @@ namespace Aptacode.TaskPlex.Tasks
         {
             State = TaskState.Stopped;
             CancellationToken.Cancel();
-        }
-
-        internal async Task RaiseOnStarted(EventArgs args)
-        {
-            await new TaskFactory(CancellationToken.Token).StartNew(() => OnStarted?.Invoke(this, args))
-                .ConfigureAwait(false);
-        }
-
-        internal async Task RaiseOnFinished(EventArgs args)
-        {
-            if (CancellationToken.IsCancellationRequested)
-            {
-                await RaiseOnCancelled().ConfigureAwait(false);
-            }
-            else
-            {
-                _ = new TaskFactory(CancellationToken.Token).StartNew(() => { OnFinished?.Invoke(this, args); })
-                    .ConfigureAwait(false);
-            }
-        }
-
-        internal async Task RaiseOnCancelled()
-        {
-            State = TaskState.Stopped;
-            await new TaskFactory(CancellationToken.Token).StartNew(() =>
-            {
-                OnCancelled?.Invoke(this, EventArgs.Empty);
-            }).ConfigureAwait(false);
         }
 
         protected abstract Task InternalTask();
