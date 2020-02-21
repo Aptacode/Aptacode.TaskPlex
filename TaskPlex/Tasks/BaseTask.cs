@@ -14,9 +14,7 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         public TimeSpan Duration { get; protected set; }
-
         protected CancellationTokenSource CancellationToken { get; private set; }
-
         public TaskState State { get; protected set; }
 
         public event EventHandler<EventArgs> OnStarted;
@@ -62,7 +60,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         internal async Task RaiseOnStarted(EventArgs args)
         {
-            await new TaskFactory(CancellationToken.Token).StartNew(() => { OnStarted?.Invoke(this, args); })
+            await new TaskFactory(CancellationToken.Token).StartNew(() => OnStarted?.Invoke(this, args))
                 .ConfigureAwait(false);
         }
 
@@ -107,5 +105,7 @@ namespace Aptacode.TaskPlex.Tasks
                 await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }
         }
+
+        public abstract override bool Equals(object obj);
     }
 }

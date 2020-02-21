@@ -24,5 +24,7 @@ namespace Aptacode.TaskPlex.Tasks
         protected override async Task InternalTask()
         {
         }
+
+        public override bool Equals(object obj) => obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
     }
 }

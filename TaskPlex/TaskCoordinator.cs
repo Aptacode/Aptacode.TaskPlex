@@ -84,15 +84,16 @@ namespace Aptacode.TaskPlex
 
         private bool CanRunTask(BaseTask task)
         {
-            if (!_tasks.TryGetValue(task, out var taskQueue))
+            if (!_tasks.ContainsKey(task))
             {
                 return true;
             }
 
+            _tasks.TryGetValue(task, out var taskQueue);
             if (taskQueue == null)
             {
                 taskQueue = new ConcurrentQueue<BaseTask>();
-                _tasks.TryAdd(task, taskQueue);
+                _tasks.AddOrUpdate(task, taskQueue, (s, q) => taskQueue);
             }
 
             _logger.LogTrace($"Queued task: {task}");
