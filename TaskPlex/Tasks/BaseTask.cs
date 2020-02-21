@@ -38,15 +38,17 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Start the task with the given CancellationToken
         /// </summary>
         /// <returns></returns>
-        public Task StartAsync(CancellationTokenSource cancellationToken)
+        public async Task StartAsync(CancellationTokenSource cancellationToken)
         {
             CancellationToken = cancellationToken;
             if (!CancellationToken.IsCancellationRequested)
             {
-                return InternalTask();
+                await InternalTask().ConfigureAwait(false);
             }
-
-            throw new TaskCanceledException();
+            else
+            {
+                throw new TaskCanceledException();
+            }
         }
 
         /// <summary>
@@ -58,29 +60,32 @@ namespace Aptacode.TaskPlex.Tasks
             CancellationToken.Cancel();
         }
 
-        internal void RaiseOnStarted(EventArgs args)
+        internal async Task RaiseOnStarted(EventArgs args)
         {
-            State = TaskState.Running;
-            OnStarted?.Invoke(this, args);
+            await new TaskFactory(CancellationToken.Token).StartNew(() => { OnStarted?.Invoke(this, args); })
+                .ConfigureAwait(false);
         }
 
-        internal void RaiseOnFinished(EventArgs args)
+        internal async Task RaiseOnFinished(EventArgs args)
         {
-            State = TaskState.Stopped;
             if (CancellationToken.IsCancellationRequested)
             {
-                RaiseOnCancelled();
+                await RaiseOnCancelled().ConfigureAwait(false);
             }
             else
             {
-                OnFinished?.Invoke(this, args);
+                _ = new TaskFactory(CancellationToken.Token).StartNew(() => { OnFinished?.Invoke(this, args); })
+                    .ConfigureAwait(false);
             }
         }
 
-        internal void RaiseOnCancelled()
+        internal async Task RaiseOnCancelled()
         {
             State = TaskState.Stopped;
-            OnCancelled?.Invoke(this, EventArgs.Empty);
+            await new TaskFactory(CancellationToken.Token).StartNew(() =>
+            {
+                OnCancelled?.Invoke(this, EventArgs.Empty);
+            }).ConfigureAwait(false);
         }
 
         protected abstract Task InternalTask();

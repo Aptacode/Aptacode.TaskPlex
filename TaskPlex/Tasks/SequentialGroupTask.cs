@@ -23,10 +23,6 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            foreach (var task in Tasks)
-            {
-                await task.StartAsync(CancellationToken).ConfigureAwait(false);
-            }
         }
     }
 }

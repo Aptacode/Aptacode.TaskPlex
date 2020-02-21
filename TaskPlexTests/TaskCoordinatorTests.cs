@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
 {
-
     [TestFixture]
     public class TaskCoordinatorTests
     {

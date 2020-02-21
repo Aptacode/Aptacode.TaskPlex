@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : IDisposable
     {
         private readonly ILogger _logger;
-        private readonly Dictionary<BaseTask, Queue<BaseTask>> _tasks;
+        private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
 
         private CancellationTokenSource _cancellationToken;
 
@@ -23,7 +24,7 @@ namespace Aptacode.TaskPlex
 
             _logger.LogTrace("Initializing TaskCoordinator");
             _cancellationToken = new CancellationTokenSource();
-            _tasks = new Dictionary<BaseTask, Queue<BaseTask>>();
+            _tasks = new ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>>();
         }
 
         /// <summary>
@@ -70,7 +71,6 @@ namespace Aptacode.TaskPlex
             }
 
             _logger.LogTrace($"Applying task: {task}");
-
             TryRunTask(task);
         }
 
@@ -91,23 +91,28 @@ namespace Aptacode.TaskPlex
 
             if (taskQueue == null)
             {
-                taskQueue = new Queue<BaseTask>();
-                _tasks[task] = taskQueue;
+                taskQueue = new ConcurrentQueue<BaseTask>();
+                _tasks.TryAdd(task, taskQueue);
             }
 
             _logger.LogTrace($"Queued task: {task}");
             taskQueue.Enqueue(task);
+
+
             return false;
         }
 
         private async Task StartTask(BaseTask task)
         {
-            _tasks[task] = null;
+            _tasks.TryAdd(task, null);
 
-            task.RaiseOnStarted(EventArgs.Empty);
+            await task.RaiseOnStarted(EventArgs.Empty).ConfigureAwait(false);
+
             try
             {
                 _logger.LogTrace($"Task Started: {task}");
+
+
                 switch (task)
                 {
                     case ParallelGroupTask parallelGroupTask:
@@ -122,12 +127,12 @@ namespace Aptacode.TaskPlex
                 }
 
                 _logger.LogTrace($"Task Finished: {task}");
-                task.RaiseOnFinished(EventArgs.Empty);
+                await task.RaiseOnFinished(EventArgs.Empty).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
-                _logger.LogDebug($"Task Cancelled: {task}");
-                task.RaiseOnCancelled();
+                _logger.LogDebug($"Task Canceled: {task}");
+                await task.RaiseOnCancelled().ConfigureAwait(false);
             }
             finally
             {
@@ -223,7 +228,7 @@ namespace Aptacode.TaskPlex
 
             while (isRunning)
             {
-                await Task.Delay(15).ConfigureAwait(false);
+                await Task.Delay(10).ConfigureAwait(false);
             }
         }
 
@@ -232,6 +237,7 @@ namespace Aptacode.TaskPlex
             for (var i = 1; i < tasks.Count; i++)
             {
                 var localIndex = i;
+
                 tasks[localIndex - 1].OnFinished += (s, e) => Apply(tasks[localIndex]);
             }
         }
@@ -240,14 +246,14 @@ namespace Aptacode.TaskPlex
         {
             if (_tasks.TryGetValue(completedTask, out var taskQueue) && taskQueue != null)
             {
-                if (taskQueue.Count > 0)
+                if (taskQueue.TryDequeue(out var nextTask))
                 {
-                    StartTask(taskQueue.Dequeue()).ConfigureAwait(false);
+                    StartTask(nextTask).ConfigureAwait(false);
                 }
             }
             else
             {
-                _tasks.Remove(completedTask);
+                _tasks.TryRemove(completedTask, out _);
             }
         }
     }

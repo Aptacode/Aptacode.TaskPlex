@@ -13,7 +13,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         where TClass : class
     {
         private readonly Interpolator<TProperty> _interpolator;
-        private readonly Timer _timer;
         private SynchronizationContext _context;
         private IEnumerator<TProperty> _interpolationEnumerator;
 
@@ -29,8 +28,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             refreshRate)
         {
             _interpolator = interpolator;
-            _timer = new Timer((int) RefreshRate);
-            _timer.Elapsed += Timer_Elapsed;
         }
 
         /// <summary>
@@ -47,22 +44,29 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             _interpolationEnumerator =
                 _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             State = TaskState.Running;
-
+            var _timer = new Timer((int) RefreshRate);
+            _timer.Elapsed += Timer_Elapsed;
             _timer.Start();
 
-            while (State == TaskState.Running)
+            while (isRunning())
             {
-                await Task.Delay(15, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
             }
 
             _timer.Stop();
             _timer.Dispose();
+
             _interpolationEnumerator.Dispose();
+        }
+
+        private bool isRunning()
+        {
+            return State == TaskState.Running;
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (State != TaskState.Running)
+            if (!isRunning())
             {
                 return;
             }
