@@ -5,6 +5,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public interface Interpolator<T>
     {
-        IEnumerable<T> Interpolate(T startValue, T endValue, int stepCount, Easer easer);
+        IEnumerable<T> Interpolate(T startValue, T endValue, int stepCount, EaserFunction easer);
     }
 }

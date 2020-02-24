@@ -1,7 +1,7 @@
 ﻿using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 using NUnit.Framework;
 
-namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
+namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
 {
     /// <summary>
     ///     Checks the ProgressAt(int, int) methods for each built in easer function return the correct value
@@ -10,10 +10,10 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
     [TestFixture]
     public class EaserTests
     {
-        private static readonly LinearEaser LinearEaser = new LinearEaser();
-        private static readonly SineEaser SineEaser = new SineEaser();
-        private static readonly CubicInEaser CubicInEaser = new CubicInEaser();
-        private static readonly CubicOutEaser CubicOutEaser = new CubicOutEaser();
+        private static readonly EaserFunction LinearEaser = Easers.Linear;
+        private static readonly EaserFunction SineEaser = Easers.Sine;
+        private static readonly EaserFunction CubicInEaser = Easers.CubicIn;
+        private static readonly EaserFunction CubicOutEaser = Easers.CubicOut;
 
         [Test]
         [TestCase(0, 0, 1)]
@@ -32,7 +32,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
         [TestCase(0, 10, 0)]
         [TestCase(1, 10, 0.02)]
         [TestCase(2, 10, 0.04)]
-        [TestCase(3, 10, 0.08)]
+        [TestCase(3, 10, 0.09)]
         [TestCase(4, 10, 0.16)]
         [TestCase(5, 10, 0.25)]
         [TestCase(6, 10, 0.36)]
@@ -42,7 +42,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
         [TestCase(10, 10, 1)]
         public void CubicInEaserTests(int index, int total, double expectedValue)
         {
-            Assert.That(CubicInEaser.ProgressAt(index, total), Is.EqualTo(expectedValue).Within(0.01));
+            Assert.That(CubicInEaser(index, total), Is.EqualTo(expectedValue).Within(0.01));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
         [TestCase(10, 10, 1)]
         public void CubicOutEaserTests(int index, int total, double expectedValue)
         {
-            Assert.That(CubicOutEaser.ProgressAt(index, total), Is.EqualTo(expectedValue).Within(0.01));
+            Assert.That(CubicOutEaser(index, total), Is.EqualTo(expectedValue).Within(0.01));
         }
 
 
@@ -103,7 +103,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
         [TestCase(10, 10, 1)]
         public void LinearEaserTests(int index, int total, double expectedValue)
         {
-            Assert.That(LinearEaser.ProgressAt(index, total), Is.EqualTo(expectedValue).Within(0.01));
+            Assert.That(LinearEaser(index, total), Is.EqualTo(expectedValue).Within(0.01));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator.Easers
         [TestCase(10, 10, 1)]
         public void SineEaserTests(int index, int total, double expectedValue)
         {
-            Assert.That(SineEaser.ProgressAt(index, total), Is.EqualTo(expectedValue).Within(0.01));
+            Assert.That(SineEaser(index, total), Is.EqualTo(expectedValue).Within(0.01));
         }
     }
 }

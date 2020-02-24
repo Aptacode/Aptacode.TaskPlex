@@ -1,16 +1,35 @@
-﻿namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
-{
-    public abstract class Easer
-    {
-        /// <summary>
-        ///     Returns a value between 0 and 1 depending on the current index and total
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="total"></param>
-        /// <returns></returns>
-        public abstract double ProgressAt(int index, int total);
+﻿using System;
 
-        protected static double Normalize(int index, int total)
+namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
+{
+    public delegate float EaserFunction(int index, int total);
+
+    public static class Easers
+    {
+        private const double PiOverTwo = Math.PI / 2;
+
+        public static float Linear(int index, int total)
+        {
+            return Normalize(index, total);
+        }
+
+        public static float CubicOut(int index, int total)
+        {
+            return (float)Math.Sqrt(Normalize(index, total));
+        }
+        public static float CubicIn(int index, int total)
+        {
+            var x = Normalize(index, total);
+            return x * x;
+        }
+
+        public static float Sine(int index, int total)
+        {
+            var x = (double)Normalize(index, total);
+            return ((float)Math.Sin(x * Math.PI - PiOverTwo) + 1.0f) / 2.0f;
+        }
+
+        private static float Normalize(int index, int total)
         {
             if (index < 0)
             {
@@ -22,7 +41,7 @@
                 return 1;
             }
 
-            return index / (double) total;
+            return index / (float)total;
         }
     }
 }

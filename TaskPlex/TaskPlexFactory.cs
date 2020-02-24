@@ -36,7 +36,7 @@ namespace Aptacode.TaskPlex
         }
 
         public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
-            Easer easer,
+            EaserFunction easer,
             RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             var transformation = IntTransformation<T>.Create(target, property, endValue, duration, refreshRate);
@@ -45,7 +45,7 @@ namespace Aptacode.TaskPlex
         }
 
         public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
-            Easer easer,
+            EaserFunction easer,
             RefreshRate refreshRate = RefreshRate.Normal) where T : class
         {
             var transformation = DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate);

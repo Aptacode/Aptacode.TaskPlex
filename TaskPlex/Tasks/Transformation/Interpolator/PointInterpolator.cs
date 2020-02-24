@@ -6,7 +6,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class PointInterpolator : Interpolator<Point>
     {
-        public IEnumerable<Point> Interpolate(Point startValue, Point endValue, int stepCount, Easer easer)
+        public IEnumerable<Point> Interpolate(Point startValue, Point endValue, int stepCount, EaserFunction easer)
         {
             if (stepCount <= 0)
             {

@@ -6,7 +6,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class IntInterpolator : Interpolator<int>
     {
-        public IEnumerable<int> Interpolate(int startValue, int endValue, int stepCount, Easer easer)
+        public IEnumerable<int> Interpolate(int startValue, int endValue, int stepCount, EaserFunction easer)
         {
             if (stepCount <= 0)
             {
@@ -18,7 +18,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 
             for (var stepIndex = 1; stepIndex <= stepCount; stepIndex++)
             {
-                yield return startValue + (int) Math.Ceiling(easer.ProgressAt(stepIndex, stepCount) * totalDifference);
+                yield return startValue + (int) Math.Round(easer(stepIndex, stepCount) * totalDifference);
             }
         }
     }

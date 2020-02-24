@@ -6,7 +6,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
 {
     public class ColorInterpolator : Interpolator<Color>
     {
-        public IEnumerable<Color> Interpolate(Color startValue, Color endValue, int stepCount, Easer easer)
+        public IEnumerable<Color> Interpolate(Color startValue, Color endValue, int stepCount, EaserFunction easer)
         {
             if (stepCount <= 0)
             {

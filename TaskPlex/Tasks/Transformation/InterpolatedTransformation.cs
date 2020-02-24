@@ -33,7 +33,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// <summary>
         ///     Returns the easing function for this transformation
         /// </summary>
-        public Easer Easer { get; set; } = new LinearEaser();
+        public EaserFunction Easer { get; set; } = Easers.Linear;
 
         private Timer _timer;
 
