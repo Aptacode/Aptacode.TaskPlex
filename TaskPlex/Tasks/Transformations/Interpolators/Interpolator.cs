@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolators
 {
     public interface Interpolator<T>
     {

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {

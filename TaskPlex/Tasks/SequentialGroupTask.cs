@@ -8,6 +8,7 @@ namespace Aptacode.TaskPlex.Tasks
     public class SequentialGroupTask : GroupTask
     {
         private int _endedTaskCount;
+
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>

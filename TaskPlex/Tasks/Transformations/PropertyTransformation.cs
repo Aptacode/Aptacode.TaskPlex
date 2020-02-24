@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {

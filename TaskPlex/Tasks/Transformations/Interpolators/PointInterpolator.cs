@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolators
 {
     public class PointInterpolator : Interpolator<Point>
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
@@ -29,12 +28,10 @@ namespace Aptacode.TaskPlex.Tests
 
         protected override void Setup()
         {
-
         }
 
         public override void Dispose()
         {
-
         }
 
         protected override async Task InternalTask()
@@ -191,7 +188,8 @@ namespace Aptacode.TaskPlex.Tests
 
             coordinator.Apply(groupTask);
 
-            Assert.That(() => groupStartTime < task1StartTime, Is.True.After(40, 10), "Group StartTime < Task1 StartTime");
+            Assert.That(() => groupStartTime < task1StartTime, Is.True.After(40, 10),
+                "Group StartTime < Task1 StartTime");
             Assert.That(() => task1StartTime < task1EndTime, Is.True.After(40, 10), "Task1 StartTime < Task1 EndTime");
             Assert.That(() => task1EndTime < task2StartTime, Is.True.After(40, 10), "Task1 EndTime < Task2 StartTime");
             Assert.That(() => task2StartTime < task2EndTime, Is.True.After(40, 10), "Task2 StartTime < Task2 EndTime");

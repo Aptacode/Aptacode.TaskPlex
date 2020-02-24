@@ -16,6 +16,7 @@ namespace Aptacode.TaskPlex.Tasks
         public TimeSpan Duration { get; protected set; }
         protected CancellationTokenSource CancellationToken { get; private set; }
         public TaskState State { get; protected set; }
+        public abstract void Dispose();
 
         public event EventHandler<EventArgs> OnStarted;
 
@@ -62,7 +63,6 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         protected abstract void Setup();
-        public abstract void Dispose();
 
         /// <summary>
         ///     Interrupt the task

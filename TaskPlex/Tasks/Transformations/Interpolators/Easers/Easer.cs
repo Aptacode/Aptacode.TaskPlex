@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers
 {
     public delegate float EaserFunction(int index, int total);
 
@@ -15,9 +15,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
 
         public static float Elastic(int index, int total)
         {
-            var x = (double)Percent(index, total);
+            var x = (double) Percent(index, total);
             var p = 0.3;
-            return (float)(Math.Pow(2, -10 * x) * Math.Sin((x - p / 4) * (2 * Math.PI) / p) + 1);
+            return (float) (Math.Pow(2, -10 * x) * Math.Sin((x - p / 4) * (2 * Math.PI) / p) + 1);
         }
 
         public static float EaseInQuad(int index, int total)
@@ -25,6 +25,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
             var x = Percent(index, total);
             return x * x;
         }
+
         public static float EaseOutQuad(int index, int total)
         {
             var x = Percent(index, total);
@@ -46,7 +47,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
         public static float EaseOutCubic(int index, int total)
         {
             var x = Percent(index, total);
-            return (--x) * x * x + 1;
+            return --x * x * x + 1;
         }
 
         public static float EaseInOutCubic(int index, int total)
@@ -64,13 +65,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
         public static float EaseOutQuart(int index, int total)
         {
             var x = Percent(index, total);
-            return 1 - (--x) * x * x * x;
+            return 1 - --x * x * x * x;
         }
 
         public static float EaseInOutQuart(int index, int total)
         {
             var x = Percent(index, total);
-            return x < .5 ? 8 * x * x * x * x : 1 - 8 * (--x) * x * x * x;
+            return x < .5 ? 8 * x * x * x * x : 1 - 8 * --x * x * x * x;
         }
 
         public static float EaseInQuint(int index, int total)
@@ -82,13 +83,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
         public static float EaseOutQuint(int index, int total)
         {
             var x = Percent(index, total);
-            return 1 + (--x) * x * x * x * x;
+            return 1 + --x * x * x * x * x;
         }
 
         public static float EaseInOutQuint(int index, int total)
         {
             var x = Percent(index, total);
-            return x < .5 ? 16 * x * x * x * x * x : 1 + 16 * (--x) * x * x * x * x;
+            return x < .5 ? 16 * x * x * x * x * x : 1 + 16 * --x * x * x * x * x;
         }
 
 
@@ -104,7 +105,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers
                 return 1;
             }
 
-            return index / (float)total;
+            return index / (float) total;
         }
     }
 }

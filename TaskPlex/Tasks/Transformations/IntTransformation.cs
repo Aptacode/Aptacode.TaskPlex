@@ -1,7 +1,7 @@
 ﻿using System;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public sealed class IntTransformation<TClass> : InterpolatedTransformation<TClass, int> where TClass : class
     {

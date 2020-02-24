@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex
 {

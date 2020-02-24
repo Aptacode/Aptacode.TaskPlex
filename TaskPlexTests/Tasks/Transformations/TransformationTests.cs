@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformation;
 using Aptacode.TaskPlex.Tests.Helpers;
 using NUnit.Framework;
 
@@ -11,37 +10,6 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
     [TestFixture]
     public class TransformationTests
     {
-        [Test]
-        public void CanPauseTasks()
-        {
-            //Arrange
-            var testRectangle = new TestRectangle();
-            var intTransformation = TaskPlexFactory.Create(testRectangle, "Width", 100,
-                TimeSpan.FromMilliseconds(20), RefreshRate.High);
-
-            var startTime = DateTime.Now;
-            var endTime = DateTime.Now;
-
-            intTransformation.OnStarted += (s, e) => { startTime = DateTime.Now; };
-            intTransformation.OnFinished += (s, e) => { endTime = DateTime.Now; };
-
-            //Action
-            var task = Task.Run(async () =>
-            {
-                _ = intTransformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
-                intTransformation.Pause();
-                await Task.Delay(55);
-                intTransformation.Resume();
-                await Task.Delay(55);
-            });
-
-            task.Wait();
-
-            //Assert
-            Assert.Greater((endTime - startTime).Milliseconds, 70,
-                "The transformation should finish over 100 ms after starting due to the delay");
-        }
-
         [Test]
         public void CanPauseStringTransformation()
         {
@@ -64,6 +32,37 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
                 transformation.Pause();
                 await Task.Delay(55);
                 transformation.Resume();
+                await Task.Delay(55);
+            });
+
+            task.Wait();
+
+            //Assert
+            Assert.Greater((endTime - startTime).Milliseconds, 70,
+                "The transformation should finish over 100 ms after starting due to the delay");
+        }
+
+        [Test]
+        public void CanPauseTasks()
+        {
+            //Arrange
+            var testRectangle = new TestRectangle();
+            var intTransformation = TaskPlexFactory.Create(testRectangle, "Width", 100,
+                TimeSpan.FromMilliseconds(20), RefreshRate.High);
+
+            var startTime = DateTime.Now;
+            var endTime = DateTime.Now;
+
+            intTransformation.OnStarted += (s, e) => { startTime = DateTime.Now; };
+            intTransformation.OnFinished += (s, e) => { endTime = DateTime.Now; };
+
+            //Action
+            var task = Task.Run(async () =>
+            {
+                _ = intTransformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
+                intTransformation.Pause();
+                await Task.Delay(55);
+                intTransformation.Resume();
                 await Task.Delay(55);
             });
 
@@ -150,6 +149,5 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
             Assert.IsTrue(hasStarted, "OnStarted should be fired");
             Assert.IsTrue(hasFinished, "OnFinished should be fired");
         }
-
     }
 }

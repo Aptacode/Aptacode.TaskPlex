@@ -1,4 +1,4 @@
-﻿namespace Aptacode.TaskPlex.Tasks.Transformation.Interpolator.EventArgs
+﻿namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolators.EventArgs
 {
     public class InterpolationValueChangedEventArgs<T> : InterpolationEventArgs
     {

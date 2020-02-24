@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
 {
@@ -49,7 +46,8 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
         [TestCase(0, -10, 10, new[] {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10})]
         public void IntInterpolationTests(int startValue, int endValue, int stepCount, int[] steps)
         {
-            Assert.That(IntInterpolator.Interpolate(startValue, endValue, stepCount, Easers.Linear), Is.EquivalentTo(steps));
+            Assert.That(IntInterpolator.Interpolate(startValue, endValue, stepCount, Easers.Linear),
+                Is.EquivalentTo(steps));
         }
     }
 }

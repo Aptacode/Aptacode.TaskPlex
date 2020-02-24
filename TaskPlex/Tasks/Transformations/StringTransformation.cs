@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public sealed class StringTransformation<TClass> : PropertyTransformation<TClass, string> where TClass : class
     {
+        private int _tickCount;
+
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
@@ -40,15 +42,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
         }
 
-        private int _tickCount;
         protected override void Setup()
         {
-
         }
 
         public override void Dispose()
         {
-
         }
 
         protected override async Task InternalTask()
@@ -62,7 +61,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             State = TaskState.Running;
             _tickCount = 0;
 
-            var timer = new Timer((int)RefreshRate);
+            var timer = new Timer((int) RefreshRate);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
 

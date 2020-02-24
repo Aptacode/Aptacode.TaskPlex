@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public sealed class BoolTransformation<TClass> : PropertyTransformation<TClass, bool> where TClass : class
     {
+        private int _tickCount;
+
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
@@ -19,7 +21,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             taskDuration,
             refreshRate)
         {
-
         }
 
         public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration,
@@ -35,15 +36,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
         }
 
-        private int _tickCount = 0;
         protected override void Setup()
         {
-
         }
 
         public override void Dispose()
         {
-
         }
 
         protected override async Task InternalTask()
@@ -57,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             State = TaskState.Running;
             _tickCount = 0;
 
-            var timer = new Timer((int)RefreshRate);
+            var timer = new Timer((int) RefreshRate);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
 

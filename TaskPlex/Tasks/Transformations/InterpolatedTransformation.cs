@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator;
-using Aptacode.TaskPlex.Tasks.Transformation.Interpolator.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 using Timer = System.Timers.Timer;
 
-namespace Aptacode.TaskPlex.Tasks.Transformation
+namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public class InterpolatedTransformation<TClass, TProperty> : PropertyTransformation<TClass, TProperty>
         where TClass : class
@@ -15,6 +15,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         private readonly Interpolator<TProperty> _interpolator;
         private SynchronizationContext _context;
         private IEnumerator<TProperty> _interpolationEnumerator;
+
+        private Timer _timer;
 
         protected InterpolatedTransformation(TClass target,
             string property,
@@ -35,16 +37,15 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         public EaserFunction Easer { get; set; } = Easers.Linear;
 
-        private Timer _timer;
-
         protected override void Setup()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
 
             _context = SynchronizationContext.Current;
-            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
-            _timer = new Timer((int)RefreshRate);
+            _interpolationEnumerator =
+                _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
+            _timer = new Timer((int) RefreshRate);
             _timer.Elapsed += Timer_Elapsed;
         }
 

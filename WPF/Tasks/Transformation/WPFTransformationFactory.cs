@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Tasks.Transformation;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
 {
