@@ -12,8 +12,8 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
     {
         private static readonly EaserFunction LinearEaser = Easers.Linear;
         private static readonly EaserFunction SineEaser = Easers.Sine;
-        private static readonly EaserFunction CubicInEaser = Easers.CubicIn;
-        private static readonly EaserFunction CubicOutEaser = Easers.CubicOut;
+        private static readonly EaserFunction CubicInEaser = Easers.EaseInQuad;
+        private static readonly EaserFunction CubicOutEaser = Easers.EaseOutQuad;
 
         [Test]
         [TestCase(0, 0, 1)]
