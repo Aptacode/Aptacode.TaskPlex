@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -29,37 +30,33 @@ namespace Aptacode.TaskPlex
         /// </summary>
         public void Dispose()
         {
-            _logger.LogTrace("Disposing");
-            _cancellationToken.Cancel();
+            _logger.LogTrace("Dispose");
+            Cancel();
         }
-
         public void Reset()
         {
-            _logger.LogTrace("Resetting");
-
-            foreach (var task in _tasks)
-            {
-                task.Cancel();
-            }
-
-            _cancellationToken.Cancel();
+            _logger.LogTrace("Reset");
+            Cancel();
             _cancellationToken = new CancellationTokenSource();
+        }
+        public void Cancel()
+        {
+            _tasks.ToList().ForEach(task => task.Cancel());
+            _cancellationToken.Cancel();
         }
 
         public void Pause()
         {
-            foreach (var task in _tasks)
-            {
-                task.Pause();
-            }
+            _logger.LogTrace("Pause");
+
+            _tasks.ToList().ForEach(task => task.Pause());
         }
 
         public void Resume()
         {
-            foreach (var task in _tasks)
-            {
-                task.Resume();
-            }
+            _logger.LogTrace("Resume");
+
+            _tasks.ToList().ForEach(task => task.Resume());
         }
 
         /// <summary>
@@ -76,6 +73,9 @@ namespace Aptacode.TaskPlex
             _logger.LogTrace($"Applying task: {task}");
 
             _tasks.Add(task);
+
+            task.OnFinished += (s, e) => _tasks.Remove(task);
+            task.OnCancelled += (s, e) => _tasks.Remove(task);
 
             try
             {

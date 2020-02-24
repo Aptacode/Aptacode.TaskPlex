@@ -35,13 +35,7 @@ namespace Aptacode.TaskPlex.Tasks
                 return;
             }
 
-            OnCancelled += (s, e) =>
-            {
-                foreach (var task1 in Tasks)
-                {
-                    task1.Cancel();
-                }
-            };
+            OnCancelled += (s, e) => Tasks.ForEach(task => task.Cancel());
 
             foreach (var baseTask in Tasks)
             {

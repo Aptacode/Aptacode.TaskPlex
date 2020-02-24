@@ -31,13 +31,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override void Setup()
         {
-            OnCancelled += (s, e) =>
-            {
-                foreach (var task1 in Tasks)
-                {
-                    task1.Cancel();
-                }
-            };
+            OnCancelled += (s, e) => Tasks.ForEach(task => task.Cancel());
 
             foreach (var baseTask in Tasks)
             {
@@ -48,12 +42,12 @@ namespace Aptacode.TaskPlex.Tasks
 
         public override void Pause()
         {
-            Tasks.ForEach(t => t.Pause());
+            Tasks.ForEach(task => task.Pause());
         }
 
         public override void Resume()
         {
-            Tasks.ForEach(t => t.Resume());
+            Tasks.ForEach(task => task.Resume());
         }
 
         protected override async Task InternalTask()

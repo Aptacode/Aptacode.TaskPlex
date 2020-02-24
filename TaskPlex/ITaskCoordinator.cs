@@ -9,6 +9,7 @@ namespace Aptacode.TaskPlex
         void Reset();
         void Pause();
         void Resume();
+        void Cancel();
         Task Apply(BaseTask task);
     }
 }
