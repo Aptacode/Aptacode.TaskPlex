@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -8,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Aptacode.TaskPlex
 {
-    public class TaskCoordinator : IDisposable
+    public class TaskCoordinator : ITaskCoordinator
     {
         private readonly ILogger _logger;
         private readonly ConcurrentDictionary<BaseTask, ConcurrentQueue<BaseTask>> _tasks;
@@ -120,14 +118,11 @@ namespace Aptacode.TaskPlex
 
                 switch (task)
                 {
-                    case ParallelGroupTask parallelGroupTask:
-                        await parallelGroupTask.InternalTask(this).ConfigureAwait(false);
-                        break;
-                    case SequentialGroupTask sequentialGroupTask:
-                        await sequentialGroupTask.InternalTask(this).ConfigureAwait(false);
+                    case GroupTask groupTask:
+                        await groupTask.InternalTask(this).ConfigureAwait(false);
                         break;
                     default:
-                        await Run(task).ConfigureAwait(false);
+                        await task.StartAsync(_cancellationToken).ConfigureAwait(false);
                         break;
                 }
 
@@ -141,11 +136,6 @@ namespace Aptacode.TaskPlex
             {
                 RunNextTask(task);
             }
-        }
-
-        private async Task Run(BaseTask task)
-        {
-            await task.StartAsync(_cancellationToken).ConfigureAwait(false);
         }
 
         private void RunNextTask(BaseTask completedTask)

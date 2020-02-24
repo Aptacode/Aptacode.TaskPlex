@@ -51,6 +51,6 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
 
-        internal abstract Task InternalTask(TaskCoordinator taskCoordinator);
+        internal abstract Task InternalTask(ITaskCoordinator taskCoordinator);
     }
 }

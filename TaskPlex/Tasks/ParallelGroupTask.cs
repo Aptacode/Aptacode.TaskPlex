@@ -7,9 +7,9 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class ParallelGroupTask : GroupTask
     {
-        private TaskCoordinator _taskCoordinator;
+        private ITaskCoordinator _taskCoordinator;
 
-        private int endedTaskCount;
+        private int _endedTaskCount;
 
         /// <summary>
         ///     Execute the specified tasks in parallel
@@ -31,7 +31,7 @@ namespace Aptacode.TaskPlex.Tasks
                 .FirstOrDefault();
         }
 
-        internal override async Task InternalTask(TaskCoordinator taskCoordinator)
+        internal override async Task InternalTask(ITaskCoordinator taskCoordinator)
         {
             _taskCoordinator = taskCoordinator;
 
@@ -47,8 +47,8 @@ namespace Aptacode.TaskPlex.Tasks
 
                 foreach (var baseTask in Tasks)
                 {
-                    baseTask.OnFinished += (s, e) => { endedTaskCount++; };
-                    baseTask.OnCancelled += (s, e) => { endedTaskCount++; };
+                    baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
+                    baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
                 }
 
 
@@ -70,7 +70,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             Tasks.ForEach(_taskCoordinator.Apply);
 
-            while (endedTaskCount < Tasks.Count)
+            while (_endedTaskCount < Tasks.Count)
             {
                 await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }

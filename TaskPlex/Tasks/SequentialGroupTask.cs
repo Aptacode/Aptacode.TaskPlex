@@ -7,9 +7,9 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class SequentialGroupTask : GroupTask
     {
-        private TaskCoordinator _taskCoordinator;
+        private ITaskCoordinator _taskCoordinator;
 
-        private int endedTaskCount;
+        private int _endedTaskCount;
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
@@ -29,7 +29,7 @@ namespace Aptacode.TaskPlex.Tasks
             return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
         }
 
-        internal override async Task InternalTask(TaskCoordinator taskCoordinator)
+        internal override async Task InternalTask(ITaskCoordinator taskCoordinator)
         {
             _taskCoordinator = taskCoordinator;
 
@@ -45,8 +45,8 @@ namespace Aptacode.TaskPlex.Tasks
 
                 foreach (var baseTask in Tasks)
                 {
-                    baseTask.OnFinished += (s, e) => { endedTaskCount++; };
-                    baseTask.OnCancelled += (s, e) => { endedTaskCount++; };
+                    baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
+                    baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
                 }
 
                 for (var i = 1; i < Tasks.Count; i++)
@@ -74,7 +74,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             _taskCoordinator.Apply(Tasks[0]);
 
-            while (endedTaskCount < Tasks.Count)
+            while (_endedTaskCount < Tasks.Count)
             {
                 await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }
