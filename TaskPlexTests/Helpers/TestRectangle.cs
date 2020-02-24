@@ -32,6 +32,7 @@ namespace Aptacode.TaskPlex.Tests.Helpers
             Height = 0;
             Opacity = 0;
             BackgroundColor = Color.White;
+            Name = "Default";
         }
 
         public int Width

@@ -13,9 +13,12 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
-            <ComboBox Margin="10" Width="200" SelectionChanged="OnDemoSelectionChanged">
-                <ComboBoxItem Content="Demo 1" />
+            <ComboBox Margin="10" Width="200" SelectionChanged="OnDemoSelectionChanged" x:Name="ComboBox">
+                <ComboBoxItem Content="Sequential" />
+                <ComboBoxItem Content="Parallel" />
+                <ComboBoxItem Content="Parallel Reverse" />
             </ComboBox>
+
             <Button Margin="10" Width="100" Click="PlayButtonClicked">Play</Button>
             <Button Margin="10" Width="100" Click="PauseButtonClicked">Pause</Button>
         </StackPanel>

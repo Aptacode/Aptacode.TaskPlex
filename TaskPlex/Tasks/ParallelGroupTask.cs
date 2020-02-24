@@ -66,7 +66,6 @@ namespace Aptacode.TaskPlex.Tasks
             Tasks.ForEach(t => t.Resume());
         }
 
-
         protected override async Task InternalTask()
         {
             Tasks.ForEach(_taskCoordinator.Apply);

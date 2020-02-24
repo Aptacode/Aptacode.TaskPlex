@@ -166,17 +166,26 @@ namespace Aptacode.TaskPlex.Tests
             var task2StartTime = DateTime.Now;
             var task2EndTime = DateTime.Now;
 
+            var groupStartTime = DateTime.Now;
+            var groupEndTime = DateTime.Now;
+
             task1.OnStarted += (s, e) => { task1StartTime = DateTime.Now; };
             task1.OnFinished += (s, e) => { task1EndTime = DateTime.Now; };
 
             task2.OnStarted += (s, e) => { task2StartTime = DateTime.Now; };
             task2.OnFinished += (s, e) => { task2EndTime = DateTime.Now; };
 
+            groupTask.OnStarted += (s, e) => { groupStartTime = DateTime.Now; };
+            groupTask.OnFinished += (s, e) => { groupEndTime = DateTime.Now; };
+
+
             coordinator.Apply(groupTask);
 
+            Assert.That(() => groupStartTime < task1StartTime, Is.True.After(40, 10), "Group StartTime < Task1 StartTime");
             Assert.That(() => task1StartTime < task1EndTime, Is.True.After(40, 10), "Task1 StartTime < Task1 EndTime");
             Assert.That(() => task1EndTime < task2StartTime, Is.True.After(40, 10), "Task1 EndTime < Task2 StartTime");
             Assert.That(() => task2StartTime < task2EndTime, Is.True.After(40, 10), "Task2 StartTime < Task2 EndTime");
+            Assert.That(() => task2EndTime < groupEndTime, Is.True.After(40, 10), "Task2 EndTime < group EndTime");
         }
     }
 }

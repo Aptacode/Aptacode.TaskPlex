@@ -7,6 +7,9 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class SequentialGroupTask : GroupTask
     {
+        private TaskCoordinator _taskCoordinator;
+
+        private int endedTaskCount;
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
@@ -21,9 +24,40 @@ namespace Aptacode.TaskPlex.Tasks
             return tasks.Aggregate(TimeSpan.Zero, (current, task) => current.Add(task.Duration));
         }
 
-        internal override Task InternalTask(TaskCoordinator taskCoordinator)
+        public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
+        }
+
+        internal override async Task InternalTask(TaskCoordinator taskCoordinator)
+        {
+            _taskCoordinator = taskCoordinator;
+
+            if (Tasks.Count > 0)
+            {
+                OnCancelled += (s, e) =>
+                {
+                    foreach (var task1 in Tasks)
+                    {
+                        task1.Cancel();
+                    }
+                };
+
+                foreach (var baseTask in Tasks)
+                {
+                    baseTask.OnFinished += (s, e) => { endedTaskCount++; };
+                    baseTask.OnCancelled += (s, e) => { endedTaskCount++; };
+                }
+
+                for (var i = 1; i < Tasks.Count; i++)
+                {
+                    var localIndex = i;
+
+                    Tasks[localIndex - 1].OnFinished += (s, e) => taskCoordinator.Apply(Tasks[localIndex]);
+                }
+
+                await StartAsync().ConfigureAwait(false);
+            }
         }
 
         public override void Pause()
@@ -38,22 +72,12 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            var endedTaskCount = 0;
-            foreach (var baseTask in Tasks)
-            {
-                baseTask.OnFinished += (s, e) => { endedTaskCount++; };
-                baseTask.OnCancelled += (s, e) => { endedTaskCount++; };
-            }
+            _taskCoordinator.Apply(Tasks[0]);
 
             while (endedTaskCount < Tasks.Count)
             {
                 await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
         }
     }
 }

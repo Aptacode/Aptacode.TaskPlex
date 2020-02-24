@@ -39,6 +39,12 @@ namespace Aptacode.TaskPlex
         public void Reset()
         {
             _logger.LogTrace("Resetting");
+
+            foreach (var task in _tasks)
+            {
+                task.Key.Cancel();
+            }
+
             _cancellationToken.Cancel();
             _cancellationToken = new CancellationTokenSource();
         }
@@ -118,7 +124,7 @@ namespace Aptacode.TaskPlex
                         await parallelGroupTask.InternalTask(this).ConfigureAwait(false);
                         break;
                     case SequentialGroupTask sequentialGroupTask:
-                        await RunSequential(sequentialGroupTask).ConfigureAwait(false);
+                        await sequentialGroupTask.InternalTask(this).ConfigureAwait(false);
                         break;
                     default:
                         await Run(task).ConfigureAwait(false);
@@ -140,75 +146,6 @@ namespace Aptacode.TaskPlex
         private async Task Run(BaseTask task)
         {
             await task.StartAsync(_cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task RunParallel(ParallelGroupTask task)
-        {
-            if (task.Tasks.Count == 0)
-            {
-                return;
-            }
-
-            task.OnCancelled += (s, e) =>
-            {
-                foreach (var task1 in task.Tasks)
-                {
-                    task1.Cancel();
-                }
-            };
-
-
-            var pTask = Task.Run(async () =>
-            {
-                await task.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
-            });
-
-            task.Tasks.ForEach(TryRunTask);
-
-            pTask.Wait();
-        }
-
-
-        private async Task RunSequential(SequentialGroupTask task)
-        {
-            if (task.Tasks.Count == 0)
-            {
-                return;
-            }
-
-            ConnectSequentialTasks(task.Tasks);
-
-            var isRunning = true;
-
-            task.OnCancelled += (s, e) =>
-            {
-                foreach (var task1 in task.Tasks)
-                {
-                    task1.Cancel();
-                }
-
-                isRunning = false;
-            };
-
-            //When the last task finishes set running to false
-            task.Tasks[task.Tasks.Count - 1].OnFinished += (s, e) => isRunning = false;
-
-            Apply(task.Tasks[0]);
-
-            while (isRunning)
-            {
-                await Task.Delay(10).ConfigureAwait(false);
-            }
-        }
-
-        private void ConnectSequentialTasks(List<BaseTask> tasks)
-        {
-            for (var i = 1; i < tasks.Count; i++)
-            {
-                var localIndex = i;
-
-                tasks[localIndex - 1].OnFinished += (s, e) => Apply(tasks[localIndex]);
-            }
         }
 
         private void RunNextTask(BaseTask completedTask)

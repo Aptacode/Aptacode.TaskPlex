@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformation
 {
@@ -39,11 +40,51 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             }
         }
 
+        private int _tickCount = 0;
         protected override async Task InternalTask()
         {
-            await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
-            await WaitUntilResumed().ConfigureAwait(false);
+            if (Duration.TotalMilliseconds < 10)
+            {
+                SetValue(GetEndValue());
+                return;
+            }
+
+            State = TaskState.Running;
+            _tickCount = 0;
+
+            var timer = new Timer((int)RefreshRate);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+
+            while (State != TaskState.Stopped)
+            {
+                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
+            }
+
+            timer.Stop();
+            timer.Dispose();
+
             SetValue(GetEndValue());
+        }
+
+        private bool IsRunning()
+        {
+            return State == TaskState.Running;
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (!IsRunning())
+            {
+                return;
+            }
+
+            if (++_tickCount < StepCount)
+            {
+                return;
+            }
+
+            State = TaskState.Stopped;
         }
     }
 }

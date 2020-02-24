@@ -15,7 +15,10 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
+            if (Duration.TotalMilliseconds > 5)
+            {
+                await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
+            }
 
             await WaitUntilResumed().ConfigureAwait(false);
         }
