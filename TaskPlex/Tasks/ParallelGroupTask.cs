@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
 {
     public class ParallelGroupTask : GroupTask
     {
+        private TaskCoordinator _taskCoordinator;
+
+        private int endedTaskCount;
+
         /// <summary>
         ///     Execute the specified tasks in parallel
         /// </summary>
@@ -16,7 +19,10 @@ namespace Aptacode.TaskPlex.Tasks
             Duration = GetTotalDuration(Tasks);
         }
 
-        public override bool Equals(object obj) => obj is ParallelGroupTask task && task.GetHashCode() == GetHashCode();
+        public override bool Equals(object obj)
+        {
+            return obj is ParallelGroupTask task && task.GetHashCode() == GetHashCode();
+        }
 
         protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
@@ -25,7 +31,6 @@ namespace Aptacode.TaskPlex.Tasks
                 .FirstOrDefault();
         }
 
-        private TaskCoordinator _taskCoordinator;
         internal override async Task InternalTask(TaskCoordinator taskCoordinator)
         {
             _taskCoordinator = taskCoordinator;
@@ -51,7 +56,16 @@ namespace Aptacode.TaskPlex.Tasks
             }
         }
 
-        int endedTaskCount = 0;
+        public override void Pause()
+        {
+            Tasks.ForEach(t => t.Pause());
+        }
+
+        public override void Resume()
+        {
+            Tasks.ForEach(t => t.Resume());
+        }
+
 
         protected override async Task InternalTask()
         {
@@ -61,8 +75,6 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
             }
-
         }
-
     }
 }

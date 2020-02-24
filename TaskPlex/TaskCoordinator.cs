@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
@@ -159,13 +158,15 @@ namespace Aptacode.TaskPlex
             };
 
 
-            var pTask = Task.Run(async () => { await task.StartAsync(new CancellationTokenSource()).ConfigureAwait(false); });
-                    
+            var pTask = Task.Run(async () =>
+            {
+                await task.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
+            });
+
             task.Tasks.ForEach(TryRunTask);
 
             pTask.Wait();
-
-         }
+        }
 
 
         private async Task RunSequential(SequentialGroupTask task)

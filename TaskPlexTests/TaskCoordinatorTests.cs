@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformation;
+using Aptacode.TaskPlex.Tests.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
 {
-
     public class DummyTask : BaseTask
     {
         public readonly int HashCode;
+
         public DummyTask(TimeSpan duration, int hashCode) : base(duration)
         {
             HashCode = hashCode;
@@ -20,7 +22,10 @@ namespace Aptacode.TaskPlex.Tests
             return HashCode;
         }
 
-        public override bool Equals(object obj) => obj is DummyTask task && task.GetHashCode() == HashCode;
+        public override bool Equals(object obj)
+        {
+            return obj is DummyTask task && task.GetHashCode() == HashCode;
+        }
 
         protected override async Task InternalTask()
         {
@@ -47,6 +52,38 @@ namespace Aptacode.TaskPlex.Tests
 
             Assert.That(() => taskStarted, Is.True.After(40, 10), "Task1 has started");
             Assert.That(() => taskFinished, Is.True.After(40, 10), "Task1 has finished");
+        }
+
+        [Test]
+        public void CanPauseTasks()
+        {
+            var coordinator = new TaskCoordinator(new NullLoggerFactory());
+
+            var testRectangle = new TestRectangle();
+            var task1 = TaskPlexFactory.Create(testRectangle, "Width", 100,
+                TimeSpan.FromMilliseconds(50), RefreshRate.High);
+
+            var task1StartTime = DateTime.Now;
+            var task1EndTime = DateTime.Now;
+
+            task1.OnStarted += (s, e) => { task1StartTime = DateTime.Now; };
+            task1.OnFinished += (s, e) => { task1EndTime = DateTime.Now; };
+
+            var task = Task.Run(async () =>
+            {
+                coordinator.Apply(task1);
+                Task.Delay(10).Wait();
+                coordinator.Pause();
+                Task.Delay(50).Wait();
+                coordinator.Resume();
+                Task.Delay(100).Wait();
+            });
+
+            task.Wait();
+
+            //Assert
+            Assert.Greater((task1EndTime - task1StartTime).Milliseconds, 100,
+                "The transformation should finish over 100 ms after starting due to the delay");
         }
 
         [Test]
@@ -100,15 +137,19 @@ namespace Aptacode.TaskPlex.Tests
 
             groupTask.OnStarted += (s, e) => { groupTaskStartTime = DateTime.Now; };
             groupTask.OnFinished += (s, e) => { groupTaskEndTime = DateTime.Now; };
-            
+
             coordinator.Apply(groupTask);
 
-            Assert.That(() => groupTaskStartTime < task1StartTime, Is.True.After(20, 10), "Task1 StartTime < Task2 EndTime");
+            Assert.That(() => groupTaskStartTime < task1StartTime, Is.True.After(20, 10),
+                "Task1 StartTime < Task2 EndTime");
             Assert.That(() => task1StartTime < task2EndTime, Is.True.After(20, 10), "Task1 StartTime < Task2 EndTime");
-            Assert.That(() => task2StartTime < task1EndTime, Is.True.After(20, 10), "Task2 StartTime < Task1 StartTime");
+            Assert.That(() => task2StartTime < task1EndTime, Is.True.After(20, 10),
+                "Task2 StartTime < Task1 StartTime");
 
-            Assert.That(() => task1EndTime < groupTaskEndTime, Is.True.After(20, 10), "Task1 EndTime < groupTask EndTime");
-            Assert.That(() => task2EndTime < groupTaskEndTime, Is.True.After(20, 10), "Task2 EndTime < groupTask EndTime");
+            Assert.That(() => task1EndTime < groupTaskEndTime, Is.True.After(20, 10),
+                "Task1 EndTime < groupTask EndTime");
+            Assert.That(() => task2EndTime < groupTaskEndTime, Is.True.After(20, 10),
+                "Task2 EndTime < groupTask EndTime");
         }
 
         [Test]

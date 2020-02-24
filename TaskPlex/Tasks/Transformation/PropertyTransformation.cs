@@ -47,7 +47,10 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             return (Target, Property).GetHashCode();
         }
 
-        public override bool Equals(object obj) => obj is PropertyTransformation<TClass, TPropertyType> task && task.GetHashCode() == GetHashCode();
+        public override bool Equals(object obj)
+        {
+            return obj is PropertyTransformation<TClass, TPropertyType> task && task.GetHashCode() == GetHashCode();
+        }
 
         protected TPropertyType GetValue()
         {

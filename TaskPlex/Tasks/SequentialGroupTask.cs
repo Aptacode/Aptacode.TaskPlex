@@ -26,6 +26,16 @@ namespace Aptacode.TaskPlex.Tasks
             throw new NotImplementedException();
         }
 
+        public override void Pause()
+        {
+            Tasks.ForEach(t => t.Pause());
+        }
+
+        public override void Resume()
+        {
+            Tasks.ForEach(t => t.Resume());
+        }
+
         protected override async Task InternalTask()
         {
             var endedTaskCount = 0;
@@ -41,6 +51,9 @@ namespace Aptacode.TaskPlex.Tasks
             }
         }
 
-        public override bool Equals(object obj) => obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
+        public override bool Equals(object obj)
+        {
+            return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
+        }
     }
 }

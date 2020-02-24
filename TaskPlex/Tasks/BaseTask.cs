@@ -69,12 +69,12 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected abstract Task InternalTask();
 
-        public void Pause()
+        public virtual void Pause()
         {
             State = TaskState.Paused;
         }
 
-        public void Resume()
+        public virtual void Resume()
         {
             State = TaskState.Running;
         }

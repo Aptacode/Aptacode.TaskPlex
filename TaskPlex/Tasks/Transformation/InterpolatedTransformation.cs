@@ -44,29 +44,29 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
             _interpolationEnumerator =
                 _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             State = TaskState.Running;
-            var _timer = new Timer((int) RefreshRate);
-            _timer.Elapsed += Timer_Elapsed;
-            _timer.Start();
+            var timer = new Timer((int) RefreshRate);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
 
-            while (isRunning())
+            while (State != TaskState.Stopped)
             {
                 await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
             }
 
-            _timer.Stop();
-            _timer.Dispose();
+            timer.Stop();
+            timer.Dispose();
 
             _interpolationEnumerator.Dispose();
         }
 
-        private bool isRunning()
+        private bool IsRunning()
         {
             return State == TaskState.Running;
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (!isRunning())
+            if (!IsRunning())
             {
                 return;
             }

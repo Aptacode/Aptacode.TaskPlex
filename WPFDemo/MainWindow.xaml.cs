@@ -90,12 +90,7 @@ namespace WPFDemo
                     new Rectangle {Width = 50, Height = 50, Fill = new SolidColorBrush(Color.FromRgb(100, 100, 100))},
                     new Point(0, 0));
             CanvasItems.Add(myRectangle);
-        }
 
-        public ObservableCollection<CanvasItem> CanvasItems { get; set; }
-
-        private void PlayButtonClicked(object sender, RoutedEventArgs e)
-        {
             var transitions = new List<BaseTask>();
             for (var i = 5; i > 1; i--)
             {
@@ -125,8 +120,16 @@ namespace WPFDemo
             _taskCoordinator.Apply(TaskPlexFactory.Sequential(transitions.ToArray()));
         }
 
+        public ObservableCollection<CanvasItem> CanvasItems { get; set; }
+
+        private void PlayButtonClicked(object sender, RoutedEventArgs e)
+        {
+            _taskCoordinator.Resume();
+        }
+
         private void PauseButtonClicked(object sender, RoutedEventArgs e)
         {
+            _taskCoordinator.Pause();
         }
 
         private void OnDemoSelectionChanged(object sender, SelectionChangedEventArgs e)
