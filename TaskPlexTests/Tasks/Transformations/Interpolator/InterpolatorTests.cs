@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
 {

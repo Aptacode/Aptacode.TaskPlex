@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 
 namespace Aptacode.TaskPlex
@@ -8,6 +9,6 @@ namespace Aptacode.TaskPlex
         void Reset();
         void Pause();
         void Resume();
-        void Apply(BaseTask task);
+        Task Apply(BaseTask task);
     }
 }

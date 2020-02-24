@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
+using Aptacode.TaskPlex.Tasks;
+using Aptacode.TaskPlex.Tasks.Transformations;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation

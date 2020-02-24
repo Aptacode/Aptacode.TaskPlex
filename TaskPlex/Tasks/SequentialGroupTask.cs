@@ -53,7 +53,8 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 var localIndex = i;
 
-                Tasks[localIndex - 1].OnFinished += (s, e) => _taskCoordinator.Apply(Tasks[localIndex]);
+                Tasks[localIndex - 1].OnFinished += (s, e) =>
+                    Tasks[localIndex].StartAsync(CancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -69,7 +70,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            _taskCoordinator.Apply(Tasks[0]);
+            await Tasks[0].StartAsync(CancellationToken).ConfigureAwait(false);
 
             while (_endedTaskCount < Tasks.Count)
             {

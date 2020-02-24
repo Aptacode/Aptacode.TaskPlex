@@ -58,7 +58,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            Tasks.ForEach(_taskCoordinator.Apply);
+            Tasks.ForEach(task => task.StartAsync(CancellationToken).ConfigureAwait(false));
 
             while (_endedTaskCount < Tasks.Count)
             {

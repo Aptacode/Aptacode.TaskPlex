@@ -6,8 +6,6 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected ITaskCoordinator _taskCoordinator;
-
         protected GroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
         {
             Tasks = tasks.ToList();
@@ -51,11 +49,6 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
-
-        internal void SetTaskCoordinator(ITaskCoordinator taskCoordinator)
-        {
-            _taskCoordinator = taskCoordinator;
-        }
 
         public override void Dispose()
         {

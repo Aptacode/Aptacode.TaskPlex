@@ -33,6 +33,7 @@ namespace WPFDemo
             _taskCoordinator = new TaskCoordinator(new NullLoggerFactory());
             CanvasItems = new ObservableCollection<CanvasItem>();
             DataContext = this;
+            AddCanvasItems();
         }
 
         //A collection of all the items to be displayed on the canvas
