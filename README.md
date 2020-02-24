@@ -54,3 +54,8 @@ taskCoordinator.Apply(shrinkRectangle);
 taskCoordinator.Dispose();
 
 ```
+
+### Easers
+<p align="center">
+  <img width="700" height="600" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/easers.png">
+</p>
