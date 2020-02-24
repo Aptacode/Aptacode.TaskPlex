@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public abstract class BaseTask
+    public abstract class BaseTask : IDisposable
     {
         protected BaseTask(TimeSpan duration)
         {
@@ -41,6 +41,7 @@ namespace Aptacode.TaskPlex.Tasks
             CancellationToken = cancellationToken;
             if (!CancellationToken.IsCancellationRequested)
             {
+                Setup();
                 State = TaskState.Running;
 
                 OnStarted?.Invoke(this, EventArgs.Empty);
@@ -56,7 +57,12 @@ namespace Aptacode.TaskPlex.Tasks
 
             State = TaskState.Stopped;
             OnFinished?.Invoke(this, EventArgs.Empty);
+
+            Dispose();
         }
+
+        protected abstract void Setup();
+        public abstract void Dispose();
 
         /// <summary>
         ///     Interrupt the task

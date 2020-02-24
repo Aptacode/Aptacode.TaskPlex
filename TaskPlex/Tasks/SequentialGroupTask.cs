@@ -7,8 +7,6 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class SequentialGroupTask : GroupTask
     {
-        private ITaskCoordinator _taskCoordinator;
-
         private int _endedTaskCount;
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
@@ -29,34 +27,32 @@ namespace Aptacode.TaskPlex.Tasks
             return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
         }
 
-        internal override async Task InternalTask(ITaskCoordinator taskCoordinator)
+        protected override void Setup()
         {
-            _taskCoordinator = taskCoordinator;
-
-            if (Tasks.Count > 0)
+            if (Tasks.Count <= 0)
             {
-                OnCancelled += (s, e) =>
-                {
-                    foreach (var task1 in Tasks)
-                    {
-                        task1.Cancel();
-                    }
-                };
+                return;
+            }
 
-                foreach (var baseTask in Tasks)
+            OnCancelled += (s, e) =>
+            {
+                foreach (var task1 in Tasks)
                 {
-                    baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
-                    baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
+                    task1.Cancel();
                 }
+            };
 
-                for (var i = 1; i < Tasks.Count; i++)
-                {
-                    var localIndex = i;
+            foreach (var baseTask in Tasks)
+            {
+                baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
+                baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
+            }
 
-                    Tasks[localIndex - 1].OnFinished += (s, e) => taskCoordinator.Apply(Tasks[localIndex]);
-                }
+            for (var i = 1; i < Tasks.Count; i++)
+            {
+                var localIndex = i;
 
-                await StartAsync().ConfigureAwait(false);
+                Tasks[localIndex - 1].OnFinished += (s, e) => _taskCoordinator.Apply(Tasks[localIndex]);
             }
         }
 

@@ -36,6 +36,16 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         }
 
         private int _tickCount = 0;
+        protected override void Setup()
+        {
+
+        }
+
+        public override void Dispose()
+        {
+
+        }
+
         protected override async Task InternalTask()
         {
             if (Duration.TotalMilliseconds < 10)

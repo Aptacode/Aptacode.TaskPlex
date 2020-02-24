@@ -115,16 +115,12 @@ namespace Aptacode.TaskPlex
             {
                 _logger.LogTrace($"Task Started: {task}");
 
-
-                switch (task)
+                if (task is GroupTask groupTask)
                 {
-                    case GroupTask groupTask:
-                        await groupTask.InternalTask(this).ConfigureAwait(false);
-                        break;
-                    default:
-                        await task.StartAsync(_cancellationToken).ConfigureAwait(false);
-                        break;
+                    groupTask.SetTaskCoordinator(this);
                 }
+
+                await task.StartAsync(_cancellationToken).ConfigureAwait(false);
 
                 _logger.LogTrace($"Task Finished: {task}");
             }

@@ -35,28 +35,35 @@ namespace Aptacode.TaskPlex.Tasks.Transformation
         /// </summary>
         public Easer Easer { get; set; } = new LinearEaser();
 
-        protected override async Task InternalTask()
+        private Timer _timer;
+
+        protected override void Setup()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
 
             _context = SynchronizationContext.Current;
-            _interpolationEnumerator =
-                _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
-            State = TaskState.Running;
-            var timer = new Timer((int) RefreshRate);
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
+            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
+            _timer = new Timer((int)RefreshRate);
+            _timer.Elapsed += Timer_Elapsed;
+        }
+
+        public override void Dispose()
+        {
+            _timer.Dispose();
+            _interpolationEnumerator.Dispose();
+        }
+
+        protected override async Task InternalTask()
+        {
+            _timer.Start();
 
             while (State != TaskState.Stopped)
             {
                 await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
             }
 
-            timer.Stop();
-            timer.Dispose();
-
-            _interpolationEnumerator.Dispose();
+            _timer.Stop();
         }
 
         private bool IsRunning()

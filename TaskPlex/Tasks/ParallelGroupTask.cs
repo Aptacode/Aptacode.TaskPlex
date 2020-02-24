@@ -7,8 +7,6 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class ParallelGroupTask : GroupTask
     {
-        private ITaskCoordinator _taskCoordinator;
-
         private int _endedTaskCount;
 
         /// <summary>
@@ -31,28 +29,20 @@ namespace Aptacode.TaskPlex.Tasks
                 .FirstOrDefault();
         }
 
-        internal override async Task InternalTask(ITaskCoordinator taskCoordinator)
+        protected override void Setup()
         {
-            _taskCoordinator = taskCoordinator;
-
-            if (Tasks.Count > 0)
+            OnCancelled += (s, e) =>
             {
-                OnCancelled += (s, e) =>
+                foreach (var task1 in Tasks)
                 {
-                    foreach (var task1 in Tasks)
-                    {
-                        task1.Cancel();
-                    }
-                };
-
-                foreach (var baseTask in Tasks)
-                {
-                    baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
-                    baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
+                    task1.Cancel();
                 }
+            };
 
-
-                await StartAsync().ConfigureAwait(false);
+            foreach (var baseTask in Tasks)
+            {
+                baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
+                baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
             }
         }
 
