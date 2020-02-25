@@ -14,13 +14,24 @@
 
         <StackPanel Orientation="Horizontal">
             <ComboBox Margin="10" Width="200" SelectionChanged="OnDemoSelectionChanged" x:Name="ComboBox">
-                <ComboBoxItem Content="Sequential" />
-                <ComboBoxItem Content="Parallel" />
-                <ComboBoxItem Content="Parallel Reverse" />
+                <ComboBoxItem Content="SingleTransformation" />
+                <ComboBoxItem Content="SequentialTransformations" />
+                <ComboBoxItem Content="SequentialTransformation2" />
+                <ComboBoxItem Content="ParallelTransformations" />
+                <ComboBoxItem Content="ParallelTransformation2" />
+                <ComboBoxItem Content="ParallelTransformation3" />
+                <ComboBoxItem Content="RepeatTransformations" />
+
+                <ComboBoxItem Content="Transformation_Linear" />
+                <ComboBoxItem Content="Transformation_EaseIn" />
+                <ComboBoxItem Content="Transformation_EaseOut" />
+                <ComboBoxItem Content="Transformation_EaseInOut" />
+                <ComboBoxItem Content="Transformation_Elastic" />
             </ComboBox>
 
             <Button Margin="10" Width="100" Click="PlayButtonClicked">Play</Button>
             <Button Margin="10" Width="100" Click="PauseButtonClicked">Pause</Button>
+            <Button Margin="10" Width="100" Click="ButtonBase_OnClick">Reset</Button>
         </StackPanel>
 
         <ItemsControl Grid.Row="1" ItemsSource="{Binding Rectangles}">

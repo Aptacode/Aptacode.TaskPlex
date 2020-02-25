@@ -43,6 +43,7 @@ namespace WPFDemo
 
         private void AddCanvasItems()
         {
+            Rectangles.Clear();
             var colors = GetColors();
             for (var i = 0; i < 10; i++)
             {
@@ -95,42 +96,120 @@ namespace WPFDemo
         {
             _taskCoordinator.Pause();
         }
+        private BaseTask SingleTransformation()
+        {
+            return GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Linear);
+        }
+        private BaseTask Transformation_Linear()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Linear),
+                GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.Linear));
+        }
+        private BaseTask Transformation_EaseIn()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInQuad),
+                GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInQuad));
+        }
+        private BaseTask Transformation_EaseOut()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseOutQuad),
+                GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseOutQuad));
+        }
+        private BaseTask Transformation_EaseInOut()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutQuad),
+                GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInOutQuad));
+        }
+        private BaseTask Transformation_Elastic()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Elastic),
+                GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.Elastic));
+        }
+        private BaseTask SequentialTransformations()
+        {
+            return TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
+                            GetTransformation(Rectangles[1], 600, Rectangles[1].Margin.Top, 300, Easers.EaseInOutCubic));
+        }
+        private BaseTask ParallelTransformations()
+        {
+            return TaskPlexFactory.Parallel(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
+                GetTransformation(Rectangles[1], 600, Rectangles[1].Margin.Top, 300, Easers.EaseInOutCubic));
+        }
+        private BaseTask RepeatTransformations()
+        {
+            return TaskPlexFactory.Repeat(
+                    TaskPlexFactory.Sequential(
+                GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
+                            GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic)), 2);
+        }
 
         private void OnDemoSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (ComboBox.SelectedIndex)
+            switch (((ComboBoxItem)ComboBox.SelectedValue).Content)
             {
-                case 0:
-                    _selectedTransformation = GetSequentialTransformation();
+                case "SingleTransformation":
+                    _selectedTransformation = SingleTransformation();
+                    break;
+                case "Transformation_Linear":
+                    _selectedTransformation = Transformation_Linear();
+                    break;
+                case "Transformation_EaseIn":
+                    _selectedTransformation = Transformation_EaseIn();
+                    break;
+                case "Transformation_EaseOut":
+                    _selectedTransformation = Transformation_EaseOut();
+                    break;
+                case "Transformation_EaseInOut":
+                    _selectedTransformation = Transformation_EaseInOut();
+                    break;
+                case "Transformation_Elastic":
+                    _selectedTransformation = Transformation_Elastic();
+                    break;
+                case "SequentialTransformations":
+                    _selectedTransformation = SequentialTransformations();
+                    break;
+                case "ParallelTransformations":
+                    _selectedTransformation = ParallelTransformations();
+                    break;
+                case "RepeatTransformations":
+                    _selectedTransformation = RepeatTransformations();
+                    break;
+                case "SequentialTransformation2":
+                    _selectedTransformation = SequentialTransformation2();
                     break;
 
-                case 1:
-                    _selectedTransformation = GetParallelTransformation();
+                case "ParallelTransformation2":
+                    _selectedTransformation = ParallelTransformation2();
                     break;
-                case 2:
-                    _selectedTransformation = GetSweep();
+                case "ParallelTransformation3":
+                    _selectedTransformation = ParallelTransformation3();
                     break;
             }
 
             _taskCoordinator.Reset();
-
-            _taskCoordinator.Apply(_selectedTransformation);
         }
 
-        private BaseTask GetSequentialTransformation()
+        private BaseTask SequentialTransformation2()
         {
             var transformations = new List<BaseTask>();
 
             foreach (var rectangle in Rectangles)
             {
-                transformations.Add(GetTransformation(rectangle, 600, rectangle.Margin.Top, 100));
-                transformations.Add(GetTransformation(rectangle, 40, rectangle.Margin.Top, 100));
+                transformations.Add(GetTransformation(rectangle, 600, rectangle.Margin.Top, 100, Easers.EaseInOutCubic));
+                transformations.Add(GetTransformation(rectangle, 40, rectangle.Margin.Top, 100, Easers.EaseInOutCubic));
             }
 
             return TaskPlexFactory.Sequential(transformations.ToArray());
         }
 
-        private BaseTask GetParallelTransformation()
+        private BaseTask ParallelTransformation2()
         {
             var transformations = new List<BaseTask>();
 
@@ -139,31 +218,37 @@ namespace WPFDemo
             {
                 var sequentialTransformation = TaskPlexFactory.Sequential(
                     TaskPlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
-                    GetTransformation(rectangle, 600, rectangle.Margin.Top, 300),
-                    GetTransformation(rectangle, 40, rectangle.Margin.Top, 300));
+                    GetTransformation(rectangle, 600, rectangle.Margin.Top, 300, Easers.EaseInOutCubic),
+                    GetTransformation(rectangle, 40, rectangle.Margin.Top, 300, Easers.EaseInOutCubic));
                 transformations.Add(sequentialTransformation);
             }
 
             return TaskPlexFactory.Parallel(transformations.ToArray());
         }
 
-        private BaseTask GetSweep(bool isReversed = false)
+        private BaseTask ParallelTransformation3(bool isReversed = false)
         {
             var destinationX = isReversed ? 40 : 600;
             return TaskPlexFactory.Parallel(
                 Rectangles
-                    .Select(r => GetTransformation(r, destinationX, r.Margin.Top, 300))
+                    .Select(r => GetTransformation(r, destinationX, r.Margin.Top, 300, Easers.EaseInOutCubic))
                     .ToArray());
         }
 
-        private BaseTask GetTransformation(Rectangle target, double destinationX, double destinationY, int duration)
+        private BaseTask GetTransformation(Rectangle target, double destinationX, double destinationY, int duration, EaserFunction func)
         {
             var transformation = WPFTransformationFactory.Create(target, "Margin",
                 new Thickness(destinationX, destinationY, 0, 0),
-                TimeSpan.FromMilliseconds(duration), Easers.EaseInOutCubic);
+                TimeSpan.FromMilliseconds(duration), func);
 
             transformation.SynchronizationContext = SynchronizationContext.Current;
             return transformation;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            AddCanvasItems();
+            _taskCoordinator.Reset();
         }
     }
 }
