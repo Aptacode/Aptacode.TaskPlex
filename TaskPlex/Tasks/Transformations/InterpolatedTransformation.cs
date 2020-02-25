@@ -23,19 +23,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             Func<TProperty> endValue,
             TimeSpan duration,
             Interpolator<TProperty> interpolator,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             refreshRate)
         {
             _interpolator = interpolator;
+            Easer = easerFunction ?? Easers.Linear;
         }
 
         /// <summary>
         ///     Returns the easing function for this transformation
         /// </summary>
-        public EaserFunction Easer { get; set; } = Easers.Linear;
+        public EaserFunction Easer { get; set; }
 
         protected override void Setup()
         {

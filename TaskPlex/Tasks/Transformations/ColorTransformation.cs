@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -10,12 +11,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             string property,
             Func<Color> endValue,
             TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             new ColorInterpolator(),
-            refreshRate)
+            refreshRate, easerFunction)
         {
         }
 
@@ -24,11 +25,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         ///     specified by     the step duration up to the task duration
         /// </summary>
         public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate);
+                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate, easerFunction);
             }
             catch
             {

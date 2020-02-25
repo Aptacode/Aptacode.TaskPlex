@@ -1,4 +1,5 @@
 ﻿using System;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {

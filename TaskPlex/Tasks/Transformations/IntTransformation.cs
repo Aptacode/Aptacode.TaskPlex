@@ -1,5 +1,6 @@
 ﻿using System;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -9,12 +10,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             string property,
             Func<int> endValue,
             TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) : base(target,
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             new IntInterpolator(),
-            refreshRate)
+            refreshRate, easerFunction)
         {
         }
 
@@ -23,11 +24,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         ///     specified by     the step duration up to the task duration
         /// </summary>
         public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new IntTransformation<T>(target, property, () => endValue, duration, refreshRate);
+                return new IntTransformation<T>(target, property, () => endValue, duration, refreshRate, easerFunction);
             }
             catch
             {

@@ -24,35 +24,16 @@ namespace Aptacode.TaskPlex
         }
 
         public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
-            return IntTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            return IntTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
         }
 
         public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
-            return DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            return DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
         }
-
-        public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
-            EaserFunction easer,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
-        {
-            var transformation = IntTransformation<T>.Create(target, property, endValue, duration, refreshRate);
-            transformation.Easer = easer;
-            return transformation;
-        }
-
-        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
-            EaserFunction easer,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
-        {
-            var transformation = DoubleTransformation<T>.Create(target, property, endValue, duration, refreshRate);
-            transformation.Easer = easer;
-            return transformation;
-        }
-
 
         public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal) where T : class
@@ -61,15 +42,15 @@ namespace Aptacode.TaskPlex
         }
 
         public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
-            return ColorTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            return ColorTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
         }
 
         public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
-            return PointTransformation<T>.Create(target, property, endValue, duration, refreshRate);
+            return PointTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
         }
 
         public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration,
