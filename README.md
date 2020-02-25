@@ -3,7 +3,7 @@
   <img width="640" height="320" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/TaskPlexBanner.png">
 </p>
 
-A simple library for changing / interpolating .Net properties over time
+TaskPlex is a lightweight cross platform .net tweening library with a goal of simplifying the creation and use of complex animations.
 
 NuGet package:
 
@@ -11,23 +11,19 @@ https://www.nuget.org/packages/Aptacode.TaskPlex/
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d25f0cea83384aacada81fa9790679c8)](https://www.codacy.com/manual/Timmoth/AptacodeTaskPlex?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Timmoth/AptacodeTaskPlex&amp;utm_campaign=Badge_Grade)
 
-## Why
-I needed to synchronize the animation of properties triggered by user interaction in a project I was working on. Multiple animations could be applied to a single property at any given time causing it to behave erratically. 
-In order to simplify the application and synchronization of transformations on properties I created TaskPlex.
-
-I hope you find some use in it!
-
 ## User Guide
 
 ### TaskCoordinator
 
+-  The task coordinator is used to manage and apply each task.
 
--  The task coordinator determines in which order tasks are executed.
+### Code Example
 
 ```csharp
 
 //Initialise the task coordinator
 TaskCoordinator taskCoordinator = new TaskCoordinator();
+taskCoordinator.Start();
 
 //Create tasks
 
@@ -42,40 +38,52 @@ var transformation3 = TaskFactory.Create(myRectangle, "Width", 50, TimeSpan.From
 var transformation4 = TaskFactory.Create(myRectangle, "Height", 50, TimeSpan.FromMilliseconds(100));
 var shrinkRectangle = TaskFactory.Parallel(transformation1, transformation2});
 
-...
-
 //Apply task's whenever necessary
 taskCoordinator.Apply(hideRectangle);
 taskCoordinator.Apply(shrinkRectangle);
 
-...
+//Managing running tasks
 
-//Clean up
-taskCoordinator.Dispose();
+//Pause and resume all running tasks
+taskCoordinator.Pause();
+taskCoordinator.Resume();
+
+//Pause & Resume a single running task
+taskCoordinator.Pause(transformation3);
+taskCoordinator.Resume(transformation3);
+
+//Cancel all running tasks and restart the task coordinator
+taskCoordinator.Restart();
+
+//Cancel all running tasks and release all resources
+taskCoordinator.Stop();
 
 ```
 
-### Demo Transformations
+### Demos
 * Find the application to run these demos in the 'WPFDemo' directory
 
-#### Sequential Transformations
-
+#### SequentialTask
+A group of tasks to be applied one after another
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/SequentialTransformation.gif)
 
-#### Parallel Transformations
-
+#### ParallelTask
+A group of tasks to be applied at the same time
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ParallelTransformations.gif)
 
-#### Complex Transformation
-
+#### Composite example
+An animation composed of a Parallel and Sequential groups
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ComplexTransformation.gif)
 
 
 ### Easers
+Easer functions are used to determine the rate at which a transformations value changes. The graphs below show the rate at which an interpolator affected by each easer approaches its end value over time.
 
 <p align="center">
   <img width="700" height="600" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/easers.png">
 </p>
+
+### Easer demos
 
 #### Linear
 
