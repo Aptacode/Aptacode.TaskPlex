@@ -13,14 +13,6 @@ namespace Aptacode.TaskPlex.Tasks
         {
         }
 
-        protected override void Setup()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
         protected override async Task InternalTask()
         {
             if (Duration.TotalMilliseconds > 5)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -8,9 +10,11 @@ using System.Windows.Shapes;
 using Aptacode.TaskPlex;
 using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interfaces;
+using Aptacode.TaskPlex.Interpolators.Easers;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation;
 using Microsoft.Extensions.Logging.Abstractions;
+using Color = System.Drawing.Color;
 
 namespace WPFDemo
 {
@@ -21,11 +25,6 @@ namespace WPFDemo
     {
         private readonly ITaskCoordinator _taskCoordinator;
 
-        private bool _isPlaying;
-
-        //References to each item in the canvas
-        private CanvasItem _myRectangle1, _myRectangle2, _myRectangle3, _myRectangle4;
-
         //The currently selected task to be applied
         private BaseTask _selectedTransformation;
 
@@ -33,53 +32,66 @@ namespace WPFDemo
         {
             InitializeComponent();
             _taskCoordinator = new TaskCoordinator(new NullLoggerFactory());
-            CanvasItems = new ObservableCollection<CanvasItem>();
+            Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;
             AddCanvasItems();
         }
 
         //A collection of all the items to be displayed on the canvas
-        public ObservableCollection<CanvasItem> CanvasItems { get; set; }
+        public ObservableCollection<Rectangle> Rectangles { get; set; }
 
         private void AddCanvasItems()
         {
-            _myRectangle1 =
-                new CanvasItem(
-                    new Rectangle {Width = 50, Height = 50, Fill = new SolidColorBrush(Color.FromRgb(100, 100, 100))},
-                    new Point(0, 0));
+            var colors = GetColors();
+            for (var i = 0; i < 10; i++)
+            {
+                Rectangles.Add(
+                    new Rectangle
+                    {
+                        Width = 35, Height = 35, Fill = colors.ElementAt(i), Margin = new Thickness(40, i * 40, 0, 0)
+                    });
+            }
+        }
 
-            _myRectangle2 =
-                new CanvasItem(
-                    new Rectangle {Width = 50, Height = 50, Fill = new SolidColorBrush(Color.FromRgb(150, 100, 100))},
-                    new Point(100, 50));
+        private static IEnumerable<SolidColorBrush> GetColors()
+        {
+            var interval = 30;
 
-            _myRectangle3 =
-                new CanvasItem(
-                    new Rectangle {Width = 50, Height = 50, Fill = new SolidColorBrush(Color.FromRgb(100, 150, 100))},
-                    new Point(100, 110));
+            var colors = new List<Color>();
+            for (var red = 100; red < 200; red += interval)
+            {
+                for (var green = 110; green < 210; green += interval)
+                {
+                    for (var blue = 120; blue < 220; blue += interval)
+                    {
+                        if ((red > 150) | (blue > 150) | (green > 150)) //to make sure color is not too dark
+                        {
+                            colors.Add(Color.FromArgb(255, (byte) red, (byte) green, (byte) blue));
+                        }
+                    }
+                }
+            }
 
-            _myRectangle4 =
-                new CanvasItem(
-                    new Rectangle {Width = 50, Height = 50, Fill = new SolidColorBrush(Color.FromRgb(100, 100, 150))},
-                    new Point(100, 170));
-
-            CanvasItems.Add(_myRectangle1);
-            CanvasItems.Add(_myRectangle2);
-            CanvasItems.Add(_myRectangle3);
-            CanvasItems.Add(_myRectangle4);
+            return colors.OrderBy(c => c.GetHue())
+                .ThenBy(c => c.GetSaturation())
+                .ThenBy(c => c.GetBrightness())
+                .Select(c => new SolidColorBrush(System.Windows.Media.Color.FromRgb(c.R, c.G, c.B)));
         }
 
         private void PlayButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (!_isPlaying)
+            if (_selectedTransformation.State == TaskState.Paused)
             {
                 _taskCoordinator.Resume();
+            }
+            else
+            {
+                _taskCoordinator.Apply(_selectedTransformation);
             }
         }
 
         private void PauseButtonClicked(object sender, RoutedEventArgs e)
         {
-            _isPlaying = false;
             _taskCoordinator.Pause();
         }
 
@@ -95,60 +107,62 @@ namespace WPFDemo
                     _selectedTransformation = GetParallelTransformation();
                     break;
                 case 2:
-                    _selectedTransformation = GetParallelTransformation(true);
+                    _selectedTransformation = GetSweep();
                     break;
             }
 
             _taskCoordinator.Reset();
 
-            _isPlaying = true;
             _taskCoordinator.Apply(_selectedTransformation);
         }
 
         private BaseTask GetSequentialTransformation()
         {
-            var transitions = new List<BaseTask>();
-            for (var i = 5; i > 1; i--)
+            var transformations = new List<BaseTask>();
+
+            foreach (var rectangle in Rectangles)
             {
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(0, 0),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(450, 0),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(450, 450),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(0, 450),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
+                transformations.Add(GetTransformation(rectangle, 600, rectangle.Margin.Top, 100));
+                transformations.Add(GetTransformation(rectangle, 40, rectangle.Margin.Top, 100));
             }
 
-            for (var i = 2; i < 5; i++)
-            {
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(0, 0),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(450, 0),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(450, 450),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-                transitions.Add(WPFTransformationFactory.Create(_myRectangle1, "Position", new Point(0, 450),
-                    TimeSpan.FromMilliseconds(i * 20), RefreshRate.High));
-            }
-
-            return TaskPlexFactory.Sequential(transitions.ToArray());
+            return TaskPlexFactory.Sequential(transformations.ToArray());
         }
 
-        private BaseTask GetParallelTransformation(bool isReversed = false)
+        private BaseTask GetParallelTransformation()
         {
-            var destinationX = isReversed ? 100 : 400;
+            var transformations = new List<BaseTask>();
 
-            var transform1 = WPFTransformationFactory.Create(_myRectangle2, "Position", new Point(destinationX, 50),
-                TimeSpan.FromMilliseconds(100), RefreshRate.High);
+            int counter = 0;
+            foreach (var rectangle in Rectangles)
+            {
+                var sequentialTransformation = TaskPlexFactory.Sequential(
+                    TaskPlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
+                                GetTransformation(rectangle, 600, rectangle.Margin.Top, 300),
+                                GetTransformation(rectangle, 40, rectangle.Margin.Top, 300));
+                transformations.Add(sequentialTransformation);
+            }
 
-            var transform2 = WPFTransformationFactory.Create(_myRectangle3, "Position", new Point(destinationX, 110),
-                TimeSpan.FromMilliseconds(100), RefreshRate.High);
+            return TaskPlexFactory.Parallel(transformations.ToArray());
+        }
 
-            var transform3 = WPFTransformationFactory.Create(_myRectangle4, "Position", new Point(destinationX, 170),
-                TimeSpan.FromMilliseconds(100), RefreshRate.High);
+        private BaseTask GetSweep(bool isReversed = false)
+        {
+            var destinationX = isReversed ? 40 : 600;
+            return TaskPlexFactory.Parallel(
+                Rectangles
+                    .Select(r => GetTransformation(r, destinationX, r.Margin.Top, 300))
+                    .ToArray());
+        }
 
-            return TaskPlexFactory.Parallel(transform1, transform2, transform3);
+        private BaseTask GetTransformation(Rectangle target, double destinationX, double destinationY, int duration)
+        {
+            var transformation = WPFTransformationFactory.Create(target, "Margin",
+                new Thickness(destinationX, destinationY, 0, 0),
+                TimeSpan.FromMilliseconds(duration), RefreshRate.High, Easers.EaseInOutCubic);
+
+            transformation.SynchronizationContext = SynchronizationContext.Current;
+            return transformation;
         }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
-using Timer = System.Timers.Timer;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
@@ -14,7 +12,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         where TClass : class
     {
         private readonly Interpolator<TProperty> _interpolator;
-        private SynchronizationContext _context;
         private IEnumerator<TProperty> _interpolationEnumerator;
 
         private Timer _timer;
@@ -39,34 +36,26 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         /// </summary>
         public EaserFunction Easer { get; set; }
 
-        protected override void Setup()
+        protected override async Task InternalTask()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
 
-            _context = SynchronizationContext.Current;
             _interpolationEnumerator =
                 _interpolator.Interpolate(startValue, endValue, StepCount, Easer).GetEnumerator();
             _timer = new Timer((int) RefreshRate);
             _timer.Elapsed += Timer_Elapsed;
-        }
 
-        public override void Dispose()
-        {
-            _timer.Dispose();
-            _interpolationEnumerator.Dispose();
-        }
+            _timer?.Start();
 
-        protected override async Task InternalTask()
-        {
-            _timer.Start();
-
-            while (State != TaskState.Stopped)
+            while (State != TaskState.Stopped && !CancellationTokenSource.IsCancellationRequested)
             {
-                await Task.Delay(1, CancellationTokenSource.Token).ConfigureAwait(false);
+                await Task.Delay(1).ConfigureAwait(false);
             }
 
-            _timer.Stop();
+            _timer?.Stop();
+            _timer?.Dispose();
+            _interpolationEnumerator?.Dispose();
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -82,19 +71,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
                 return;
             }
 
-            UpdateValue(_interpolationEnumerator.Current);
-        }
-
-        private void UpdateValue(TProperty value)
-        {
-            if (_context == null)
-            {
-                SetValue(value);
-            }
-            else
-            {
-                _context.Post(delegate { SetValue(value); }, null);
-            }
+            SetValue(_interpolationEnumerator.Current);
         }
     }
 }

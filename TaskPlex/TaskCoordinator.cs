@@ -12,6 +12,7 @@ namespace Aptacode.TaskPlex
     {
         private readonly ILogger _logger;
         private readonly HashSet<BaseTask> _tasks;
+        private readonly SynchronizationContext synchronizationContext;
 
         private CancellationTokenSource _cancellationTokenSource;
 

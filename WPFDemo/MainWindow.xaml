@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFDemo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="700">
+        Title="MainWindow" Height="520" Width="720">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="40" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -23,7 +23,7 @@
             <Button Margin="10" Width="100" Click="PauseButtonClicked">Pause</Button>
         </StackPanel>
 
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding CanvasItems}">
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Rectangles}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas />
@@ -31,15 +31,9 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <ContentPresenter Content="{Binding Content}" />
+                    <ContentPresenter Content="{Binding }" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemContainerStyle>
-                <Style>
-                    <Setter Property="Canvas.Left" Value="{Binding Position.X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Position.Y}" />
-                </Style>
-            </ItemsControl.ItemContainerStyle>
         </ItemsControl>
     </Grid>
 </Window>

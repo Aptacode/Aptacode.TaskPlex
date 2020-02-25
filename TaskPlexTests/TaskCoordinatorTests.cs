@@ -27,14 +27,6 @@ namespace Aptacode.TaskPlex.Tests
             return obj is DummyTask task && task.GetHashCode() == HashCode;
         }
 
-        protected override void Setup()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
         protected override async Task InternalTask()
         {
             await Task.Delay(Duration).ConfigureAwait(false);

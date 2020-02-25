@@ -19,5 +19,12 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         {
             return ColorTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
         }
+
+        public static ThicknessTransformation<T> Create<T>(T target, string property, Thickness endValue,
+            TimeSpan duration,
+            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
+        {
+            return ThicknessTransformation<T>.Create(target, property, endValue, duration, refreshRate, easerFunction);
+        }
     }
 }

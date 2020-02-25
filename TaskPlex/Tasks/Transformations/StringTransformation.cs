@@ -43,14 +43,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
         }
 
-        protected override void Setup()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
         protected override async Task InternalTask()
         {
             if (Duration.TotalMilliseconds < 10)
@@ -66,9 +58,9 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
 
-            while (State != TaskState.Stopped)
+            while (State != TaskState.Stopped && !CancellationTokenSource.IsCancellationRequested)
             {
-                await Task.Delay(1, CancellationTokenSource.Token).ConfigureAwait(false);
+                await Task.Delay(1).ConfigureAwait(false);
             }
 
             timer.Stop();

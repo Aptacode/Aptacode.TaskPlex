@@ -5,7 +5,7 @@ using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
-    public abstract class BaseTask : IDisposable
+    public abstract class BaseTask
     {
         protected BaseTask(TimeSpan duration)
         {
@@ -17,7 +17,6 @@ namespace Aptacode.TaskPlex.Tasks
         public TimeSpan Duration { get; protected set; }
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
         public TaskState State { get; protected set; }
-        public abstract void Dispose();
 
         public event EventHandler<EventArgs> OnStarted;
 
@@ -43,7 +42,6 @@ namespace Aptacode.TaskPlex.Tasks
             CancellationTokenSource = cancellationTokenSource;
             if (!CancellationTokenSource.IsCancellationRequested)
             {
-                Setup();
                 State = TaskState.Running;
 
                 OnStarted?.Invoke(this, EventArgs.Empty);
@@ -54,17 +52,12 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 State = TaskState.Stopped;
                 OnCancelled?.Invoke(this, EventArgs.Empty);
-                Dispose();
                 return;
             }
 
             State = TaskState.Stopped;
             OnFinished?.Invoke(this, EventArgs.Empty);
-
-            Dispose();
         }
-
-        protected abstract void Setup();
 
         /// <summary>
         ///     Interrupt the task

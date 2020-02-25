@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
@@ -16,6 +17,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
         protected readonly int StepCount;
+
 
         protected PropertyTransformation(TClass target,
             string property,
@@ -37,23 +39,46 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             StepCount = (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
         }
 
+        public SynchronizationContext SynchronizationContext { get; set; }
+
         public TClass Target { get; }
         public string Property { get; }
         protected RefreshRate RefreshRate { get; }
 
         protected TPropertyType GetValue()
         {
-            return _getter(Target);
+            if (SynchronizationContext == null)
+            {
+                return _getter(Target);
+            }
+
+            var result = new SynchronizedResult();
+
+            SynchronizationContext.Send(o => { ((SynchronizedResult) o).Result = _getter(Target); }, result);
+
+            return result.Result;
         }
 
         protected void SetValue(TPropertyType value)
         {
-            _setter(Target, value);
+            if (SynchronizationContext == null)
+            {
+                _setter(Target, value);
+            }
+            else
+            {
+                SynchronizationContext.Post(o => { _setter(Target, value); }, value);
+            }
         }
 
         protected TPropertyType GetEndValue()
         {
             return _endValue.Invoke();
+        }
+
+        private class SynchronizedResult
+        {
+            internal TPropertyType Result { get; set; }
         }
     }
 }

@@ -44,10 +44,5 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
-
-        public override void Dispose()
-        {
-            Tasks.ForEach(t => t.Dispose());
-        }
     }
 }
