@@ -46,7 +46,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
                 SetValue(GetEndValue());
                 return;
             }
-            
+
             _tickCount = 0;
 
             while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)

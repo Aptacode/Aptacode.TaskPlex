@@ -5,6 +5,8 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class WaitTask : BaseTask
     {
+        private int _tickCount;
+
         /// <summary>
         ///     Wait for a specified amount of time
         /// </summary>
@@ -15,16 +17,22 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            if (Duration.TotalMilliseconds > 5)
-            {
-                await Task.Delay(Duration, CancellationTokenSource.Token).ConfigureAwait(false);
-            }
+            _tickCount = 0;
 
-            await WaitUntilResumed().ConfigureAwait(false);
+            while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+            }
         }
 
         public override void Update()
         {
+            if (!IsRunning())
+            {
+                return;
+            }
+
+            _tickCount++;
         }
     }
 }

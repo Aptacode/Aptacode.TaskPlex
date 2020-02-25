@@ -31,14 +31,15 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Start the task with the given ParentCancellationTokenSource
         /// </summary>
         /// <returns></returns>
-        public async Task StartAsync(CancellationTokenSource cancellationTokenSource, RefreshRate refreshRate = RefreshRate.Normal)
+        public async Task StartAsync(CancellationTokenSource cancellationTokenSource,
+            RefreshRate refreshRate = RefreshRate.Normal)
         {
             CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
             RefreshRate = refreshRate;
 
             if (!CancellationTokenSource.IsCancellationRequested)
             {
-                _stepCount = (int)Math.Floor(Duration.TotalMilliseconds / (int)RefreshRate);
+                _stepCount = (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
 
                 Started();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Tasks;
@@ -12,19 +13,18 @@ using Timer = System.Timers.Timer;
 namespace Aptacode.TaskPlex
 {
     /// <summary>
-    /// Manages the execution of tasks
+    ///     Manages the execution of tasks
     /// </summary>
     public class TaskCoordinator : ITaskCoordinator
     {
         private readonly ILogger _logger;
         private readonly RefreshRate _refreshRate;
-        
-        private readonly Timer _taskUpdater;
         private readonly List<BaseTask> _tasks;
-        public TaskState State { get; private set; }
+
+        private readonly Timer _taskUpdater;
 
         /// <summary>
-        /// Manages the execution of tasks
+        ///     Manages the execution of tasks
         /// </summary>
         public TaskCoordinator(ILoggerFactory loggerFactory, RefreshRate refreshRate)
         {
@@ -32,16 +32,16 @@ namespace Aptacode.TaskPlex
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
             _tasks = new List<BaseTask>();
-            _taskUpdater = new Timer((int)_refreshRate);
+            _taskUpdater = new Timer((int) _refreshRate);
             _taskUpdater.Elapsed += UpdateTasks;
         }
 
-        private void UpdateTasks(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            _tasks.ForEach(task => task.Update());
-        }
+        public TaskState State { get; private set; }
 
-        public IQueryable<BaseTask> GetTasks() => _tasks.AsQueryable();
+        public IQueryable<BaseTask> GetTasks()
+        {
+            return _tasks.AsQueryable();
+        }
 
         public void Stop(BaseTask task)
         {
@@ -68,7 +68,7 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Cancel all tasks and create a new ParentCancellationTokenSource ready to accept new tasks
+        ///     Cancel all tasks and create a new ParentCancellationTokenSource ready to accept new tasks
         /// </summary>
         public void Reset()
         {
@@ -78,7 +78,7 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Start
+        ///     Start
         /// </summary>
         public void Start()
         {
@@ -88,18 +88,18 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Cancel all tasks and stop the updater
+        ///     Cancel all tasks and stop the updater
         /// </summary>
         public void Stop()
         {
-            State = TaskState.Stopped; 
+            State = TaskState.Stopped;
             _logger.LogTrace("Canceled all tasks");
             _taskUpdater.Stop();
             _tasks.ForEach(task => task.Cancel());
         }
 
         /// <summary>
-        /// Pause all running tasks
+        ///     Pause all running tasks
         /// </summary>
         public void Pause()
         {
@@ -107,8 +107,9 @@ namespace Aptacode.TaskPlex
             _logger.LogTrace("Pause");
             _tasks.ForEach(task => task.Pause());
         }
+
         /// <summary>
-        /// Resume all tasks
+        ///     Resume all tasks
         /// </summary>
         public void Resume()
         {
@@ -118,7 +119,7 @@ namespace Aptacode.TaskPlex
         }
 
         /// <summary>
-        /// Start executing a given task
+        ///     Start executing a given task
         /// </summary>
         /// <param name="task"></param>
         public async Task Apply(BaseTask task)
@@ -147,6 +148,11 @@ namespace Aptacode.TaskPlex
                 //When the task is finished remove it from the list
                 _tasks.Remove(task);
             }
+        }
+
+        private void UpdateTasks(object sender, ElapsedEventArgs e)
+        {
+            _tasks.ForEach(task => task.Update());
         }
     }
 }

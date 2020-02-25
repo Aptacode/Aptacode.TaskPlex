@@ -7,6 +7,7 @@ namespace Aptacode.TaskPlex.Interfaces
 {
     public interface ITaskCoordinator
     {
+        TaskState State { get; }
         void Reset();
         void Pause();
         void Resume();
@@ -14,11 +15,9 @@ namespace Aptacode.TaskPlex.Interfaces
         void Start();
 
         Task Apply(BaseTask task);
-        TaskState State { get; }
         IQueryable<BaseTask> GetTasks();
         void Stop(BaseTask task);
         void Pause(BaseTask task);
         void Resume(BaseTask task);
-
     }
 }

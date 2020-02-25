@@ -41,7 +41,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         //}
 
         //[Test]
-        //public void CanPauseTasks()
+        //public void CanPauseAllTasks()
         //{
         //    //Arrange
         //    var testRectangle = new TestRectangle();

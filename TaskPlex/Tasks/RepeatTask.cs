@@ -4,13 +4,14 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public class RepeatTask : BaseTask
     {
-        public BaseTask Child { get; }
-        public int Count { get; set; }
         public RepeatTask(BaseTask child, int count) : base(child.Duration)
         {
             Child = child;
             Count = count;
         }
+
+        public BaseTask Child { get; }
+        public int Count { get; set; }
 
         public override void Pause()
         {
