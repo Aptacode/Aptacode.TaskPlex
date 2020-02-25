@@ -54,16 +54,38 @@ taskCoordinator.Apply(shrinkRectangle);
 taskCoordinator.Dispose();
 
 ```
-### Demo
+### Easers
+
+#### Linear
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/Linear.gif)
+
+#### EaseIn
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseIn.gif)
+
+#### EaseOut
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseOut.gif)
+
+#### EaseInOut
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseInOut.gif)
+
+#### Elastic
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/Elastic.gif)
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/SingleTransformation.gif)
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/RepeatTransformation.gif)
+
+#### Sequential Transformations
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/SequentialTransformation.gif)
+
+#### Parallel Transformations
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ParallelTransformations.gif)
+
+#### Complex Transformation
+
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ComplexTransformation.gif)
 
 
