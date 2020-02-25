@@ -7,6 +7,8 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class BaseTask
     {
+        protected int _stepCount;
+
         protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
@@ -16,6 +18,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         public TimeSpan Duration { get; protected set; }
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
+
         public TaskState State { get; protected set; }
 
         public event EventHandler<EventArgs> OnStarted;
@@ -37,16 +40,15 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Start the task with the given CancellationTokenSource
         /// </summary>
         /// <returns></returns>
-        public async Task StartAsync(CancellationTokenSource cancellationTokenSource)
+        public async Task StartAsync(CancellationTokenSource cancellationTokenSource,
+            RefreshRate refreshRate = RefreshRate.Normal)
         {
             CancellationTokenSource = cancellationTokenSource;
             if (!CancellationTokenSource.IsCancellationRequested)
             {
-                State = TaskState.Running;
-
                 OnStarted?.Invoke(this, EventArgs.Empty);
-
-                await InternalTask().ConfigureAwait(false);
+                _stepCount = (int) Math.Floor(Duration.TotalMilliseconds / (int) refreshRate);
+                await InternalTask(refreshRate).ConfigureAwait(false);
             }
             else
             {
@@ -68,7 +70,7 @@ namespace Aptacode.TaskPlex.Tasks
             CancellationTokenSource.Cancel();
         }
 
-        protected abstract Task InternalTask();
+        protected abstract Task InternalTask(RefreshRate refreshRate);
 
         public virtual void Pause()
         {
@@ -92,5 +94,7 @@ namespace Aptacode.TaskPlex.Tasks
                 await Task.Delay(10, CancellationTokenSource.Token).ConfigureAwait(false);
             }
         }
+
+        public abstract void Update();
     }
 }

@@ -1,30 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Tasks;
 using Microsoft.Extensions.Logging;
+using Timer = System.Timers.Timer;
 
 namespace Aptacode.TaskPlex
 {
     public class TaskCoordinator : ITaskCoordinator
     {
         private readonly ILogger _logger;
-        private readonly HashSet<BaseTask> _tasks;
-        private readonly SynchronizationContext synchronizationContext;
 
+        private readonly RefreshRate _refreshRate;
+        private readonly List<BaseTask> _tasks;
+
+        private readonly Timer _timer;
         private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
         ///     Orchestrate the order of execution of tasks
         /// </summary>
-        public TaskCoordinator(ILoggerFactory loggerFactory)
+        public TaskCoordinator(ILoggerFactory loggerFactory, RefreshRate refreshRate)
         {
+            _refreshRate = refreshRate;
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
             _cancellationTokenSource = new CancellationTokenSource();
-            _tasks = new HashSet<BaseTask>();
+            _tasks = new List<BaseTask>();
+            _timer = new Timer((int) _refreshRate);
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
         }
 
         /// <summary>
@@ -33,6 +41,7 @@ namespace Aptacode.TaskPlex
         public void Dispose()
         {
             _logger.LogTrace("Dispose");
+            _timer.Dispose();
             Cancel();
         }
 
@@ -45,7 +54,7 @@ namespace Aptacode.TaskPlex
 
         public void Cancel()
         {
-            _tasks.ToList().ForEach(task => task.Cancel());
+            _tasks.ForEach(task => task.Cancel());
             _cancellationTokenSource.Cancel();
         }
 
@@ -53,14 +62,14 @@ namespace Aptacode.TaskPlex
         {
             _logger.LogTrace("Pause");
 
-            _tasks.ToList().ForEach(task => task.Pause());
+            _tasks.ForEach(task => task.Pause());
         }
 
         public void Resume()
         {
             _logger.LogTrace("Resume");
 
-            _tasks.ToList().ForEach(task => task.Resume());
+            _tasks.ForEach(task => task.Resume());
         }
 
         /// <summary>
@@ -83,12 +92,17 @@ namespace Aptacode.TaskPlex
 
             try
             {
-                await task.StartAsync(_cancellationTokenSource).ConfigureAwait(false);
+                await task.StartAsync(_cancellationTokenSource, _refreshRate).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {
                 _logger.LogDebug($"Task Canceled: {task}");
             }
+        }
+
+        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            _tasks.ForEach(task => task.Update());
         }
     }
 }

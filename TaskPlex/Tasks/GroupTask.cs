@@ -44,5 +44,10 @@ namespace Aptacode.TaskPlex.Tasks
         }
 
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
+
+        public override void Update()
+        {
+            Tasks.ForEach(baseTask => baseTask.Update());
+        }
     }
 }

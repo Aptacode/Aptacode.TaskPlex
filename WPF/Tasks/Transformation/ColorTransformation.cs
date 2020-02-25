@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators.Easers;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator;
@@ -13,12 +12,12 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
             string property,
             Func<Color> endValue,
             TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
+            EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             new ColorInterpolator(),
-            refreshRate, easerFunction)
+            easerFunction)
         {
         }
 
@@ -27,12 +26,11 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         ///     specified by     the step duration up to the task duration
         /// </summary>
         public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
+            EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate,
-                    easerFunction);
+                return new ColorTransformation<T>(target, property, () => endValue, duration, easerFunction);
             }
             catch
             {

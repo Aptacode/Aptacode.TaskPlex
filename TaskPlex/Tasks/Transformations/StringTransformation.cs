@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Timers;
 using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
@@ -15,27 +14,25 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         private StringTransformation(TClass target,
             string property,
             Func<string> endValue,
-            TimeSpan taskDuration,
-            RefreshRate refreshRate) : base(target,
+            TimeSpan taskDuration) : base(target,
             property,
             endValue,
-            taskDuration,
-            refreshRate)
+            taskDuration)
         {
         }
 
-        public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration,
-            RefreshRate refreshRate) where T : class
+        public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration)
+            where T : class
         {
-            return StringTransformation<T>.Create(target, property, () => endValue, duration, refreshRate);
+            return StringTransformation<T>.Create(target, property, () => endValue, duration);
         }
 
         public static StringTransformation<T> Create<T>(T target, string property, Func<string> endValue,
-            TimeSpan duration, RefreshRate refreshRate = RefreshRate.Normal) where T : class
+            TimeSpan duration) where T : class
         {
             try
             {
-                return new StringTransformation<T>(target, property, endValue, duration, refreshRate);
+                return new StringTransformation<T>(target, property, endValue, duration);
             }
             catch
             {
@@ -43,7 +40,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
         }
 
-        protected override async Task InternalTask()
+        protected override async Task InternalTask(RefreshRate refreshRate)
         {
             if (Duration.TotalMilliseconds < 10)
             {
@@ -54,29 +51,23 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             State = TaskState.Running;
             _tickCount = 0;
 
-            var timer = new Timer((int) RefreshRate);
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
 
             while (State != TaskState.Stopped && !CancellationTokenSource.IsCancellationRequested)
             {
                 await Task.Delay(1).ConfigureAwait(false);
             }
 
-            timer.Stop();
-            timer.Dispose();
-
             SetValue(GetEndValue());
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        public override void Update()
         {
             if (!IsRunning())
             {
                 return;
             }
 
-            if (++_tickCount < StepCount)
+            if (++_tickCount < _stepCount)
             {
                 return;
             }

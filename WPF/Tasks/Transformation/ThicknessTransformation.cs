@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators.Easers;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator;
@@ -14,12 +13,12 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
             string property,
             Func<Thickness> endValue,
             TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
+            EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             new ThicknessInterpolator(),
-            refreshRate, easerFunction)
+            easerFunction)
         {
         }
 
@@ -29,11 +28,11 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         /// </summary>
         public static ThicknessTransformation<T> Create<T>(T target, string property, Thickness endValue,
             TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
+            EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new ThicknessTransformation<T>(target, property, () => endValue, duration, refreshRate,
+                return new ThicknessTransformation<T>(target, property, () => endValue, duration,
                     easerFunction);
             }
             catch

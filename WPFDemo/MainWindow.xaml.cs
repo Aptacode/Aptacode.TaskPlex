@@ -31,7 +31,7 @@ namespace WPFDemo
         public MainWindow()
         {
             InitializeComponent();
-            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory());
+            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
             Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;
             AddCanvasItems();
@@ -133,13 +133,13 @@ namespace WPFDemo
         {
             var transformations = new List<BaseTask>();
 
-            int counter = 0;
+            var counter = 0;
             foreach (var rectangle in Rectangles)
             {
                 var sequentialTransformation = TaskPlexFactory.Sequential(
                     TaskPlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
-                                GetTransformation(rectangle, 600, rectangle.Margin.Top, 300),
-                                GetTransformation(rectangle, 40, rectangle.Margin.Top, 300));
+                    GetTransformation(rectangle, 600, rectangle.Margin.Top, 300),
+                    GetTransformation(rectangle, 40, rectangle.Margin.Top, 300));
                 transformations.Add(sequentialTransformation);
             }
 
@@ -159,7 +159,7 @@ namespace WPFDemo
         {
             var transformation = WPFTransformationFactory.Create(target, "Margin",
                 new Thickness(destinationX, destinationY, 0, 0),
-                TimeSpan.FromMilliseconds(duration), RefreshRate.High, Easers.EaseInOutCubic);
+                TimeSpan.FromMilliseconds(duration), Easers.EaseInOutCubic);
 
             transformation.SynchronizationContext = SynchronizationContext.Current;
             return transformation;

@@ -1,5 +1,4 @@
 ﻿using System;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
@@ -15,23 +14,20 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         private DoubleTransformation(TClass target,
             string property,
             Func<double> endValue,
-            TimeSpan taskDuration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
+            TimeSpan taskDuration, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             taskDuration,
-            new DoubleInterpolator(),
-            refreshRate, easerFunction)
+            new DoubleInterpolator(), easerFunction)
         {
         }
 
         public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
+            EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new DoubleTransformation<T>(target, property, () => endValue, duration, refreshRate,
-                    easerFunction);
+                return new DoubleTransformation<T>(target, property, () => endValue, duration, easerFunction);
             }
             catch
             {

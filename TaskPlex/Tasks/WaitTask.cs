@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -13,7 +14,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
         }
 
-        protected override async Task InternalTask()
+        protected override async Task InternalTask(RefreshRate refreshRate)
         {
             if (Duration.TotalMilliseconds > 5)
             {
@@ -21,6 +22,10 @@ namespace Aptacode.TaskPlex.Tasks
             }
 
             await WaitUntilResumed().ConfigureAwait(false);
+        }
+
+        public override void Update()
+        {
         }
     }
 }

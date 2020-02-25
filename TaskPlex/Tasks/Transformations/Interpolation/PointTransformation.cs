@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
@@ -11,13 +10,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         private PointTransformation(TClass target,
             string property,
             Func<Point> endValue,
-            TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
+            TimeSpan duration, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
             new PointInterpolator(),
-            refreshRate, easerFunction)
+            easerFunction)
         {
         }
 
@@ -26,12 +24,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         ///     specified by     the step duration up to the task duration
         /// </summary>
         public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
-            RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
+            EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new PointTransformation<T>(target, property, () => endValue, duration, refreshRate,
-                    easerFunction);
+                return new PointTransformation<T>(target, property, () => endValue, duration, easerFunction);
             }
             catch
             {

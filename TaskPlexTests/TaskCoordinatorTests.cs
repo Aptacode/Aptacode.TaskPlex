@@ -27,9 +27,13 @@ namespace Aptacode.TaskPlex.Tests
             return obj is DummyTask task && task.GetHashCode() == HashCode;
         }
 
-        protected override async Task InternalTask()
+        protected override async Task InternalTask(RefreshRate refreshRate)
         {
             await Task.Delay(Duration).ConfigureAwait(false);
+        }
+
+        public override void Update()
+        {
         }
     }
 
@@ -39,7 +43,7 @@ namespace Aptacode.TaskPlex.Tests
         [Test]
         public void CanApplyTask()
         {
-            var coordinator = new TaskCoordinator(new NullLoggerFactory());
+            var coordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
 
             var task1 = new DummyTask(TimeSpan.FromMilliseconds(10), 1);
             var taskStarted = false;
@@ -57,11 +61,11 @@ namespace Aptacode.TaskPlex.Tests
         [Test]
         public void CanPauseTasks()
         {
-            var coordinator = new TaskCoordinator(new NullLoggerFactory());
+            var coordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
 
             var testRectangle = new TestRectangle();
             var task1 = TaskPlexFactory.Create(testRectangle, "Width", 100,
-                TimeSpan.FromMilliseconds(50), RefreshRate.High);
+                TimeSpan.FromMilliseconds(50));
 
             var task1StartTime = DateTime.Now;
             var task1EndTime = DateTime.Now;
@@ -89,7 +93,7 @@ namespace Aptacode.TaskPlex.Tests
         [Test]
         public void ParallelTasksExecuteAtTheSameTime()
         {
-            var coordinator = new TaskCoordinator(new NullLoggerFactory());
+            var coordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
 
             var task1 = new DummyTask(TimeSpan.FromMilliseconds(10), 1);
             var task2 = new DummyTask(TimeSpan.FromMilliseconds(10), 2);
@@ -128,7 +132,7 @@ namespace Aptacode.TaskPlex.Tests
         [Test]
         public void SequentialTasksExecuteOneAfterAnother()
         {
-            var coordinator = new TaskCoordinator(new NullLoggerFactory());
+            var coordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
 
             var task1 = new DummyTask(TimeSpan.FromMilliseconds(10), 1);
             var task2 = new DummyTask(TimeSpan.FromMilliseconds(10), 2);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -16,14 +15,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         private readonly Func<TPropertyType> _endValue;
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
-        protected readonly int StepCount;
-
 
         protected PropertyTransformation(TClass target,
             string property,
             Func<TPropertyType> endValue,
-            TimeSpan duration,
-            RefreshRate refreshRate) : base(duration)
+            TimeSpan duration) : base(duration)
         {
             Target = target;
             Property = property;
@@ -35,15 +31,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
                 null,
                 propertyInfo.GetGetMethod());
             _endValue = endValue;
-            RefreshRate = refreshRate;
-            StepCount = (int) Math.Floor(Duration.TotalMilliseconds / (int) RefreshRate);
         }
 
         public SynchronizationContext SynchronizationContext { get; set; }
 
         public TClass Target { get; }
         public string Property { get; }
-        protected RefreshRate RefreshRate { get; }
 
         protected TPropertyType GetValue()
         {
