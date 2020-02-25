@@ -19,6 +19,11 @@ namespace Aptacode.TaskPlex
             return new ParallelGroupTask(tasks);
         }
 
+        public static RepeatTask Repeat(BaseTask task, int count)
+        {
+            return new RepeatTask(task, count);
+        }
+
         public static WaitTask Wait(TimeSpan duration)
         {
             return new WaitTask(duration);
