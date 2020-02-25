@@ -34,12 +34,14 @@ namespace Aptacode.TaskPlex
             _logger.LogTrace("Dispose");
             Cancel();
         }
+
         public void Reset()
         {
             _logger.LogTrace("Reset");
             Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
         }
+
         public void Cancel()
         {
             _tasks.ToList().ForEach(task => task.Cancel());

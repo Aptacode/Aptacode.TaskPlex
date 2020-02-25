@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Enums;
+using Aptacode.TaskPlex.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
 {

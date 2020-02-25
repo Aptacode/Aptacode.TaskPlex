@@ -30,10 +30,5 @@ namespace Aptacode.TaskPlex.Tasks
 
             await WaitUntilResumed().ConfigureAwait(false);
         }
-
-        public override bool Equals(object obj)
-        {
-            return obj is WaitTask task && task.GetHashCode() == GetHashCode();
-        }
     }
 }

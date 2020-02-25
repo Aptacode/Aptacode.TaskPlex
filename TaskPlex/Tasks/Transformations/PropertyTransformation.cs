@@ -1,6 +1,5 @@
 ﻿using System;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -9,8 +8,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         protected PropertyTransformation(TimeSpan duration) : base(duration)
         {
         }
-
-        public new abstract int GetHashCode();
     }
 
     public abstract class PropertyTransformation<TClass, TPropertyType> : PropertyTransformation where TClass : class
@@ -43,16 +40,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         public TClass Target { get; }
         public string Property { get; }
         protected RefreshRate RefreshRate { get; }
-
-        public override int GetHashCode()
-        {
-            return (Target, Property).GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is PropertyTransformation<TClass, TPropertyType> task && task.GetHashCode() == GetHashCode();
-        }
 
         protected TPropertyType GetValue()
         {

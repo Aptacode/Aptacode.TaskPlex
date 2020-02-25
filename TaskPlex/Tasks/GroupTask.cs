@@ -43,11 +43,6 @@ namespace Aptacode.TaskPlex.Tasks
             Duration = GetTotalDuration(Tasks);
         }
 
-        public IEnumerable<int> GetHashCodes()
-        {
-            return Tasks.Select(p => p.GetHashCode());
-        }
-
         protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
 
         public override void Dispose()

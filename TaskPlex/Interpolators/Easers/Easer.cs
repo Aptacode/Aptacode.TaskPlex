@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers
+namespace Aptacode.TaskPlex.Interpolators.Easers
 {
     public delegate float EaserFunction(int index, int total);
 

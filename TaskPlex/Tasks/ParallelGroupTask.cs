@@ -17,11 +17,6 @@ namespace Aptacode.TaskPlex.Tasks
             Duration = GetTotalDuration(Tasks);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is ParallelGroupTask task && task.GetHashCode() == GetHashCode();
-        }
-
         protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
         {
             return tasks.Select(t => t.Duration)

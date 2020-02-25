@@ -54,6 +54,7 @@ namespace Aptacode.TaskPlex.Tasks
             {
                 State = TaskState.Stopped;
                 OnCancelled?.Invoke(this, EventArgs.Empty);
+                Dispose();
                 return;
             }
 
@@ -86,6 +87,11 @@ namespace Aptacode.TaskPlex.Tasks
             State = TaskState.Running;
         }
 
+        public bool IsRunning()
+        {
+            return State == TaskState.Running;
+        }
+
         protected async Task WaitUntilResumed()
         {
             while (State == TaskState.Paused)
@@ -93,7 +99,5 @@ namespace Aptacode.TaskPlex.Tasks
                 await Task.Delay(10, CancellationTokenSource.Token).ConfigureAwait(false);
             }
         }
-
-        public abstract override bool Equals(object obj);
     }
 }

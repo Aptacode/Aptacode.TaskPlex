@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Drawing;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformations
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
-    public sealed class PointTransformation<TClass> : InterpolatedTransformation<TClass, Point> where TClass : class
+    public sealed class ColorTransformation<TClass> : InterpolatedTransformation<TClass, Color> where TClass : class
     {
-        private PointTransformation(TClass target,
+        private ColorTransformation(TClass target,
             string property,
-            Func<Point> endValue,
+            Func<Color> endValue,
             TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
-            new PointInterpolator(),
+            new ColorInterpolator(),
             refreshRate, easerFunction)
         {
         }
@@ -25,12 +25,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         ///     Transform an int property on the target object to the value returned by the given Func at intervals
         ///     specified by     the step duration up to the task duration
         /// </summary>
-        public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
+        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
             RefreshRate refreshRate = RefreshRate.Normal, EaserFunction easerFunction = null) where T : class
         {
             try
             {
-                return new PointTransformation<T>(target, property, () => endValue, duration, refreshRate, easerFunction);
+                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate,
+                    easerFunction);
             }
             catch
             {

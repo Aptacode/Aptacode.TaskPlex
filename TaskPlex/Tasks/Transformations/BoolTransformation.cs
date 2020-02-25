@@ -71,11 +71,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             SetValue(GetEndValue());
         }
 
-        private bool IsRunning()
-        {
-            return State == TaskState.Running;
-        }
-
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!IsRunning())

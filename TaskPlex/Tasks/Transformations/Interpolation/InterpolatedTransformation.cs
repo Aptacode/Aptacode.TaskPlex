@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Easers;
 using Timer = System.Timers.Timer;
 
-namespace Aptacode.TaskPlex.Tasks.Transformations
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
     public class InterpolatedTransformation<TClass, TProperty> : PropertyTransformation<TClass, TProperty>
         where TClass : class
@@ -67,11 +67,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
 
             _timer.Stop();
-        }
-
-        private bool IsRunning()
-        {
-            return State == TaskState.Running;
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)

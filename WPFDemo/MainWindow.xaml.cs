@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Aptacode.TaskPlex;
+using Aptacode.TaskPlex.Enums;
+using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation;
 using Microsoft.Extensions.Logging.Abstractions;

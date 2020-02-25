@@ -1,9 +1,9 @@
 ﻿using System;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformations
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
     public sealed class IntTransformation<TClass> : InterpolatedTransformation<TClass, int> where TClass : class
     {

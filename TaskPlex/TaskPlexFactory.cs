@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using Aptacode.TaskPlex.Enums;
+using Aptacode.TaskPlex.Interpolators.Easers;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformations;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolation;
 
 namespace Aptacode.TaskPlex
 {

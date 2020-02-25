@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {

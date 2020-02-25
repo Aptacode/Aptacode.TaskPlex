@@ -1,9 +1,9 @@
 ﻿using System;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Tasks.Transformations
+namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
     public sealed class DoubleTransformation<TClass> : InterpolatedTransformation<TClass, double> where TClass : class
     {
@@ -30,7 +30,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         {
             try
             {
-                return new DoubleTransformation<T>(target, property, () => endValue, duration, refreshRate, easerFunction);
+                return new DoubleTransformation<T>(target, property, () => endValue, duration, refreshRate,
+                    easerFunction);
             }
             catch
             {

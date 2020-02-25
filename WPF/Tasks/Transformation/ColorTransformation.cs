@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Tasks;
-using Aptacode.TaskPlex.Tasks.Transformations;
-using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
+using Aptacode.TaskPlex.Enums;
+using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Tasks.Transformations.Interpolation;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
@@ -31,7 +31,8 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         {
             try
             {
-                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate, easerFunction);
+                return new ColorTransformation<T>(target, property, () => endValue, duration, refreshRate,
+                    easerFunction);
             }
             catch
             {

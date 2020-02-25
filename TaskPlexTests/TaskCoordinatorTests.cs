@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tests.Helpers;
 using Microsoft.Extensions.Logging.Abstractions;

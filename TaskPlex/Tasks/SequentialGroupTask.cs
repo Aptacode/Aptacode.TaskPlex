@@ -23,11 +23,6 @@ namespace Aptacode.TaskPlex.Tasks
             return tasks.Aggregate(TimeSpan.Zero, (current, task) => current.Add(task.Duration));
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is SequentialGroupTask task && task.GetHashCode() == GetHashCode();
-        }
-
         protected override void Setup()
         {
             if (Tasks.Count <= 0)
@@ -37,19 +32,22 @@ namespace Aptacode.TaskPlex.Tasks
 
             OnCancelled += (s, e) => Tasks.ForEach(task => task.Cancel());
 
-            foreach (var baseTask in Tasks)
-            {
-                baseTask.OnFinished += (s, e) => { _endedTaskCount++; };
-                baseTask.OnCancelled += (s, e) => { _endedTaskCount++; };
-            }
-
             for (var i = 1; i < Tasks.Count; i++)
             {
                 var localIndex = i;
 
-                Tasks[localIndex - 1].OnFinished += (s, e) =>
-                    Tasks[localIndex].StartAsync(CancellationTokenSource).ConfigureAwait(false);
+                Tasks[localIndex - 1].OnCancelled += (s, e) => StartTask(Tasks[localIndex]);
+                Tasks[localIndex - 1].OnFinished += (s, e) => StartTask(Tasks[localIndex]);
             }
+
+            Tasks.Last().OnCancelled += (s, e) => _endedTaskCount++;
+            Tasks.Last().OnFinished += (s, e) => _endedTaskCount++;
+        }
+
+        private void StartTask(BaseTask task)
+        {
+            _endedTaskCount++;
+            task.StartAsync(CancellationTokenSource).ConfigureAwait(false);
         }
 
         public override void Pause()
