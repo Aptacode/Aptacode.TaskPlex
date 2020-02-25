@@ -54,7 +54,28 @@ taskCoordinator.Apply(shrinkRectangle);
 taskCoordinator.Dispose();
 
 ```
+
+### Demo Transformations
+* Find the application to run these demos in the 'WPFDemo' directory
+
+#### Sequential Transformations
+
+![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/SequentialTransformation.gif)
+
+#### Parallel Transformations
+
+![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ParallelTransformations.gif)
+
+#### Complex Transformation
+
+![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ComplexTransformation.gif)
+
+
 ### Easers
+
+<p align="center">
+  <img width="700" height="600" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/easers.png">
+</p>
 
 #### Linear
 
@@ -76,20 +97,4 @@ taskCoordinator.Dispose();
 
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/Elastic.gif)
 
-#### Sequential Transformations
 
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/SequentialTransformation.gif)
-
-#### Parallel Transformations
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ParallelTransformations.gif)
-
-#### Complex Transformation
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ComplexTransformation.gif)
-
-
-### Easers
-<p align="center">
-  <img width="700" height="600" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/easers.png">
-</p>
