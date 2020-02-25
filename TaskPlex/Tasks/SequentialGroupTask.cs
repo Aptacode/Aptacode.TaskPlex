@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -32,13 +31,11 @@ namespace Aptacode.TaskPlex.Tasks
             Tasks.ForEach(t => t.Resume());
         }
 
-        protected override async Task InternalTask(RefreshRate refreshRate)
+        protected override async Task InternalTask()
         {
-            State = TaskState.Running;
-
             foreach (var baseTask in Tasks)
             {
-                await baseTask.StartAsync(CancellationTokenSource, refreshRate).ConfigureAwait(false);
+                await baseTask.StartAsync(CancellationTokenSource, RefreshRate).ConfigureAwait(false);
             }
         }
     }

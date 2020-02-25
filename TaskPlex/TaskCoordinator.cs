@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Enums;
@@ -17,11 +18,10 @@ namespace Aptacode.TaskPlex
     {
         private readonly ILogger _logger;
         private readonly RefreshRate _refreshRate;
-
-        private CancellationTokenSource _cancellationTokenSource;
+        
         private readonly Timer _taskUpdater;
         private readonly List<BaseTask> _tasks;
-        public TaskState State { get; private set; } 
+        public TaskState State { get; private set; }
 
         /// <summary>
         /// Manages the execution of tasks
@@ -31,46 +31,71 @@ namespace Aptacode.TaskPlex
             _refreshRate = refreshRate;
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
-            _cancellationTokenSource = new CancellationTokenSource();
             _tasks = new List<BaseTask>();
-            _taskUpdater = new Timer((int) _refreshRate);
-            _taskUpdater.Elapsed += (s,e) => _tasks.ForEach(task => task.Update());
-            _taskUpdater.Start();
-            State = TaskState.Running;
+            _taskUpdater = new Timer((int)_refreshRate);
+            _taskUpdater.Elapsed += UpdateTasks;
         }
 
-        /// <summary>
-        /// Stop all tasks and release all resources
-        /// </summary>
-        public void Dispose()
+        private void UpdateTasks(object sender, System.Timers.ElapsedEventArgs e)
         {
-            State = TaskState.Stopped;
-            _logger.LogTrace("Dispose");
-            _taskUpdater.Stop();
-            _taskUpdater.Dispose();
-            CancelAll();
+            _tasks.ForEach(task => task.Update());
+        }
+
+        public IQueryable<BaseTask> GetTasks() => _tasks.AsQueryable();
+
+        public void Stop(BaseTask task)
+        {
+            if (_tasks.Contains(task))
+            {
+                task.Cancel();
+            }
+        }
+
+        public void Pause(BaseTask task)
+        {
+            if (_tasks.Contains(task))
+            {
+                task.Pause();
+            }
+        }
+
+        public void Resume(BaseTask task)
+        {
+            if (_tasks.Contains(task))
+            {
+                task.Resume();
+            }
         }
 
         /// <summary>
-        /// Cancel all tasks and create a new CancellationTokenSource ready to accept new tasks
+        /// Cancel all tasks and create a new ParentCancellationTokenSource ready to accept new tasks
         /// </summary>
         public void Reset()
         {
-            State = TaskState.Running;
             _logger.LogTrace("Reset");
-            CancelAll();
-            _cancellationTokenSource = new CancellationTokenSource();
+            Stop();
+            Start();
         }
 
         /// <summary>
-        /// Cancel all tasks
+        /// Start
         /// </summary>
-        public void CancelAll()
+        public void Start()
         {
-            State = TaskState.Stopped;
+            State = TaskState.Running;
+            _logger.LogTrace("Start");
+            _taskUpdater.Start();
+        }
+
+        /// <summary>
+        /// Cancel all tasks and stop the updater
+        /// </summary>
+        public void Stop()
+        {
+            State = TaskState.Stopped; 
             _logger.LogTrace("Canceled all tasks");
+            _taskUpdater.Stop();
             _tasks.ForEach(task => task.Cancel());
-            _cancellationTokenSource.Cancel();
         }
 
         /// <summary>
@@ -111,7 +136,7 @@ namespace Aptacode.TaskPlex
             try
             {
                 //Run the task asynchronously with the Coordinators cancellation token source and refresh rate
-                await task.StartAsync(_cancellationTokenSource, _refreshRate).ConfigureAwait(false);
+                await task.StartAsync(new CancellationTokenSource(), _refreshRate).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

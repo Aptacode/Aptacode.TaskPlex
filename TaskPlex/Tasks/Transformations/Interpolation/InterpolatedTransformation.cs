@@ -13,6 +13,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
     {
         private readonly Interpolator<TProperty> _interpolator;
         private IEnumerator<TProperty> _interpolationEnumerator;
+        private bool _interpolatorHasValues;
 
         protected InterpolatedTransformation(TClass target,
             string property,
@@ -33,15 +34,16 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         /// </summary>
         public EaserFunction Easer { get; set; }
 
-        protected override async Task InternalTask(RefreshRate refreshRate)
+        protected override async Task InternalTask()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
             _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, _stepCount, Easer).ToList()
                 .GetEnumerator();
-            State = TaskState.Running;
 
-            while (State != TaskState.Stopped && !CancellationTokenSource.IsCancellationRequested)
+            _interpolatorHasValues = true;
+
+            while (_interpolatorHasValues && !CancellationTokenSource.IsCancellationRequested)
             {
                 await Task.Delay(10).ConfigureAwait(false);
             }
@@ -51,18 +53,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         public override void Update()
         {
-            if (!IsRunning())
+            if (!IsRunning() || _interpolationEnumerator == null)
             {
                 return;
             }
 
-            if (!_interpolationEnumerator.MoveNext())
-            {
-                State = TaskState.Stopped;
-                return;
-            }
+            _interpolatorHasValues = _interpolationEnumerator.MoveNext();
 
-            SetValue(_interpolationEnumerator.Current);
+            if (_interpolatorHasValues)
+            {
+                SetValue(_interpolationEnumerator.Current);
+            }
         }
     }
 }

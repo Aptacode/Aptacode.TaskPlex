@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -14,7 +13,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
         }
 
-        protected override async Task InternalTask(RefreshRate refreshRate)
+        protected override async Task InternalTask()
         {
             if (Duration.TotalMilliseconds > 5)
             {

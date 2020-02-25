@@ -27,7 +27,7 @@ namespace Aptacode.TaskPlex.Tests
             return obj is DummyTask task && task.GetHashCode() == HashCode;
         }
 
-        protected override async Task InternalTask(RefreshRate refreshRate)
+        protected override async Task InternalTask()
         {
             await Task.Delay(Duration).ConfigureAwait(false);
         }
@@ -72,6 +72,8 @@ namespace Aptacode.TaskPlex.Tests
 
             task1.OnStarted += (s, e) => { task1StartTime = DateTime.Now; };
             task1.OnFinished += (s, e) => { task1EndTime = DateTime.Now; };
+
+            coordinator.Start();
 
             var task = Task.Run(async () =>
             {

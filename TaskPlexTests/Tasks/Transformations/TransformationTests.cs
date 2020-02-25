@@ -25,7 +25,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         //    //Action
         //    var task = Task.Run(async () =>
         //    {
-        //        _ = transformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
+        //        _ = transformation.StartAsync(new ParentCancellationTokenSource()).ConfigureAwait(false);
 
         //        transformation.Pause();
         //        await Task.Delay(55);
@@ -57,7 +57,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
         //    //Action
         //    var task = Task.Run(async () =>
         //    {
-        //        _ = intTransformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false);
+        //        _ = intTransformation.StartAsync(new ParentCancellationTokenSource()).ConfigureAwait(false);
         //        intTransformation.Pause();
         //        await Task.Delay(55);
         //        intTransformation.Resume();
@@ -117,7 +117,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
 
         //    //Action
         //    var task = Task.Run(async () =>
-        //        await transformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false));
+        //        await transformation.StartAsync(new ParentCancellationTokenSource()).ConfigureAwait(false));
         //    task.Wait();
 
         //    //Assert
@@ -140,7 +140,7 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations
 
         //    //Action
         //    var task = Task.Run(async () =>
-        //        await transformation.StartAsync(new CancellationTokenSource()).ConfigureAwait(false));
+        //        await transformation.StartAsync(new ParentCancellationTokenSource()).ConfigureAwait(false));
         //    task.Wait();
 
         //    //Assert

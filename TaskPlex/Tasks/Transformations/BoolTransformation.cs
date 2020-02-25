@@ -34,7 +34,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
         }
 
-        protected override async Task InternalTask(RefreshRate refreshRate)
+        protected override async Task InternalTask()
         {
             if (Duration.TotalMilliseconds < 10)
             {
@@ -45,7 +45,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             State = TaskState.Running;
             _tickCount = 0;
 
-            while (State != TaskState.Stopped && !CancellationTokenSource.IsCancellationRequested)
+            while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)
             {
                 await Task.Delay(1).ConfigureAwait(false);
             }
@@ -60,12 +60,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
                 return;
             }
 
-            if (++_tickCount < _stepCount)
-            {
-                return;
-            }
-
-            State = TaskState.Stopped;
+            _tickCount++;
         }
     }
 }

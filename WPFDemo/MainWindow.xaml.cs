@@ -32,7 +32,8 @@ namespace WPFDemo
         {
             InitializeComponent();
             _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
-            Rectangles = new ObservableCollection<Rectangle>();
+            _taskCoordinator.Start();
+                Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;
             AddCanvasItems();
         }
