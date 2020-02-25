@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Tasks;
 
 namespace Aptacode.TaskPlex.Interfaces
@@ -9,7 +10,8 @@ namespace Aptacode.TaskPlex.Interfaces
         void Reset();
         void Pause();
         void Resume();
-        void Cancel();
+        void CancelAll();
         Task Apply(BaseTask task);
+        TaskState State { get; }
     }
 }

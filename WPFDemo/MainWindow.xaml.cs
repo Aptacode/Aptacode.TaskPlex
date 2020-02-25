@@ -80,7 +80,7 @@ namespace WPFDemo
 
         private void PlayButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_selectedTransformation.State == TaskState.Paused)
+            if (_taskCoordinator.State == TaskState.Paused)
             {
                 _taskCoordinator.Resume();
             }
