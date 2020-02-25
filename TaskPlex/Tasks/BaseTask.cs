@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -9,12 +10,12 @@ namespace Aptacode.TaskPlex.Tasks
         protected BaseTask(TimeSpan duration)
         {
             Duration = duration;
-            CancellationToken = new CancellationTokenSource();
+            CancellationTokenSource = new CancellationTokenSource();
             State = TaskState.Ready;
         }
 
         public TimeSpan Duration { get; protected set; }
-        protected CancellationTokenSource CancellationToken { get; private set; }
+        protected CancellationTokenSource CancellationTokenSource { get; private set; }
         public TaskState State { get; protected set; }
         public abstract void Dispose();
 
@@ -30,17 +31,17 @@ namespace Aptacode.TaskPlex.Tasks
         /// <returns></returns>
         public Task StartAsync()
         {
-            return StartAsync(CancellationToken);
+            return StartAsync(CancellationTokenSource);
         }
 
         /// <summary>
-        ///     Start the task with the given CancellationToken
+        ///     Start the task with the given CancellationTokenSource
         /// </summary>
         /// <returns></returns>
-        public async Task StartAsync(CancellationTokenSource cancellationToken)
+        public async Task StartAsync(CancellationTokenSource cancellationTokenSource)
         {
-            CancellationToken = cancellationToken;
-            if (!CancellationToken.IsCancellationRequested)
+            CancellationTokenSource = cancellationTokenSource;
+            if (!CancellationTokenSource.IsCancellationRequested)
             {
                 Setup();
                 State = TaskState.Running;
@@ -70,7 +71,7 @@ namespace Aptacode.TaskPlex.Tasks
         public void Cancel()
         {
             State = TaskState.Stopped;
-            CancellationToken.Cancel();
+            CancellationTokenSource.Cancel();
         }
 
         protected abstract Task InternalTask();
@@ -89,7 +90,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             while (State == TaskState.Paused)
             {
-                await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(10, CancellationTokenSource.Token).ConfigureAwait(false);
             }
         }
 

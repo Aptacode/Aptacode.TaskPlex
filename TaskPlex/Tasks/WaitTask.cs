@@ -25,7 +25,7 @@ namespace Aptacode.TaskPlex.Tasks
         {
             if (Duration.TotalMilliseconds > 5)
             {
-                await Task.Delay(Duration, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(Duration, CancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             await WaitUntilResumed().ConfigureAwait(false);

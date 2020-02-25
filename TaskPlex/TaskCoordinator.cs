@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +13,7 @@ namespace Aptacode.TaskPlex
         private readonly ILogger _logger;
         private readonly HashSet<BaseTask> _tasks;
 
-        private CancellationTokenSource _cancellationToken;
+        private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
         ///     Orchestrate the order of execution of tasks
@@ -21,7 +22,7 @@ namespace Aptacode.TaskPlex
         {
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
-            _cancellationToken = new CancellationTokenSource();
+            _cancellationTokenSource = new CancellationTokenSource();
             _tasks = new HashSet<BaseTask>();
         }
 
@@ -37,12 +38,12 @@ namespace Aptacode.TaskPlex
         {
             _logger.LogTrace("Reset");
             Cancel();
-            _cancellationToken = new CancellationTokenSource();
+            _cancellationTokenSource = new CancellationTokenSource();
         }
         public void Cancel()
         {
             _tasks.ToList().ForEach(task => task.Cancel());
-            _cancellationToken.Cancel();
+            _cancellationTokenSource.Cancel();
         }
 
         public void Pause()
@@ -79,7 +80,7 @@ namespace Aptacode.TaskPlex
 
             try
             {
-                await task.StartAsync(_cancellationToken).ConfigureAwait(false);
+                await task.StartAsync(_cancellationTokenSource).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {

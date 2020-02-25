@@ -52,11 +52,11 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override async Task InternalTask()
         {
-            Tasks.ForEach(task => task.StartAsync(CancellationToken).ConfigureAwait(false));
+            Tasks.ForEach(task => task.StartAsync(CancellationTokenSource).ConfigureAwait(false));
 
             while (_endedTaskCount < Tasks.Count)
             {
-                await Task.Delay(10, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(10, CancellationTokenSource.Token).ConfigureAwait(false);
             }
         }
     }

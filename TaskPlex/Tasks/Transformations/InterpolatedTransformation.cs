@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 using Timer = System.Timers.Timer;
@@ -62,7 +63,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
             while (State != TaskState.Stopped)
             {
-                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(1, CancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             _timer.Stop();

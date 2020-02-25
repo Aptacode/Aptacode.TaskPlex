@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators;
 using Aptacode.TaskPlex.Tasks.Transformations.Interpolators.Easers;
 

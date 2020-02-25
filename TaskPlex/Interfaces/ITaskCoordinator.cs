@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Aptacode.TaskPlex.Tasks;
 
-namespace Aptacode.TaskPlex
+namespace Aptacode.TaskPlex.Interfaces
 {
     public interface ITaskCoordinator : IDisposable
     {

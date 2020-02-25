@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Timers;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -67,7 +68,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
             while (State != TaskState.Stopped)
             {
-                await Task.Delay(1, CancellationToken.Token).ConfigureAwait(false);
+                await Task.Delay(1, CancellationTokenSource.Token).ConfigureAwait(false);
             }
 
             timer.Stop();

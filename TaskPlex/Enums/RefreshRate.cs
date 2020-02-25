@@ -1,4 +1,4 @@
-﻿namespace Aptacode.TaskPlex.Tasks
+﻿namespace Aptacode.TaskPlex.Enums
 {
     public enum RefreshRate
     {
