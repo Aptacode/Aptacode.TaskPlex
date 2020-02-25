@@ -33,7 +33,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <returns></returns>
         public async Task StartAsync(CancellationTokenSource cancellationTokenSource, RefreshRate refreshRate = RefreshRate.Normal)
         {
-            CancellationTokenSource = cancellationTokenSource;
+            CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
             RefreshRate = refreshRate;
 
             if (!CancellationTokenSource.IsCancellationRequested)
