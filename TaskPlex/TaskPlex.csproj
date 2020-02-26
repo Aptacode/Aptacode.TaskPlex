@@ -12,11 +12,11 @@
     <PackageIcon>TaskPlexLogo.png</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
-    <Description>A simple library for changing / interpolating .Net properties over time</Description>
+    <Description>TaskPlex is a lightweight cross platform .net tweening library with a goal of simplifying the creation and use of complex animations.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.1.2</AssemblyVersion>
-    <FileVersion>1.1.1.2</FileVersion>
-    <Version>1.1.1.2</Version>
+    <AssemblyVersion>1.1.1.3</AssemblyVersion>
+    <FileVersion>1.1.1.3</FileVersion>
+    <Version>1.1.1.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
