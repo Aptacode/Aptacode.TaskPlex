@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,10 +15,8 @@ namespace Aptacode.TaskPlex
     /// </summary>
     public class TaskCoordinator : ITaskCoordinator
     {
-        private static readonly object ListLock = new object();
         private readonly ILogger _logger;
-        private readonly List<BaseTask> _tasks;
-
+        private readonly ConcurrentDictionary<BaseTask, int> _tasks;
         private readonly IUpdater _taskUpdater;
 
         /// <summary>
@@ -30,19 +28,19 @@ namespace Aptacode.TaskPlex
             _taskUpdater.OnUpdate += UpdateTasks;
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
-            _tasks = new List<BaseTask>();
+            _tasks = new ConcurrentDictionary<BaseTask, int>();
         }
 
         public TaskState State { get; private set; }
 
         public IQueryable<BaseTask> GetTasks()
         {
-            return _tasks.AsQueryable();
+            return _tasks.Keys.AsQueryable();
         }
 
         public void Stop(BaseTask task)
         {
-            if (_tasks.Contains(task))
+            if (_tasks.ContainsKey(task))
             {
                 task.Cancel();
             }
@@ -50,7 +48,7 @@ namespace Aptacode.TaskPlex
 
         public void Pause(BaseTask task)
         {
-            if (_tasks.Contains(task))
+            if (_tasks.ContainsKey(task))
             {
                 task.Pause();
             }
@@ -58,7 +56,7 @@ namespace Aptacode.TaskPlex
 
         public void Resume(BaseTask task)
         {
-            if (_tasks.Contains(task))
+            if (_tasks.ContainsKey(task))
             {
                 task.Resume();
             }
@@ -92,7 +90,7 @@ namespace Aptacode.TaskPlex
             State = TaskState.Stopped;
             _logger.LogTrace("Canceled all tasks");
             _taskUpdater.Stop();
-            _tasks.ToList().ForEach(task => task.Cancel());
+            _tasks.Keys.ToList().ForEach(task => task.Cancel());
         }
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace Aptacode.TaskPlex
         {
             State = TaskState.Paused;
             _logger.LogTrace("Pause");
-            _tasks.ToList().ForEach(task => task.Pause());
+            _tasks.Keys.ToList().ForEach(task => task.Pause());
         }
 
         /// <summary>
@@ -112,7 +110,7 @@ namespace Aptacode.TaskPlex
         {
             State = TaskState.Running;
             _logger.LogTrace("Resume");
-            _tasks.ToList().ForEach(task => task.Resume());
+            _tasks.Keys.ToList().ForEach(task => task.Resume());
         }
 
         /// <summary>
@@ -128,17 +126,14 @@ namespace Aptacode.TaskPlex
             }
 
             _logger.LogTrace($"Applying task: {task}");
-            if (_tasks.Contains(task))
+            if (_tasks.ContainsKey(task))
             {
                 task.Reset();
             }
             else
             {
                 //Add the task to the list for updating
-                lock (ListLock)
-                {
-                    _tasks.Add(task);
-                }
+                _tasks.TryAdd(task, 0);
 
                 //When the task is finished remove it from the list
                 task.OnFinished += Task_OnFinished;
@@ -163,10 +158,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            lock (ListLock)
-            {
-                _tasks.Remove(task);
-            }
+            _tasks.TryRemove(task, out _);
 
             task.OnFinished -= Task_OnFinished;
             task.OnCancelled -= Task_OnFinished;
@@ -179,9 +171,9 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            lock (ListLock)
+            foreach (var tasksKey in _tasks.Keys)
             {
-                _tasks.ForEach(task => Task.Run(task.Update));
+                Task.Run(tasksKey.Update);
             }
         }
     }
