@@ -15,7 +15,7 @@ namespace Aptacode.TaskPlex
     /// </summary>
     public class TaskCoordinator : ITaskCoordinator
     {
-        private static readonly object _listLock = new object();
+        private static readonly object ListLock = new object();
         private readonly ILogger _logger;
         private readonly List<BaseTask> _tasks;
 
@@ -135,7 +135,7 @@ namespace Aptacode.TaskPlex
             else
             {
                 //Add the task to the list for updating
-                lock (_listLock)
+                lock (ListLock)
                 {
                     _tasks.Add(task);
                 }
@@ -163,7 +163,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            lock (_listLock)
+            lock (ListLock)
             {
                 _tasks.Remove(task);
             }
@@ -179,7 +179,7 @@ namespace Aptacode.TaskPlex
                 return;
             }
 
-            lock (_listLock)
+            lock (ListLock)
             {
                 _tasks.ForEach(task => Task.Run(task.Update));
             }

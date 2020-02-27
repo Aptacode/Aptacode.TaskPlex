@@ -28,7 +28,7 @@ namespace Aptacode.TaskPlex.Tests
             _dummyUpdater.Update();
 
             //Assert
-            Assert.That(() => task1.HasFinished, Is.True.After(30));
+            Assert.That(() => task1.HasFinished, Is.True.After(30,5));
         }
 
 
@@ -44,13 +44,13 @@ namespace Aptacode.TaskPlex.Tests
             _taskCoordinator.Apply(task2);
 
             _dummyUpdater.Update();
-            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20));
+            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
             _taskCoordinator.Pause();
             _dummyUpdater.Update();
-            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20));
+            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
             _taskCoordinator.Resume();
             _dummyUpdater.Update();
-            Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20));
+            Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
         }
 
         [Test]
@@ -65,13 +65,13 @@ namespace Aptacode.TaskPlex.Tests
             _taskCoordinator.Apply(task2);
 
             _dummyUpdater.Update();
-            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20));
+            Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
             _taskCoordinator.Pause(task1);
             _dummyUpdater.Update();
-            Assert.That(() => !task1.HasFinished && task2.HasFinished, Is.True.After(20));
+            Assert.That(() => !task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
             _taskCoordinator.Resume();
             _dummyUpdater.Update();
-            Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20));
+            Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
         }
 
         [Test]
@@ -95,8 +95,8 @@ namespace Aptacode.TaskPlex.Tests
             _dummyUpdater.Update();
 
             //Assert
-            Assert.That(() => task1.HasCanceled, Is.True.After(30));
-            Assert.That(() => task2.HasCanceled, Is.True.After(30));
+            Assert.That(() => task1.HasCanceled, Is.True.After(30, 5));
+            Assert.That(() => task2.HasCanceled, Is.True.After(30, 5));
         }
 
         [Test]
@@ -114,8 +114,8 @@ namespace Aptacode.TaskPlex.Tests
             _dummyUpdater.Update();
 
             //Assert
-            Assert.That(() => task1.HasCanceled, Is.True.After(30));
-            Assert.That(() => task2.HasCanceled, Is.False.After(30));
+            Assert.That(() => task1.HasCanceled, Is.True.After(30, 5));
+            Assert.That(() => task2.HasCanceled, Is.False.After(30, 5));
         }
 
         [Test]
