@@ -31,7 +31,7 @@ namespace WPFDemo
         public MainWindow()
         {
             InitializeComponent();
-            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), RefreshRate.High);
+            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), new SystemTimerUpdater(RefreshRate.High));
             _taskCoordinator.Start();
             Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;

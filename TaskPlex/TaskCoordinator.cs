@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Tasks;
 using Microsoft.Extensions.Logging;
-using Timer = System.Timers.Timer;
 
 namespace Aptacode.TaskPlex
 {
@@ -18,22 +16,20 @@ namespace Aptacode.TaskPlex
     public class TaskCoordinator : ITaskCoordinator
     {
         private readonly ILogger _logger;
-        private readonly RefreshRate _refreshRate;
         private readonly List<BaseTask> _tasks;
 
-        private readonly Timer _taskUpdater;
+        private readonly IUpdater _taskUpdater;
 
         /// <summary>
         ///     Manages the execution of tasks
         /// </summary>
-        public TaskCoordinator(ILoggerFactory loggerFactory, RefreshRate refreshRate)
+        public TaskCoordinator(ILoggerFactory loggerFactory, IUpdater taskUpdater)
         {
-            _refreshRate = refreshRate;
+            _taskUpdater = taskUpdater;
+            _taskUpdater.OnUpdate += UpdateTasks;
             _logger = loggerFactory.CreateLogger<TaskCoordinator>();
             _logger.LogTrace("Initializing TaskCoordinator");
             _tasks = new List<BaseTask>();
-            _taskUpdater = new Timer((int) _refreshRate);
-            _taskUpdater.Elapsed += UpdateTasks;
         }
 
         public TaskState State { get; private set; }
@@ -137,7 +133,7 @@ namespace Aptacode.TaskPlex
             try
             {
                 //Run the task asynchronously with the Coordinators cancellation token source and refresh rate
-                await task.StartAsync(new CancellationTokenSource(), _refreshRate).ConfigureAwait(false);
+                await task.StartAsync(new CancellationTokenSource(), _taskUpdater.RefreshRate).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -150,9 +146,12 @@ namespace Aptacode.TaskPlex
             }
         }
 
-        private void UpdateTasks(object sender, ElapsedEventArgs e)
+        private void UpdateTasks(object sender, EventArgs e)
         {
-            _tasks.ForEach(task => task.Update());
+            if (State == TaskState.Running)
+            {
+                _tasks.ForEach(task => task.Update());
+            }
         }
     }
 }
