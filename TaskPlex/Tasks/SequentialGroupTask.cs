@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
     public class SequentialGroupTask : GroupTask
     {
+        private int _finishedTaskCount;
+
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
         /// <param name="tasks"></param>
-        public SequentialGroupTask(IEnumerable<BaseTask> tasks) : base(tasks)
+        public SequentialGroupTask(List<BaseTask> tasks) : base(
+            tasks.Aggregate(0, (current, task) => current + task.StepCount), tasks)
         {
-            Duration = GetTotalDuration(Tasks);
-        }
-
-        protected sealed override TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks)
-        {
-            return tasks.Aggregate(TimeSpan.Zero, (current, task) => current.Add(task.Duration));
         }
 
         public override void Pause()
@@ -31,12 +28,74 @@ namespace Aptacode.TaskPlex.Tasks
             Tasks.ForEach(t => t.Resume());
         }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
+            _finishedTaskCount = 0;
             foreach (var baseTask in Tasks)
             {
-                await baseTask.StartAsync(CancellationTokenSource, RefreshRate).ConfigureAwait(false);
+                baseTask.OnFinished += BaseTask_OnFinished;
+                baseTask.OnCancelled += BaseTask_OnFinished;
             }
+        }
+
+        protected override void Begin()
+        {
+            Tasks.First().Start(CancellationTokenSource);
+        }
+
+        private void BaseTask_OnFinished(object sender, EventArgs e)
+        {
+            if (!(sender is BaseTask task))
+            {
+                return;
+            }
+
+            _finishedTaskCount++;
+
+            var nextTaskIndex = Tasks.IndexOf(task) + 1;
+            if (nextTaskIndex < Tasks.Count)
+            {
+                Tasks[nextTaskIndex].Start(CancellationTokenSource);
+            }
+        }
+
+        protected override void Cleanup()
+        {
+            _finishedTaskCount = 0;
+
+            foreach (var baseTask in Tasks)
+            {
+                baseTask.OnFinished -= BaseTask_OnFinished;
+                baseTask.OnCancelled -= BaseTask_OnFinished;
+            }
+        }
+
+        public override void Update()
+        {
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+                return;
+            }
+
+            if (!IsRunning())
+            {
+                return;
+            }
+
+            if (_finishedTaskCount >= Tasks.Count)
+            {
+                Finished();
+            }
+
+            Tasks.ForEach(task => task.Update());
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            Cleanup();
+            Tasks.ForEach(task => task.Reset());
         }
     }
 }

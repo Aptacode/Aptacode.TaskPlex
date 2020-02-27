@@ -12,7 +12,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         private ThicknessTransformation(TClass target,
             string property,
             Func<Thickness> endValue,
-            TimeSpan duration,
+            int duration,
             EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
@@ -27,7 +27,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         ///     specified by     the step duration up to the task duration
         /// </summary>
         public static ThicknessTransformation<T> Create<T>(T target, string property, Thickness endValue,
-            TimeSpan duration,
+            int duration,
             EaserFunction easerFunction = null) where T : class
         {
             try

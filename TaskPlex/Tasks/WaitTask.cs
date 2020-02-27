@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -10,29 +9,48 @@ namespace Aptacode.TaskPlex.Tasks
         /// <summary>
         ///     Wait for a specified amount of time
         /// </summary>
-        /// <param name="duration"></param>
-        public WaitTask(TimeSpan duration) : base(duration)
+        /// <param name="stepCount"></param>
+        public WaitTask(int stepCount) : base(stepCount)
         {
         }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
             _tickCount = 0;
+        }
 
-            while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)
-            {
-                await Task.Delay(1).ConfigureAwait(false);
-            }
+        protected override void Begin()
+        {
+        }
+
+        protected override void Cleanup()
+        {
+            _tickCount = 0;
         }
 
         public override void Update()
         {
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+                return;
+            }
+
             if (!IsRunning())
             {
                 return;
             }
 
-            _tickCount++;
+            if (++_tickCount >= StepCount)
+            {
+                Finished();
+            }
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            Cleanup();
         }
     }
 }

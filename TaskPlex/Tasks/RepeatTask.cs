@@ -1,17 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
     public class RepeatTask : BaseTask
     {
-        public RepeatTask(BaseTask child, int count) : base(child.Duration)
+        private int _repeatCount;
+
+        public RepeatTask(BaseTask child, int repeatRepeatCount) : base(child.StepCount * repeatRepeatCount)
         {
             Child = child;
-            Count = count;
+            RepeatCount = repeatRepeatCount;
         }
 
         public BaseTask Child { get; }
-        public int Count { get; set; }
+        public int RepeatCount { get; set; }
 
         public override void Pause()
         {
@@ -27,17 +30,55 @@ namespace Aptacode.TaskPlex.Tasks
 
         public override void Update()
         {
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+                return;
+            }
+
+            if (!IsRunning())
+            {
+                return;
+            }
+
+            if (_repeatCount >= RepeatCount)
+            {
+                Finished();
+            }
+
             Child.Update();
         }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
-            var repeatCount = 0;
+            _repeatCount = 0;
+            Child.OnFinished += Child_OnFinished;
+        }
 
-            while (++repeatCount <= Count && !CancellationTokenSource.IsCancellationRequested)
+        protected override void Begin()
+        {
+            Child.Start(CancellationTokenSource);
+        }
+
+        private void Child_OnFinished(object sender, EventArgs e)
+        {
+            if (++_repeatCount < RepeatCount)
             {
-                await Child.StartAsync(CancellationTokenSource, RefreshRate).ConfigureAwait(false);
+                Child.Start(CancellationTokenSource);
             }
+        }
+
+        protected override void Cleanup()
+        {
+            _repeatCount = 0;
+            Child.OnFinished -= Child_OnFinished;
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            Cleanup();
+            Child.Reset();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Tasks;
 
@@ -14,7 +13,7 @@ namespace Aptacode.TaskPlex.Interfaces
         void Stop();
         void Start();
 
-        Task Apply(BaseTask task);
+        void Apply(BaseTask task);
         IQueryable<BaseTask> GetTasks();
         void Stop(BaseTask task);
         void Pause(BaseTask task);

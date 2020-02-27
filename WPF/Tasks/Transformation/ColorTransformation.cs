@@ -11,7 +11,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         private ColorTransformation(TClass target,
             string property,
             Func<Color> endValue,
-            TimeSpan duration,
+            int duration,
             EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
@@ -25,7 +25,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
         ///     Transform an int property on the target object to the value returned by the given Func at intervals
         ///     specified by     the step duration up to the task duration
         /// </summary>
-        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
+        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, int duration,
             EaserFunction easerFunction = null) where T : class
         {
             try

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
@@ -11,17 +10,17 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
-        private BoolTransformation(TClass target,
+        internal BoolTransformation(TClass target,
             string property,
             Func<bool> endValue,
-            TimeSpan taskDuration) : base(target,
+            int stepCount) : base(target,
             property,
             endValue,
-            taskDuration)
+            stepCount)
         {
         }
 
-        public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration)
+        public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, int duration)
             where T : class
         {
             try
@@ -34,33 +33,43 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
         }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
-            if (Duration.TotalMilliseconds < 10)
-            {
-                SetValue(GetEndValue());
-                return;
-            }
-
-            State = TaskState.Running;
             _tickCount = 0;
+        }
 
-            while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)
-            {
-                await Task.Delay(1).ConfigureAwait(false);
-            }
+        protected override void Begin()
+        {
+        }
 
-            SetValue(GetEndValue());
+        protected override void Cleanup()
+        {
+            _tickCount = 0;
         }
 
         public override void Update()
         {
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+            }
+
             if (!IsRunning())
             {
                 return;
             }
 
-            _tickCount++;
+            if (++_tickCount >= StepCount)
+            {
+                SetValue(GetEndValue());
+                Finished();
+            }
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            _tickCount = 0;
         }
     }
 }

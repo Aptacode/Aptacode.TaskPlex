@@ -7,15 +7,15 @@ namespace Aptacode.TaskPlex
 {
     public class SystemTimerUpdater : IUpdater
     {
-        public RefreshRate RefreshRate { get; private set; }
-        public event EventHandler OnUpdate;
-
         private Timer _timer;
 
         public SystemTimerUpdater(RefreshRate refreshRate = RefreshRate.Normal)
         {
             RefreshRate = refreshRate;
         }
+
+        public RefreshRate RefreshRate { get; private set; }
+        public event EventHandler OnUpdate;
 
         public void Start(RefreshRate refreshRate)
         {
@@ -26,14 +26,9 @@ namespace Aptacode.TaskPlex
         public void Start()
         {
             Dispose();
-            _timer = new Timer((int)RefreshRate);
+            _timer = new Timer((int) RefreshRate);
             _timer.Elapsed += TimerElapsed;
             _timer.Start();
-        }
-
-        private void TimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            OnUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         public void Stop()
@@ -51,6 +46,11 @@ namespace Aptacode.TaskPlex
 
             _timer.Elapsed -= TimerElapsed;
             _timer.Dispose();
+        }
+
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            OnUpdate?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {
-        protected PropertyTransformation(TimeSpan duration) : base(duration)
+        protected PropertyTransformation(int stepCount) : base(stepCount)
         {
         }
     }
@@ -18,8 +18,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
         protected PropertyTransformation(TClass target,
             string property,
-            Func<TPropertyType> endValue,
-            TimeSpan duration) : base(duration)
+            Func<TPropertyType> endValue, int stepCount) : base(stepCount)
         {
             Target = target;
             Property = property;
@@ -47,7 +46,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
             var result = new SynchronizedResult();
 
-            SynchronizationContext.Send(o => { ((SynchronizedResult) o).Result = _getter(Target); }, result);
+            SynchronizationContext.Send(o => ((SynchronizedResult) o).Result = _getter(Target), result);
 
             return result.Result;
         }

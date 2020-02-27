@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
@@ -10,28 +10,28 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
-        private StringTransformation(TClass target,
+        internal StringTransformation(TClass target,
             string property,
             Func<string> endValue,
-            TimeSpan taskDuration) : base(target,
+            int stepCount) : base(target,
             property,
             endValue,
-            taskDuration)
+            stepCount)
         {
         }
 
-        public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration)
+        public static StringTransformation<T> Create<T>(T target, string property, string endValue, int stepCount)
             where T : class
         {
-            return StringTransformation<T>.Create(target, property, () => endValue, duration);
+            return StringTransformation<T>.Create(target, property, () => endValue, stepCount);
         }
 
         public static StringTransformation<T> Create<T>(T target, string property, Func<string> endValue,
-            TimeSpan duration) where T : class
+            int stepCount) where T : class
         {
             try
             {
-                return new StringTransformation<T>(target, property, endValue, duration);
+                return new StringTransformation<T>(target, property, endValue, stepCount);
             }
             catch
             {
@@ -39,32 +39,43 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
         }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
-            if (Duration.TotalMilliseconds < 10)
-            {
-                SetValue(GetEndValue());
-                return;
-            }
-
             _tickCount = 0;
+        }
 
-            while (_tickCount < _stepCount && !CancellationTokenSource.IsCancellationRequested)
-            {
-                await Task.Delay(1).ConfigureAwait(false);
-            }
+        protected override void Begin()
+        {
+        }
 
-            SetValue(GetEndValue());
+        protected override void Cleanup()
+        {
+            _tickCount = 0;
         }
 
         public override void Update()
         {
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+            }
+
             if (!IsRunning())
             {
                 return;
             }
 
-            _tickCount++;
+            if (++_tickCount >= StepCount)
+            {
+                SetValue(GetEndValue());
+                Finished();
+            }
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            Cleanup();
         }
     }
 }

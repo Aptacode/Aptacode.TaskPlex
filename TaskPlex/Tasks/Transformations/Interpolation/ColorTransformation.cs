@@ -10,7 +10,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         private ColorTransformation(TClass target,
             string property,
             Func<Color> endValue,
-            TimeSpan duration, EaserFunction easerFunction = null) : base(target,
+            int duration, EaserFunction easerFunction = null) : base(target,
             property,
             endValue,
             duration,
@@ -22,7 +22,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         ///     Transform an int property on the target object to the value returned by the given Func at intervals
         ///     specified by     the step duration up to the task duration
         /// </summary>
-        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
+        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, int duration,
             EaserFunction easerFunction = null) where T : class
         {
             try

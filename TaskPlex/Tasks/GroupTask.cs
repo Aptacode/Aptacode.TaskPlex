@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected GroupTask(IEnumerable<BaseTask> tasks) : base(TimeSpan.Zero)
+        protected GroupTask(int stepCount, List<BaseTask> tasks) : base(stepCount)
         {
-            Tasks = tasks.ToList();
+            Tasks = tasks;
         }
 
         internal List<BaseTask> Tasks { get; }
@@ -25,7 +23,6 @@ namespace Aptacode.TaskPlex.Tasks
             }
 
             Tasks.Add(task);
-            Duration = GetTotalDuration(Tasks);
         }
 
         /// <summary>
@@ -40,14 +37,6 @@ namespace Aptacode.TaskPlex.Tasks
             }
 
             Tasks.Remove(task);
-            Duration = GetTotalDuration(Tasks);
-        }
-
-        protected abstract TimeSpan GetTotalDuration(IEnumerable<BaseTask> tasks);
-
-        public override void Update()
-        {
-            Tasks.ForEach(baseTask => baseTask.Update());
         }
     }
 }

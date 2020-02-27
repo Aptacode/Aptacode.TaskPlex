@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
@@ -12,12 +12,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
     {
         private readonly Interpolator<TProperty> _interpolator;
         private IEnumerator<TProperty> _interpolationEnumerator;
-        private bool _interpolatorHasValues;
 
         protected InterpolatedTransformation(TClass target,
             string property,
             Func<TProperty> endValue,
-            TimeSpan duration,
+            int duration,
             Interpolator<TProperty> interpolator,
             EaserFunction easerFunction = null) : base(target,
             property,
@@ -33,36 +32,50 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         /// </summary>
         public EaserFunction Easer { get; set; }
 
-        protected override async Task InternalTask()
+        protected override void Setup()
         {
             var startValue = GetValue();
             var endValue = GetEndValue();
-            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, _stepCount, Easer).ToList()
+            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).ToList()
                 .GetEnumerator();
+        }
 
-            _interpolatorHasValues = true;
+        protected override void Begin()
+        {
+        }
 
-            while (_interpolatorHasValues && !CancellationTokenSource.IsCancellationRequested)
-            {
-                await Task.Delay(10).ConfigureAwait(false);
-            }
-
+        protected override void Cleanup()
+        {
             _interpolationEnumerator?.Dispose();
         }
 
         public override void Update()
         {
-            if (!IsRunning() || _interpolationEnumerator == null)
+            if (CancellationTokenSource.IsCancellationRequested)
+            {
+                Finished();
+                return;
+            }
+
+            if (!IsRunning())
             {
                 return;
             }
 
-            _interpolatorHasValues = _interpolationEnumerator.MoveNext();
-
-            if (_interpolatorHasValues)
+            if (_interpolationEnumerator?.MoveNext() == true)
             {
                 SetValue(_interpolationEnumerator.Current);
             }
+            else
+            {
+                Finished();
+            }
+        }
+
+        public override void Reset()
+        {
+            State = TaskState.Paused;
+            Cleanup();
         }
     }
 }

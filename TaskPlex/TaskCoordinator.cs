@@ -15,6 +15,7 @@ namespace Aptacode.TaskPlex
     /// </summary>
     public class TaskCoordinator : ITaskCoordinator
     {
+        private static readonly object _listLock = new object();
         private readonly ILogger _logger;
         private readonly List<BaseTask> _tasks;
 
@@ -91,7 +92,7 @@ namespace Aptacode.TaskPlex
             State = TaskState.Stopped;
             _logger.LogTrace("Canceled all tasks");
             _taskUpdater.Stop();
-            _tasks.ForEach(task => task.Cancel());
+            _tasks.ToList().ForEach(task => task.Cancel());
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace Aptacode.TaskPlex
         {
             State = TaskState.Paused;
             _logger.LogTrace("Pause");
-            _tasks.ForEach(task => task.Pause());
+            _tasks.ToList().ForEach(task => task.Pause());
         }
 
         /// <summary>
@@ -111,14 +112,14 @@ namespace Aptacode.TaskPlex
         {
             State = TaskState.Running;
             _logger.LogTrace("Resume");
-            _tasks.ForEach(task => task.Resume());
+            _tasks.ToList().ForEach(task => task.Resume());
         }
 
         /// <summary>
         ///     Start executing a given task
         /// </summary>
         /// <param name="task"></param>
-        public async Task Apply(BaseTask task)
+        public void Apply(BaseTask task)
         {
             //Return null if the tasks given was null
             if (task == null)
@@ -127,30 +128,60 @@ namespace Aptacode.TaskPlex
             }
 
             _logger.LogTrace($"Applying task: {task}");
-            //Add the task to the list for updating
-            _tasks.Add(task);
+            if (_tasks.Contains(task))
+            {
+                task.Reset();
+            }
+            else
+            {
+                //Add the task to the list for updating
+                lock (_listLock)
+                {
+                    _tasks.Add(task);
+                }
+
+                //When the task is finished remove it from the list
+                task.OnFinished += Task_OnFinished;
+                task.OnCancelled += Task_OnFinished;
+            }
 
             try
             {
                 //Run the task asynchronously with the Coordinators cancellation token source and refresh rate
-                await task.StartAsync(new CancellationTokenSource(), _taskUpdater.RefreshRate).ConfigureAwait(false);
+                task.Start(new CancellationTokenSource());
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Task Canceled: {task}");
+                _logger.LogDebug($"Task Failed: {task}");
             }
-            finally
+        }
+
+        private void Task_OnFinished(object sender, EventArgs e)
+        {
+            if (!(sender is BaseTask task))
             {
-                //When the task is finished remove it from the list
+                return;
+            }
+
+            lock (_listLock)
+            {
                 _tasks.Remove(task);
             }
+
+            task.OnFinished -= Task_OnFinished;
+            task.OnCancelled -= Task_OnFinished;
         }
 
         private void UpdateTasks(object sender, EventArgs e)
         {
-            if (State == TaskState.Running)
+            if (State != TaskState.Running)
             {
-                _tasks.ForEach(task => task.Update());
+                return;
+            }
+
+            lock (_listLock)
+            {
+                _tasks.ForEach(task => Task.Run(task.Update));
             }
         }
     }
