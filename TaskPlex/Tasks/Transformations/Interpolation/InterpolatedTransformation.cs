@@ -18,9 +18,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
             TimeSpan duration,
             IInterpolator<TProperty> interpolator,
             EaserFunction easerFunction = null,
+            bool useStartValue = true,
             params TProperty[] values) : base(target,
             property,
             duration,
+            useStartValue,
             values)
         {
             _interpolator = interpolator;
@@ -34,7 +36,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         protected override void Setup()
         {
-            var points = new List<TProperty> {GetValue()};
+            var points = new List<TProperty>();
+            if (UseStartValue)
+            {
+                points.Add(GetValue());
+            }
+
             points.AddRange(Values);
             _interpolationEnumerator =
                 _interpolator.Interpolate(StepCount, Easer, points.ToArray()).ToList().GetEnumerator();

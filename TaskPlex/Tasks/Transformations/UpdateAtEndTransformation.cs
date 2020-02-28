@@ -14,6 +14,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             TPropertyType value) : base(target,
             property,
             duration,
+            false,
             value)
         {
         }

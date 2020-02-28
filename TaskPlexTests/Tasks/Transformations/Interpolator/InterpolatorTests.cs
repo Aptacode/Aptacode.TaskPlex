@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators.Linear;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
@@ -8,8 +8,8 @@ namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator
     [TestFixture]
     public class InterpolatorTests
     {
-        private static readonly IntInterpolator IntInterpolator = new IntInterpolator();
-        private static readonly DoubleInterpolator DoubleInterpolator = new DoubleInterpolator();
+        private static readonly IntLinearInterpolator IntInterpolator = new IntLinearInterpolator();
+        private static readonly DoubleLinearInterpolator DoubleInterpolator = new DoubleLinearInterpolator();
 
         [Test]
         [TestCase(0, 0, 0, new double[] { })]

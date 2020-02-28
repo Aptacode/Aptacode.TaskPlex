@@ -1,6 +1,6 @@
 ﻿using System;
-using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
@@ -15,10 +15,11 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
             string property,
             TimeSpan stepCount,
             EaserFunction easerFunction = null,
+            bool useStartValue = false,
             params double[] values) : base(target,
             property,
             stepCount,
-            new DoubleInterpolator(), easerFunction, values)
+            new DoubleLinearInterpolator(), easerFunction, useStartValue, values)
         {
         }
     }

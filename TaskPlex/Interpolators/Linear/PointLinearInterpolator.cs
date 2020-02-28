@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-namespace Aptacode.TaskPlex.Interpolators
+namespace Aptacode.TaskPlex.Interpolators.Linear
 {
-    public class PointInterpolator : Vec2Interpolator<Point>
+    public sealed class PointLinearInterpolator : Vec2LinearInterpolator<Point>
     {
         public override Point FromVector(Vector2 value)
         {

@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 
-namespace Aptacode.TaskPlex.Interpolators
+namespace Aptacode.TaskPlex.Interpolators.Linear
 {
-    public abstract class Vec3Interpolator<T> : AbstractInterpolator<T, Vector3>
+    public abstract class Vec3LinearInterpolator<T> : VectorLinearInterpolator<T, Vector3>
     {
         public override Vector3 Subtract(Vector3 from, Vector3 to)
         {

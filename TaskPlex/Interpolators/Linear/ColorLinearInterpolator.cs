@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-namespace Aptacode.TaskPlex.Interpolators
+namespace Aptacode.TaskPlex.Interpolators.Linear
 {
-    public class ColorInterpolator : Vec4Interpolator<Color>
+    public sealed class ColorLinearInterpolator : Vec4LinearInterpolator<Color>
     {
         public override Vector4 ToVector(Color value)
         {

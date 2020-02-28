@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
@@ -9,10 +9,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
     {
         public ColorTransformation(TClass target,
             string property,
-            TimeSpan duration, EaserFunction easerFunction = null, params Color[] values) : base(target,
+            TimeSpan duration,
+            EaserFunction easerFunction = null,
+            bool useStartValue = false,
+            params Color[] values) : base(target,
             property,
             duration,
-            new ColorInterpolator(), easerFunction, values)
+            new ColorLinearInterpolator(), easerFunction, useStartValue, values)
         {
         }
     }

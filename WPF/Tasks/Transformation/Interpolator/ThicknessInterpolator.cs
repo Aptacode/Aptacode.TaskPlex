@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 using System.Windows;
-using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {
-    public class ThicknessInterpolator : Vec4Interpolator<Thickness>
+    public class ThicknessInterpolator : Vec4LinearInterpolator<Thickness>
     {
         public override Vector4 ToVector(Thickness value)
         {

@@ -100,7 +100,7 @@ namespace WPFDemo
         private BaseTask SingleTransformation()
         {
             var transformation = WPFTransformationFactory.Create(Rectangles[0], "Margin",
-                TimeSpan.FromMilliseconds(600), Easers.EaseInOutCubic,
+                TimeSpan.FromMilliseconds(600), Easers.EaseInOutCubic, false,
                 new Thickness(400, 40, 0, 0),
                 new Thickness(400, 400, 0, 0),
                 new Thickness(40, 400, 0, 0),
@@ -258,7 +258,7 @@ namespace WPFDemo
             EaserFunction func)
         {
             var transformation = WPFTransformationFactory.Create(target, "Margin",
-                TimeSpan.FromMilliseconds(duration), func, new Thickness(destinationX, destinationY, 0, 0));
+                TimeSpan.FromMilliseconds(duration), func, true, new Thickness(destinationX, destinationY, 0, 0));
 
             transformation.SynchronizationContext = SynchronizationContext.Current;
             return transformation;

@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 using System.Windows;
-using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {
-    public class PointInterpolator : Vec2Interpolator<Point>
+    public class PointInterpolator : Vec2LinearInterpolator<Point>
     {
         public override Point FromVector(Vector2 value)
         {

@@ -14,12 +14,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
     {
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
+        protected readonly bool UseStartValue;
         protected readonly TPropertyType[] Values;
 
         protected PropertyTransformation(
             TClass target,
             string property,
             TimeSpan duration,
+            bool useStartValue = true,
             params TPropertyType[] values) : base(duration)
         {
             Target = target;
@@ -33,6 +35,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
                 propertyInfo.GetGetMethod());
 
             Values = values;
+            UseStartValue = useStartValue;
         }
 
         public SynchronizationContext SynchronizationContext { get; set; }

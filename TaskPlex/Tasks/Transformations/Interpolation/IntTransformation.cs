@@ -1,6 +1,6 @@
 ﻿using System;
-using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
@@ -9,11 +9,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         public IntTransformation(TClass target,
             string property,
             TimeSpan duration,
-            EaserFunction easerFunction = null, params int[] values) : base(target,
+            EaserFunction easerFunction = null,
+            bool useStartValue = false,
+            params int[] values) : base(target,
             property,
             duration,
-            new IntInterpolator(),
+            new IntLinearInterpolator(),
             easerFunction,
+            useStartValue,
             values)
         {
         }

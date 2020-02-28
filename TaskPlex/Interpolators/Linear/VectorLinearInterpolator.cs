@@ -3,9 +3,9 @@ using System.Linq;
 using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Interpolators
+namespace Aptacode.TaskPlex.Interpolators.Linear
 {
-    public abstract class AbstractInterpolator<TType, TVector> : IInterpolator<TType>
+    public abstract class VectorLinearInterpolator<TType, TVector> : IInterpolator<TType>
     {
         public IEnumerable<TType> Interpolate(int stepCount, EaserFunction easer, params TType[] points)
         {

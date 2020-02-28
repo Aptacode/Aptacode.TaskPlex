@@ -12,11 +12,12 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
             string property,
             TimeSpan duration,
             EaserFunction easerFunction = null,
+            bool useStartValue = true,
             params Color[] values) : base(target,
             property,
             duration,
             new ColorInterpolator(),
-            easerFunction, values)
+            easerFunction, useStartValue, values)
         {
         }
     }

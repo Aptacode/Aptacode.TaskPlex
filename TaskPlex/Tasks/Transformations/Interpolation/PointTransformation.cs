@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using Aptacode.TaskPlex.Interpolators;
 using Aptacode.TaskPlex.Interpolators.Easers;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 {
@@ -11,11 +11,12 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
             string property,
             TimeSpan duration,
             EaserFunction easerFunction = null,
+            bool useStartValue = true,
             params Point[] values) : base(target,
             property,
             duration,
-            new PointInterpolator(),
-            easerFunction, values)
+            new PointLinearInterpolator(),
+            easerFunction, useStartValue, values)
         {
         }
     }

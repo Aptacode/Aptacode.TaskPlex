@@ -4,11 +4,11 @@ using System.Linq;
 using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
-namespace Aptacode.TaskPlex.Interpolators
+namespace Aptacode.TaskPlex.Interpolators.Linear
 {
-    public class IntInterpolator : IInterpolator<int>
+    public sealed class DoubleLinearInterpolator : IInterpolator<double>
     {
-        public IEnumerable<int> Interpolate(int stepCount, EaserFunction easer, params int[] points)
+        public IEnumerable<double> Interpolate(int stepCount, EaserFunction easer, params double[] points)
         {
             if (stepCount <= 0)
             {
@@ -23,8 +23,6 @@ namespace Aptacode.TaskPlex.Interpolators
 
             if (velocity <= 0)
             {
-                //If the distance to travel per step is 0 then return the last destination
-                //for each step
                 for (var i = 0; i < stepCount; i++)
                 {
                     yield return points.Last();
@@ -32,28 +30,25 @@ namespace Aptacode.TaskPlex.Interpolators
             }
             else
             {
-                //for each edge
+                //Yield a point for each step
                 foreach (var (pointA, pointB, edge) in edges)
                 {
-                    //Calculate how many steps this edge has
                     var edgeSteps = Math.Abs(edge) / velocity;
-                    //Return a value for each step along this edge
                     for (var stepIndex = 1; stepIndex < edgeSteps; stepIndex++)
                     {
-                        yield return pointA + (int) (edge * easer(stepIndex, edgeSteps));
+                        yield return pointA + edge * easer(stepIndex, (int) edgeSteps);
                     }
 
-                    //Return the last point for this step
                     yield return pointB;
                 }
             }
         }
 
-        private static List<(int, int, int)> GetEdges(IEnumerable<int> keyPoints)
+        private List<(double, double, double)> GetEdges(IEnumerable<double> keyPoints)
         {
             var keyPointList = keyPoints.ToList();
             //Point A, Point B, Length
-            var edges = new List<(int, int, int)>();
+            var edges = new List<(double, double, double)>();
 
             for (var i = 1; i < keyPointList.Count; i++)
             {
@@ -63,7 +58,7 @@ namespace Aptacode.TaskPlex.Interpolators
             return edges;
         }
 
-        public int TotalEdgeLength(IEnumerable<(int, int, int)> edges)
+        public double TotalEdgeLength(IEnumerable<(double, double, double)> edges)
         {
             return edges.Sum(edge => Math.Abs(edge.Item3));
         }

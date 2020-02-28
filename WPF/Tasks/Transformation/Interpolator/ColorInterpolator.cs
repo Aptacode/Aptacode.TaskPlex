@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {
-    public class ColorInterpolator : Vec4Interpolator<Color>
+    public class ColorInterpolator : Vec4LinearInterpolator<Color>
     {
         public override Vector4 ToVector(Color value)
         {
