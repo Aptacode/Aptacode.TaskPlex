@@ -23,7 +23,7 @@ namespace WPFDemo
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ITaskCoordinator _taskCoordinator;
+        private readonly IPlexEngine _plexEngine;
 
         //The currently selected task to be applied
         private BaseTask _selectedTransformation;
@@ -31,8 +31,8 @@ namespace WPFDemo
         public MainWindow()
         {
             InitializeComponent();
-            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), new SystemTimerUpdater(RefreshRate.High));
-            _taskCoordinator.Start();
+            _plexEngine = new PlexEngine(new NullLoggerFactory(), new SystemTimerUpdater(RefreshRate.High));
+            _plexEngine.Start();
             Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;
             AddCanvasItems();
@@ -82,19 +82,19 @@ namespace WPFDemo
 
         private void PlayButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_taskCoordinator.State == TaskState.Paused)
+            if (_plexEngine.State == TaskState.Paused)
             {
-                _taskCoordinator.Resume();
+                _plexEngine.Resume();
             }
             else
             {
-                _taskCoordinator.Apply(_selectedTransformation);
+                _plexEngine.Apply(_selectedTransformation);
             }
         }
 
         private void PauseButtonClicked(object sender, RoutedEventArgs e)
         {
-            _taskCoordinator.Pause();
+            _plexEngine.Pause();
         }
 
         private BaseTask SingleTransformation()
@@ -112,57 +112,57 @@ namespace WPFDemo
 
         private BaseTask Transformation_Linear()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Linear),
                 GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.Linear));
         }
 
         private BaseTask Transformation_EaseIn()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInQuad),
                 GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInQuad));
         }
 
         private BaseTask Transformation_EaseOut()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseOutQuad),
                 GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseOutQuad));
         }
 
         private BaseTask Transformation_EaseInOut()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutQuad),
                 GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInOutQuad));
         }
 
         private BaseTask Transformation_Elastic()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Elastic),
                 GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.Elastic));
         }
 
         private BaseTask SequentialTransformations()
         {
-            return TaskPlexFactory.Sequential(
+            return PlexFactory.Sequential(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
                 GetTransformation(Rectangles[1], 600, Rectangles[1].Margin.Top, 300, Easers.EaseInOutCubic));
         }
 
         private BaseTask ParallelTransformations()
         {
-            return TaskPlexFactory.Parallel(
+            return PlexFactory.Parallel(
                 GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
                 GetTransformation(Rectangles[1], 600, Rectangles[1].Margin.Top, 300, Easers.EaseInOutCubic));
         }
 
         private BaseTask RepeatTransformations()
         {
-            return TaskPlexFactory.Repeat(
-                TaskPlexFactory.Sequential(
+            return PlexFactory.Repeat(
+                PlexFactory.Sequential(
                     GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic),
                     GetTransformation(Rectangles[0], 40, Rectangles[0].Margin.Top, 300, Easers.EaseInOutCubic)), 2);
         }
@@ -210,7 +210,7 @@ namespace WPFDemo
                     break;
             }
 
-            _taskCoordinator.Reset();
+            _plexEngine.Reset();
         }
 
         private BaseTask SequentialTransformation2()
@@ -224,30 +224,31 @@ namespace WPFDemo
                 transformations.Add(GetTransformation(rectangle, 40, rectangle.Margin.Top, 100, Easers.EaseInOutCubic));
             }
 
-            return TaskPlexFactory.Sequential(transformations.ToArray());
+            return PlexFactory.Sequential(transformations.ToArray());
         }
 
         private BaseTask ParallelTransformation2()
         {
             var transformations = new List<BaseTask>();
+
             var counter = 0;
 
             foreach (var rectangle in Rectangles)
             {
-                var sequentialTransformation = TaskPlexFactory.Sequential(
-                    TaskPlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
+                var sequentialTransformation = PlexFactory.Sequential(
+                    PlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
                     GetTransformation(rectangle, 600, rectangle.Margin.Top, 300, Easers.EaseInOutCubic),
                     GetTransformation(rectangle, 40, rectangle.Margin.Top, 300, Easers.EaseInOutCubic));
                 transformations.Add(sequentialTransformation);
             }
 
-            return TaskPlexFactory.Parallel(transformations.ToArray());
+            return PlexFactory.Parallel(transformations.ToArray());
         }
 
         private BaseTask ParallelTransformation3(bool isReversed = false)
         {
             var destinationX = isReversed ? 40 : 600;
-            return TaskPlexFactory.Parallel(
+            return PlexFactory.Parallel(
                 Rectangles
                     .Select(r => GetTransformation(r, destinationX, r.Margin.Top, 300, Easers.EaseInOutCubic))
                     .ToArray());
@@ -266,7 +267,7 @@ namespace WPFDemo
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             AddCanvasItems();
-            _taskCoordinator.Reset();
+            _plexEngine.Reset();
         }
     }
 }

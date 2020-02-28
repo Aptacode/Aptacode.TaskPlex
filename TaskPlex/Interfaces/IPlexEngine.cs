@@ -4,7 +4,7 @@ using Aptacode.TaskPlex.Tasks;
 
 namespace Aptacode.TaskPlex.Interfaces
 {
-    public interface ITaskCoordinator
+    public interface IPlexEngine
     {
         TaskState State { get; }
         void Reset();

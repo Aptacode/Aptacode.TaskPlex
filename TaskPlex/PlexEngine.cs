@@ -13,7 +13,7 @@ namespace Aptacode.TaskPlex
     /// <summary>
     ///     Manages the execution of tasks
     /// </summary>
-    public class TaskCoordinator : ITaskCoordinator
+    public class PlexEngine : IPlexEngine
     {
         private readonly ILogger _logger;
         private readonly ConcurrentDictionary<BaseTask, int> _tasks;
@@ -22,12 +22,12 @@ namespace Aptacode.TaskPlex
         /// <summary>
         ///     Manages the execution of tasks
         /// </summary>
-        public TaskCoordinator(ILoggerFactory loggerFactory, IUpdater taskUpdater)
+        public PlexEngine(ILoggerFactory loggerFactory, IUpdater taskUpdater)
         {
             _taskUpdater = taskUpdater;
             _taskUpdater.OnUpdate += UpdateTasks;
-            _logger = loggerFactory.CreateLogger<TaskCoordinator>();
-            _logger.LogTrace("Initializing TaskCoordinator");
+            _logger = loggerFactory.CreateLogger<PlexEngine>();
+            _logger.LogTrace("Initializing PlexEngine");
             _tasks = new ConcurrentDictionary<BaseTask, int>();
         }
 

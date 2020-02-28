@@ -8,7 +8,7 @@ using Aptacode.TaskPlex.Tasks.Transformations.Interpolation;
 
 namespace Aptacode.TaskPlex
 {
-    public static class TaskPlexFactory
+    public static class PlexFactory
     {
         public static SequentialGroupTask Sequential(params BaseTask[] tasks)
         {

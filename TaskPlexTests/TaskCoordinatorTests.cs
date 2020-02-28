@@ -11,11 +11,11 @@ namespace Aptacode.TaskPlex.Tests
         public void Setup()
         {
             _dummyUpdater = new DummyUpdater();
-            _taskCoordinator = new TaskCoordinator(new NullLoggerFactory(), _dummyUpdater);
-            _taskCoordinator.Start();
+            _plexEngine = new PlexEngine(new NullLoggerFactory(), _dummyUpdater);
+            _plexEngine.Start();
         }
 
-        private TaskCoordinator _taskCoordinator;
+        private PlexEngine _plexEngine;
         private DummyUpdater _dummyUpdater;
 
         private TimeSpan TicksToDuration(int ticks)
@@ -30,7 +30,7 @@ namespace Aptacode.TaskPlex.Tests
             var task1 = new DummyTask(TicksToDuration(1));
 
             //Apply
-            _taskCoordinator.Apply(task1);
+            _plexEngine.Apply(task1);
             _dummyUpdater.Update();
 
             //Assert
@@ -46,15 +46,15 @@ namespace Aptacode.TaskPlex.Tests
             var task2 = new DummyTask(TicksToDuration(2));
 
             //Apply
-            _taskCoordinator.Apply(task1);
-            _taskCoordinator.Apply(task2);
+            _plexEngine.Apply(task1);
+            _plexEngine.Apply(task2);
 
             _dummyUpdater.Update();
             Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
-            _taskCoordinator.Pause();
+            _plexEngine.Pause();
             _dummyUpdater.Update();
             Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
-            _taskCoordinator.Resume();
+            _plexEngine.Resume();
             _dummyUpdater.Update();
             Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
         }
@@ -67,15 +67,15 @@ namespace Aptacode.TaskPlex.Tests
             var task2 = new DummyTask(TicksToDuration(2));
 
             //Apply
-            _taskCoordinator.Apply(task1);
-            _taskCoordinator.Apply(task2);
+            _plexEngine.Apply(task1);
+            _plexEngine.Apply(task2);
 
             _dummyUpdater.Update();
             Assert.That(() => task1.HasFinished || task2.HasFinished, Is.False.After(20, 5));
-            _taskCoordinator.Pause(task1);
+            _plexEngine.Pause(task1);
             _dummyUpdater.Update();
             Assert.That(() => !task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
-            _taskCoordinator.Resume();
+            _plexEngine.Resume();
             _dummyUpdater.Update();
             Assert.That(() => task1.HasFinished && task2.HasFinished, Is.True.After(20, 5));
         }
@@ -94,10 +94,10 @@ namespace Aptacode.TaskPlex.Tests
             var task2 = new DummyTask(TicksToDuration(1));
 
             //Apply
-            _taskCoordinator.Apply(task1);
-            _taskCoordinator.Apply(task2);
+            _plexEngine.Apply(task1);
+            _plexEngine.Apply(task2);
 
-            _taskCoordinator.Stop();
+            _plexEngine.Stop();
             _dummyUpdater.Update();
 
             //Assert
@@ -113,10 +113,10 @@ namespace Aptacode.TaskPlex.Tests
             var task2 = new DummyTask(TicksToDuration(1));
 
             //Apply
-            _taskCoordinator.Apply(task1);
-            _taskCoordinator.Apply(task2);
+            _plexEngine.Apply(task1);
+            _plexEngine.Apply(task2);
 
-            _taskCoordinator.Stop(task1);
+            _plexEngine.Stop(task1);
             _dummyUpdater.Update();
 
             //Assert
@@ -130,7 +130,7 @@ namespace Aptacode.TaskPlex.Tests
             //Arrange
             var task1 = new DummyTask(TicksToDuration(1));
             var task2 = new DummyTask(TicksToDuration(1));
-            var groupTask = TaskPlexFactory.Parallel(task1, task2);
+            var groupTask = PlexFactory.Parallel(task1, task2);
 
             //Todo
         }
@@ -141,7 +141,7 @@ namespace Aptacode.TaskPlex.Tests
             //Arrange
             var task1 = new DummyTask(TicksToDuration(1));
             var task2 = new DummyTask(TicksToDuration(1));
-            var groupTask = TaskPlexFactory.Sequential(task1, task2);
+            var groupTask = PlexFactory.Sequential(task1, task2);
 
             //Todo
         }
