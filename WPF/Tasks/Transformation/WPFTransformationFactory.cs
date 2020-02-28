@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
 {
     public static class WPFTransformationFactory
     {
-        public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static PointTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params Point[] values) where T : class
         {
-            return PointTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new PointTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
 
-        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static ColorTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params Color[] values) where T : class
         {
-            return ColorTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new ColorTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
 
-        public static ThicknessTransformation<T> Create<T>(T target, string property, Thickness endValue,
-            TimeSpan duration, EaserFunction easerFunction = null) where T : class
+        public static ThicknessTransformation<T> Create<T>(T target, string property,
+            TimeSpan duration, EaserFunction easerFunction = null, params Thickness[] values) where T : class
         {
-            return ThicknessTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new ThicknessTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
     }
 }

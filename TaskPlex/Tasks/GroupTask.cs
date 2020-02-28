@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class GroupTask : BaseTask
     {
-        protected GroupTask(int stepCount, List<BaseTask> tasks) : base(stepCount)
+        protected GroupTask(TimeSpan duration, List<BaseTask> tasks) : base(duration)
         {
             Tasks = tasks;
         }

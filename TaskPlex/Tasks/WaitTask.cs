@@ -1,4 +1,5 @@
-﻿using Aptacode.TaskPlex.Enums;
+﻿using System;
+using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks
 {
@@ -10,7 +11,7 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Wait for a specified amount of time
         /// </summary>
         /// <param name="stepCount"></param>
-        public WaitTask(int stepCount) : base(stepCount)
+        public WaitTask(TimeSpan duration) : base(duration)
         {
         }
 

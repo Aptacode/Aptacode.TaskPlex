@@ -3,17 +3,18 @@ using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
-    public class UpdateAtEndTransformation<TClass, TPropertyType> : PropertyTransformation<TClass, TPropertyType> where TClass : class
+    public class UpdateAtEndTransformation<TClass, TPropertyType> : PropertyTransformation<TClass, TPropertyType>
+        where TClass : class
     {
         private int _tickCount;
 
         internal UpdateAtEndTransformation(TClass target,
             string property,
-            Func<TPropertyType> endValue,
-            int stepCount) : base(target,
+            TimeSpan duration,
+            TPropertyType value) : base(target,
             property,
-            endValue,
-            stepCount)
+            duration,
+            value)
         {
         }
 
@@ -45,7 +46,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
             if (++_tickCount >= StepCount)
             {
-                SetValue(GetEndValue());
+                SetValue(Values[0]);
                 Finished();
             }
         }

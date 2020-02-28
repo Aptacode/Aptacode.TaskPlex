@@ -12,7 +12,7 @@ namespace Aptacode.TaskPlex.Tasks
         /// <summary>
         ///     Execute the specified tasks in parallel
         /// </summary>
-        public ParallelGroupTask(List<BaseTask> tasks) : base(tasks.Max(task => task.StepCount), tasks)
+        public ParallelGroupTask(List<BaseTask> tasks) : base(tasks.Max(task => task.Duration), tasks)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override void Begin()
         {
-            Tasks.ForEach(task => task.Start(CancellationTokenSource));
+            Tasks.ForEach(task => task.Start(CancellationTokenSource, RefreshRate));
         }
 
         protected override void Cleanup()

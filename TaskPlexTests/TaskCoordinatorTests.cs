@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using System;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests
@@ -17,18 +18,23 @@ namespace Aptacode.TaskPlex.Tests
         private TaskCoordinator _taskCoordinator;
         private DummyUpdater _dummyUpdater;
 
+        private TimeSpan TicksToDuration(int ticks)
+        {
+            return TimeSpan.FromMilliseconds(ticks * (int) _dummyUpdater.RefreshRate);
+        }
+
         [Test]
         public void CanApplyTask()
         {
             //Arrange
-            var task1 = new DummyTask(1);
+            var task1 = new DummyTask(TicksToDuration(1));
 
             //Apply
             _taskCoordinator.Apply(task1);
             _dummyUpdater.Update();
 
             //Assert
-            Assert.That(() => task1.HasFinished, Is.True.After(30,5));
+            Assert.That(() => task1.HasFinished, Is.True.After(30, 5));
         }
 
 
@@ -36,8 +42,8 @@ namespace Aptacode.TaskPlex.Tests
         public void CanPauseAllTasks()
         {
             //Arrange
-            var task1 = new DummyTask(2);
-            var task2 = new DummyTask(2);
+            var task1 = new DummyTask(TicksToDuration(2));
+            var task2 = new DummyTask(TicksToDuration(2));
 
             //Apply
             _taskCoordinator.Apply(task1);
@@ -57,8 +63,8 @@ namespace Aptacode.TaskPlex.Tests
         public void CanPauseSpecificTasks()
         {
             //Arrange
-            var task1 = new DummyTask(2);
-            var task2 = new DummyTask(2);
+            var task1 = new DummyTask(TicksToDuration(2));
+            var task2 = new DummyTask(TicksToDuration(2));
 
             //Apply
             _taskCoordinator.Apply(task1);
@@ -84,8 +90,8 @@ namespace Aptacode.TaskPlex.Tests
         public void CanStopAllTasks()
         {
             //Arrange
-            var task1 = new DummyTask(1);
-            var task2 = new DummyTask(1);
+            var task1 = new DummyTask(TicksToDuration(1));
+            var task2 = new DummyTask(TicksToDuration(1));
 
             //Apply
             _taskCoordinator.Apply(task1);
@@ -103,8 +109,8 @@ namespace Aptacode.TaskPlex.Tests
         public void CanStopSpecificTasks()
         {
             //Arrange
-            var task1 = new DummyTask(1);
-            var task2 = new DummyTask(1);
+            var task1 = new DummyTask(TicksToDuration(1));
+            var task2 = new DummyTask(TicksToDuration(1));
 
             //Apply
             _taskCoordinator.Apply(task1);
@@ -122,8 +128,8 @@ namespace Aptacode.TaskPlex.Tests
         public void ParallelTasksExecuteAtTheSameTime()
         {
             //Arrange
-            var task1 = new DummyTask(1);
-            var task2 = new DummyTask(1);
+            var task1 = new DummyTask(TicksToDuration(1));
+            var task2 = new DummyTask(TicksToDuration(1));
             var groupTask = TaskPlexFactory.Parallel(task1, task2);
 
             //Todo
@@ -133,8 +139,8 @@ namespace Aptacode.TaskPlex.Tests
         public void SequentialTasksExecuteOneAfterAnother()
         {
             //Arrange
-            var task1 = new DummyTask(1);
-            var task2 = new DummyTask(1);
+            var task1 = new DummyTask(TicksToDuration(1));
+            var task2 = new DummyTask(TicksToDuration(1));
             var groupTask = TaskPlexFactory.Sequential(task1, task2);
 
             //Todo

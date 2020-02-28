@@ -143,11 +143,11 @@ namespace Aptacode.TaskPlex
             try
             {
                 //Run the task asynchronously with the Coordinators cancellation token source and refresh rate
-                task.Start(new CancellationTokenSource());
+                task.Start(new CancellationTokenSource(), _taskUpdater.RefreshRate);
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Task Failed: {task}");
+                _logger.LogDebug($"Task Failed: {ex}");
             }
         }
 

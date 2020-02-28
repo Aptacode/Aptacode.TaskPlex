@@ -249,8 +249,7 @@ namespace WPFDemo
             EaserFunction func)
         {
             var transformation = WPFTransformationFactory.Create(target, "Margin",
-                new Thickness(destinationX, destinationY, 0, 0),
-                TimeSpan.FromMilliseconds(duration), func);
+                TimeSpan.FromMilliseconds(duration), func, new Thickness(destinationX, destinationY, 0, 0));
 
             transformation.SynchronizationContext = SynchronizationContext.Current;
             return transformation;

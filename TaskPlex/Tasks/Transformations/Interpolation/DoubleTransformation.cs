@@ -11,28 +11,15 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         ///     specified by the step duration up to the task duration
         /// </summary>
         /// <summary>
-        private DoubleTransformation(TClass target,
+        public DoubleTransformation(TClass target,
             string property,
-            Func<double> endValue,
-            int stepCount, EaserFunction easerFunction = null) : base(target,
+            TimeSpan stepCount,
+            EaserFunction easerFunction = null,
+            params double[] values) : base(target,
             property,
-            endValue,
             stepCount,
-            new DoubleInterpolator(), easerFunction)
+            new DoubleInterpolator(), easerFunction, values)
         {
-        }
-
-        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, int duration,
-            EaserFunction easerFunction = null) where T : class
-        {
-            try
-            {
-                return new DoubleTransformation<T>(target, property, () => endValue, duration, easerFunction);
-            }
-            catch
-            {
-                return null;
-            }
         }
     }
 }

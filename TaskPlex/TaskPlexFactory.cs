@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using Aptacode.TaskPlex.Enums;
 using Aptacode.TaskPlex.Interpolators.Easers;
 using Aptacode.TaskPlex.Tasks;
 using Aptacode.TaskPlex.Tasks.Transformations;
@@ -28,49 +27,46 @@ namespace Aptacode.TaskPlex
 
         public static WaitTask Wait(TimeSpan duration)
         {
-            return new WaitTask((int) (duration.TotalMilliseconds / (int) RefreshRate.High));
+            return new WaitTask(duration);
         }
 
-        public static IntTransformation<T> Create<T>(T target, string property, int endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static IntTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params int[] values) where T : class
         {
-            return IntTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new IntTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
 
-        public static DoubleTransformation<T> Create<T>(T target, string property, double endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static DoubleTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params double[] values) where T : class
         {
-            return DoubleTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new DoubleTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
 
-        public static StringTransformation<T> Create<T>(T target, string property, string endValue, TimeSpan duration)
+        public static StringTransformation<T> Create<T>(T target, string property, TimeSpan duration, string endValue)
             where T : class
         {
-            return StringTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High));
+            return new StringTransformation<T>(target, property, duration, endValue);
         }
 
-        public static ColorTransformation<T> Create<T>(T target, string property, Color endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static ColorTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params Color[] values) where T : class
         {
-            return ColorTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new ColorTransformation<T>(target, property, duration, easerFunction, values);
         }
 
-        public static PointTransformation<T> Create<T>(T target, string property, Point endValue, TimeSpan duration,
-            EaserFunction easerFunction = null) where T : class
+        public static PointTransformation<T> Create<T>(T target, string property, TimeSpan duration,
+            EaserFunction easerFunction = null, params Point[] values) where T : class
         {
-            return PointTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High), easerFunction);
+            return new PointTransformation<T>(target, property,
+                duration, easerFunction, values);
         }
 
-        public static BoolTransformation<T> Create<T>(T target, string property, bool endValue, TimeSpan duration)
+        public static BoolTransformation<T> Create<T>(T target, string property, TimeSpan duration, bool value)
             where T : class
         {
-            return BoolTransformation<T>.Create(target, property, endValue,
-                (int) (duration.TotalMilliseconds / (int) RefreshRate.High));
+            return new BoolTransformation<T>(target, property, duration, value);
         }
     }
 }

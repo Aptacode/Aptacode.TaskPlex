@@ -15,13 +15,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         protected InterpolatedTransformation(TClass target,
             string property,
-            Func<TProperty> endValue,
-            int duration,
+            TimeSpan duration,
             Interpolator<TProperty> interpolator,
-            EaserFunction easerFunction = null) : base(target,
+            EaserFunction easerFunction = null,
+            params TProperty[] values) : base(target,
             property,
-            endValue,
-            duration)
+            duration,
+            values)
         {
             _interpolator = interpolator;
             Easer = easerFunction ?? Easers.Linear;
@@ -35,7 +35,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
         protected override void Setup()
         {
             var startValue = GetValue();
-            var endValue = GetEndValue();
+            var endValue = Values[0];
             _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).ToList()
                 .GetEnumerator();
         }

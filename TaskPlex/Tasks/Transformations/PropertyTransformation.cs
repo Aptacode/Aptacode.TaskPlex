@@ -5,20 +5,22 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 {
     public abstract class PropertyTransformation : BaseTask
     {
-        protected PropertyTransformation(int stepCount) : base(stepCount)
+        protected PropertyTransformation(TimeSpan duration) : base(duration)
         {
         }
     }
 
     public abstract class PropertyTransformation<TClass, TPropertyType> : PropertyTransformation where TClass : class
     {
-        private readonly Func<TPropertyType> _endValue;
         private readonly Func<TClass, TPropertyType> _getter;
         private readonly Action<TClass, TPropertyType> _setter;
+        protected readonly TPropertyType[] Values;
 
-        protected PropertyTransformation(TClass target,
+        protected PropertyTransformation(
+            TClass target,
             string property,
-            Func<TPropertyType> endValue, int stepCount) : base(stepCount)
+            TimeSpan duration,
+            params TPropertyType[] values) : base(duration)
         {
             Target = target;
             Property = property;
@@ -29,7 +31,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             _getter = (Func<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Func<TClass, TPropertyType>),
                 null,
                 propertyInfo.GetGetMethod());
-            _endValue = endValue;
+
+            Values = values;
         }
 
         public SynchronizationContext SynchronizationContext { get; set; }
@@ -61,11 +64,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             {
                 SynchronizationContext.Post(o => { _setter(Target, value); }, value);
             }
-        }
-
-        protected TPropertyType GetEndValue()
-        {
-            return _endValue.Invoke();
         }
 
         private class SynchronizedResult

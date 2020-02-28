@@ -6,14 +6,16 @@ namespace Aptacode.TaskPlex.Tasks
 {
     public abstract class BaseTask
     {
-        protected BaseTask(int stepCount)
+        protected BaseTask(TimeSpan duration)
         {
-            StepCount = stepCount;
+            Duration = duration;
             State = TaskState.Ready;
             CancellationTokenSource = new CancellationTokenSource();
         }
 
-        public int StepCount { get; }
+        public RefreshRate RefreshRate { get; set; }
+        public TimeSpan Duration { get; set; }
+        public int StepCount { get; private set; }
 
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
 
@@ -29,8 +31,10 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Start the task with the given ParentCancellationTokenSource
         /// </summary>
         /// <returns></returns>
-        public void Start(CancellationTokenSource cancellationTokenSource)
+        public void Start(CancellationTokenSource cancellationTokenSource, RefreshRate refreshRate)
         {
+            RefreshRate = refreshRate;
+            StepCount = (int) Duration.TotalMilliseconds / (int) RefreshRate;
             CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
             Setup();
             State = TaskState.Running;

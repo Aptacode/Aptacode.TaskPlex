@@ -7,7 +7,8 @@ namespace Aptacode.TaskPlex.Tasks
     {
         private int _repeatCount;
 
-        public RepeatTask(BaseTask child, int repeatRepeatCount) : base(child.StepCount * repeatRepeatCount)
+        public RepeatTask(BaseTask child, int repeatRepeatCount) : base(
+            TimeSpan.FromMilliseconds(child.Duration.TotalMilliseconds * repeatRepeatCount))
         {
             Child = child;
             RepeatCount = repeatRepeatCount;
@@ -57,14 +58,14 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override void Begin()
         {
-            Child.Start(CancellationTokenSource);
+            Child.Start(CancellationTokenSource, RefreshRate);
         }
 
         private void Child_OnFinished(object sender, EventArgs e)
         {
             if (++_repeatCount < RepeatCount)
             {
-                Child.Start(CancellationTokenSource);
+                Child.Start(CancellationTokenSource, RefreshRate);
             }
         }
 

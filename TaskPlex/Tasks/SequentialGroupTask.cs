@@ -13,8 +13,8 @@ namespace Aptacode.TaskPlex.Tasks
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
         /// <param name="tasks"></param>
-        public SequentialGroupTask(List<BaseTask> tasks) : base(
-            tasks.Aggregate(0, (current, task) => current + task.StepCount), tasks)
+        public SequentialGroupTask(List<BaseTask> tasks) : base(TimeSpan.FromMilliseconds(tasks.Aggregate(0,
+            (current, task) => current + (int) task.Duration.TotalMilliseconds)), tasks)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         protected override void Begin()
         {
-            Tasks.First().Start(CancellationTokenSource);
+            Tasks.First().Start(CancellationTokenSource, RefreshRate);
         }
 
         private void BaseTask_OnFinished(object sender, EventArgs e)
@@ -55,7 +55,7 @@ namespace Aptacode.TaskPlex.Tasks
             var nextTaskIndex = Tasks.IndexOf(task) + 1;
             if (nextTaskIndex < Tasks.Count)
             {
-                Tasks[nextTaskIndex].Start(CancellationTokenSource);
+                Tasks[nextTaskIndex].Start(CancellationTokenSource, RefreshRate);
             }
         }
 

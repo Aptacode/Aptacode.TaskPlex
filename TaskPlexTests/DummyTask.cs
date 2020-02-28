@@ -1,4 +1,5 @@
-﻿using Aptacode.TaskPlex.Tasks;
+﻿using System;
+using Aptacode.TaskPlex.Tasks;
 
 namespace Aptacode.TaskPlex.Tests
 {
@@ -6,7 +7,7 @@ namespace Aptacode.TaskPlex.Tests
     {
         private int _tickCount;
 
-        public DummyTask(int stepCount) : base(stepCount)
+        public DummyTask(TimeSpan duration) : base(duration)
         {
         }
 
