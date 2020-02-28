@@ -99,7 +99,10 @@ namespace WPFDemo
 
         private BaseTask SingleTransformation()
         {
-            return GetTransformation(Rectangles[0], 600, Rectangles[0].Margin.Top, 300, Easers.Linear);
+            var transformation = WPFTransformationFactory.Create(Rectangles[0], "Margin", TimeSpan.FromMilliseconds(600), Easers.EaseInOutCubic, new Thickness(100, 100, 0, 0), new Thickness(600, 600, 0, 0), new Thickness(600, Rectangles[0].Margin.Top, 0, 0), new Thickness(Rectangles[0].Margin.Left, Rectangles[0].Margin.Top, 0, 0));
+
+            transformation.SynchronizationContext = SynchronizationContext.Current;
+            return transformation;
         }
 
         private BaseTask Transformation_Linear()

@@ -12,7 +12,8 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
     {
         private readonly Interpolator<TProperty> _interpolator;
         private IEnumerator<TProperty> _interpolationEnumerator;
-
+        private IEnumerator<TProperty> _keyFrameEnumerator;
+        private int _keyFrameIndex;
         protected InterpolatedTransformation(TClass target,
             string property,
             TimeSpan duration,
@@ -34,14 +35,24 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         protected override void Setup()
         {
-            var startValue = GetValue();
-            var endValue = Values[0];
-            _interpolationEnumerator = _interpolator.Interpolate(startValue, endValue, StepCount, Easer).ToList()
-                .GetEnumerator();
+            _keyFrameIndex = 0;
+            _interpolationEnumerator = GetNextInterpolator();
+        }
+
+        private IEnumerator<TProperty> GetNextInterpolator()
+        {
+            if (_keyFrameIndex < Values.Length)
+            {
+                return _interpolationEnumerator = _interpolator.Interpolate(GetValue(), Values[_keyFrameIndex++], StepCount / Values.Length, Easer).ToList()
+                    .GetEnumerator();
+            }
+
+            return null;
         }
 
         protected override void Begin()
         {
+
         }
 
         protected override void Cleanup()
@@ -51,7 +62,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         public override void Update()
         {
-            if (CancellationTokenSource.IsCancellationRequested)
+            if (IsCancelled)
             {
                 Finished();
                 return;
@@ -68,7 +79,15 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
             }
             else
             {
-                Finished();
+                _interpolationEnumerator = GetNextInterpolator();
+                if (_interpolationEnumerator?.MoveNext() == true)
+                {
+                    SetValue(_interpolationEnumerator.Current);
+                }
+                else
+                {
+                    Finished();
+                }
             }
         }
 

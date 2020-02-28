@@ -76,10 +76,8 @@ namespace Aptacode.TaskPlex.Tasks
             State = TaskState.Running;
         }
 
-        public bool IsRunning()
-        {
-            return State == TaskState.Running;
-        }
+        public bool IsRunning() => State == TaskState.Running;
+        public bool IsCancelled => CancellationTokenSource.IsCancellationRequested;
 
         #region AbstractMethods
 
