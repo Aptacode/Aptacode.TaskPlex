@@ -21,42 +21,49 @@ https://www.nuget.org/packages/Aptacode.TaskPlex/
 
 ```csharp
 
-//Initialise the task coordinator
-TaskCoordinator taskCoordinator = new TaskCoordinator();
-taskCoordinator.Start();
+//Initialise the engine
+PlexEngine plexEngine = new PlexEngine(new NullLoggerFactory(), new SystemTimerUpdater(RefreshRate.High));
+plexEngine.Start();
 
-//Create tasks
+//Creating tasks
 
-//Move myRectangle to x position 100 over 250ms, wait for 100ms then set myRectangle's opacity to 0.0 over 250 ms
-var transformation1 = TaskFactory.Create(myRectangle, "X", 100, TimeSpan.FromMilliseconds(250));
-var waitTask        = TaskFactory.Wait(TimeSpan.FromMilliseconds(100));
-var transformation2 = TaskFactory.Create(myRectangle, "Opacity", 0.0, TimeSpan.FromMilliseconds(250));
-var hideRectangle   = TaskFactory.Sequential(transformation1, transformation2});
+//Move myRectangle to x position 100->200->0 over 250ms
+var transformation1 = PlexFactory.Create(myRectangle, "X", TimeSpan.FromMilliseconds(250), 100, 200, 0);
+
+//wait for 100ms
+var waitTask        = PlexFactory.Wait(TimeSpan.FromMilliseconds(100));
+
+//set myRectangle's opacity to 0.0 over 250 ms
+var transformation2 = PlexFactory.Create(myRectangle, "Opacity", TimeSpan.FromMilliseconds(250), 0.0);
+
+//Create a sequential group of the above transformations
+var hideRectangle   = PlexFactory.Sequential(transformation1, waitTask, transformation2});
+
 
 //Set myRectangles width & height to 50 over 100ms at the SAME time
-var transformation3 = TaskFactory.Create(myRectangle, "Width", 50, TimeSpan.FromMilliseconds(100));
-var transformation4 = TaskFactory.Create(myRectangle, "Height", 50, TimeSpan.FromMilliseconds(100));
-var shrinkRectangle = TaskFactory.Parallel(transformation1, transformation2});
+var transformation3 = PlexFactory.Create(myRectangle, "Width", TimeSpan.FromMilliseconds(100), 50);
+var transformation4 = PlexFactory.Create(myRectangle, "Height", TimeSpan.FromMilliseconds(100), 50);
+var shrinkRectangle = PlexFactory.Parallel(transformation1, transformation2});
 
 //Apply task's whenever necessary
-taskCoordinator.Apply(hideRectangle);
-taskCoordinator.Apply(shrinkRectangle);
+plexEngine.Apply(hideRectangle);
+plexEngine.Apply(shrinkRectangle);
 
 //Managing running tasks
 
 //Pause and resume all running tasks
-taskCoordinator.Pause();
-taskCoordinator.Resume();
+plexEngine.Pause();
+plexEngine.Resume();
 
 //Pause & Resume a single running task
-taskCoordinator.Pause(transformation3);
-taskCoordinator.Resume(transformation3);
+plexEngine.Pause(transformation3);
+plexEngine.Resume(transformation3);
 
 //Cancel all running tasks and restart the task coordinator
-taskCoordinator.Restart();
+plexEngine.Restart();
 
 //Cancel all running tasks and release all resources
-taskCoordinator.Stop();
+plexEngine.Stop();
 
 ```
 
