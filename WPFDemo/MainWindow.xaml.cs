@@ -45,7 +45,7 @@ namespace WPFDemo
         {
             Rectangles.Clear();
             var colors = GetColors();
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                 Rectangles.Add(
                     new Rectangle
@@ -236,13 +236,13 @@ namespace WPFDemo
             foreach (var rectangle in Rectangles)
             {
                 var sequentialTransformation = PlexFactory.Sequential(
-                    PlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 40)),
-                    GetTransformation(rectangle, 600, rectangle.Margin.Top, 300, Easers.EaseInOutCubic),
-                    GetTransformation(rectangle, 40, rectangle.Margin.Top, 300, Easers.EaseInOutCubic));
+                    PlexFactory.Wait(TimeSpan.FromMilliseconds(counter++ * 30)),
+                    GetTransformation(rectangle, 600, rectangle.Margin.Top, 250, Easers.EaseInOutCubic),
+                    GetTransformation(rectangle, 40, rectangle.Margin.Top, 250, Easers.EaseInOutCubic));
                 transformations.Add(sequentialTransformation);
             }
 
-            return PlexFactory.Parallel(transformations.ToArray());
+            return PlexFactory.Repeat(PlexFactory.Parallel(transformations.ToArray()), 5);
         }
 
         private BaseTask ParallelTransformation3(bool isReversed = false)

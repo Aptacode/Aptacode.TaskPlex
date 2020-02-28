@@ -27,7 +27,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             var propertyInfo = typeof(TClass).GetProperty(Property);
 
             _setter = (Action<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Action<TClass, TPropertyType>),
-                null, propertyInfo.GetSetMethod());
+                null, propertyInfo?.GetSetMethod() ?? throw new InvalidOperationException());
             _getter = (Func<TClass, TPropertyType>) Delegate.CreateDelegate(typeof(Func<TClass, TPropertyType>),
                 null,
                 propertyInfo.GetGetMethod());
@@ -62,7 +62,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             }
             else
             {
-                SynchronizationContext.Post(o => { _setter(Target, value); }, value);
+                SynchronizationContext.Post(o => _setter(Target, value), value);
             }
         }
 

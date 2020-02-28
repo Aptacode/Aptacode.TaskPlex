@@ -23,6 +23,8 @@ namespace Aptacode.TaskPlex.Interpolators
 
             if (velocity <= 0)
             {
+                //If the distance to travel per step is 0 then return the last destination
+                //for each step
                 for (var i = 0; i < stepCount; i++)
                 {
                     yield return points.Last();
@@ -30,21 +32,24 @@ namespace Aptacode.TaskPlex.Interpolators
             }
             else
             {
-                //Yield a point for each step
+                //for each edge
                 foreach (var (pointA, pointB, edge) in edges)
                 {
+                    //Calculate how many steps this edge has
                     var edgeSteps = Math.Abs(edge) / velocity;
+                    //Return a value for each step along this edge
                     for (var stepIndex = 1; stepIndex < edgeSteps; stepIndex++)
                     {
                         yield return pointA + (int) (edge * easer(stepIndex, edgeSteps));
                     }
 
+                    //Return the last point for this step
                     yield return pointB;
                 }
             }
         }
 
-        private List<(int, int, int)> GetEdges(IEnumerable<int> keyPoints)
+        private static List<(int, int, int)> GetEdges(IEnumerable<int> keyPoints)
         {
             var keyPointList = keyPoints.ToList();
             //Point A, Point B, Length

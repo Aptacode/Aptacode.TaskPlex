@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.Interpolators
             //Get the list of edges
             var edges = GetEdges(points);
 
-            //The distance to travel per step
+            //Calculate the total length to travel
             var velocity = TotalEdgeLength(edges) / stepCount;
 
             if (velocity <= 0)
@@ -29,20 +29,30 @@ namespace Aptacode.TaskPlex.Interpolators
             }
             else
             {
-                //Yield a point for each step
                 foreach (var (pointA, pointB, edge) in edges)
                 {
+                    //Calculate the unit vector for the edge
                     var normal = Normalize(edge);
+                    //Determine the length of the edge
                     var edgeLength = GetLength(edge);
-                    var edgeSteps = GetLength(edge) / velocity;
+                    //Calculate the number of steps needed for this edge
+                    var edgeSteps = edgeLength / velocity;
+                    //Yield a value at each step along this edge
                     for (var stepIndex = 1; stepIndex < edgeSteps; stepIndex++)
                     {
-                        var incrementLength = edgeLength * easer(stepIndex, (int) edgeSteps);
-                        var newPoint = Add(pointA, Multiply(normal, incrementLength));
-
+                        //Calculate the progress through this edge
+                        var progress = easer(stepIndex, (int) edgeSteps);
+                        //Multiply the edge's distance by the progress
+                        var progressDistance = edgeLength * progress;
+                        //Multiply the normal by the progress to get the vector from the last point
+                        var progressVector = Multiply(normal, progressDistance);
+                        //Add the progress vector to the last point to get the new point
+                        var newPoint = Add(pointA, progressVector);
+                        //Convert and return
                         yield return FromVector(newPoint);
                     }
 
+                    //Return the end point for this edge
                     yield return FromVector(pointB);
                 }
             }

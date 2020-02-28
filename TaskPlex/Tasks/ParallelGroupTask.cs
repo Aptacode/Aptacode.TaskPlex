@@ -61,7 +61,7 @@ namespace Aptacode.TaskPlex.Tasks
 
         public override void Update()
         {
-            if (CancellationTokenSource.IsCancellationRequested)
+            if (IsCancelled)
             {
                 Finished();
                 return;

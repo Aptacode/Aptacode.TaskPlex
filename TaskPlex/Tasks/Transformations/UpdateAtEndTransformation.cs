@@ -34,7 +34,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
 
         public override void Update()
         {
-            if (CancellationTokenSource.IsCancellationRequested)
+            if (IsCancelled)
             {
                 Finished();
             }
