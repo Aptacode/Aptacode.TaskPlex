@@ -1,12 +1,9 @@
 ﻿using System;
-using Aptacode.TaskPlex.Enums;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations
 {
-    public sealed class StringTransformation<TClass> : PropertyTransformation<TClass, string> where TClass : class
+    public sealed class StringTransformation<TClass> : UpdateAtEndTransformation<TClass, string> where TClass : class
     {
-        private int _tickCount;
-
         /// <summary>
         ///     Update a string property on the target to the value returned by the given Func after the task duration
         /// </summary>
@@ -37,45 +34,6 @@ namespace Aptacode.TaskPlex.Tasks.Transformations
             {
                 return null;
             }
-        }
-
-        protected override void Setup()
-        {
-            _tickCount = 0;
-        }
-
-        protected override void Begin()
-        {
-        }
-
-        protected override void Cleanup()
-        {
-            _tickCount = 0;
-        }
-
-        public override void Update()
-        {
-            if (CancellationTokenSource.IsCancellationRequested)
-            {
-                Finished();
-            }
-
-            if (!IsRunning())
-            {
-                return;
-            }
-
-            if (++_tickCount >= StepCount)
-            {
-                SetValue(GetEndValue());
-                Finished();
-            }
-        }
-
-        public override void Reset()
-        {
-            State = TaskState.Paused;
-            Cleanup();
         }
     }
 }
