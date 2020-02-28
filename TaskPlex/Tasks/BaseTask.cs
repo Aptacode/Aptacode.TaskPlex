@@ -20,6 +20,7 @@ namespace Aptacode.TaskPlex.Tasks
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
 
         public TaskState State { get; protected set; }
+        public bool IsCancelled => CancellationTokenSource.IsCancellationRequested;
 
         public event EventHandler<EventArgs> OnStarted;
 
@@ -76,8 +77,10 @@ namespace Aptacode.TaskPlex.Tasks
             State = TaskState.Running;
         }
 
-        public bool IsRunning() => State == TaskState.Running;
-        public bool IsCancelled => CancellationTokenSource.IsCancellationRequested;
+        public bool IsRunning()
+        {
+            return State == TaskState.Running;
+        }
 
         #region AbstractMethods
 

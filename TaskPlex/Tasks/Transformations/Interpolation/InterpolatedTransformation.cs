@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Interpolators;
+using Aptacode.TaskPlex.Interfaces;
 using Aptacode.TaskPlex.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
@@ -10,14 +10,13 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
     public class InterpolatedTransformation<TClass, TProperty> : PropertyTransformation<TClass, TProperty>
         where TClass : class
     {
-        private readonly Interpolator<TProperty> _interpolator;
+        private readonly IInterpolator<TProperty> _interpolator;
         private IEnumerator<TProperty> _interpolationEnumerator;
-        private IEnumerator<TProperty> _keyFrameEnumerator;
-        private int _keyFrameIndex;
+
         protected InterpolatedTransformation(TClass target,
             string property,
             TimeSpan duration,
-            Interpolator<TProperty> interpolator,
+            IInterpolator<TProperty> interpolator,
             EaserFunction easerFunction = null,
             params TProperty[] values) : base(target,
             property,
@@ -35,24 +34,14 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
 
         protected override void Setup()
         {
-            _keyFrameIndex = 0;
-            _interpolationEnumerator = GetNextInterpolator();
-        }
-
-        private IEnumerator<TProperty> GetNextInterpolator()
-        {
-            if (_keyFrameIndex < Values.Length)
-            {
-                return _interpolationEnumerator = _interpolator.Interpolate(GetValue(), Values[_keyFrameIndex++], StepCount / Values.Length, Easer).ToList()
-                    .GetEnumerator();
-            }
-
-            return null;
+            var points = new List<TProperty> {GetValue()};
+            points.AddRange(Values);
+            _interpolationEnumerator =
+                _interpolator.Interpolate(StepCount, Easer, points.ToArray()).ToList().GetEnumerator();
         }
 
         protected override void Begin()
         {
-
         }
 
         protected override void Cleanup()
@@ -79,15 +68,7 @@ namespace Aptacode.TaskPlex.Tasks.Transformations.Interpolation
             }
             else
             {
-                _interpolationEnumerator = GetNextInterpolator();
-                if (_interpolationEnumerator?.MoveNext() == true)
-                {
-                    SetValue(_interpolationEnumerator.Current);
-                }
-                else
-                {
-                    Finished();
-                }
+                Finished();
             }
         }
 

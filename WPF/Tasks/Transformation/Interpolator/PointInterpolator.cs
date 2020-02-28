@@ -1,38 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System.Numerics;
 using System.Windows;
 using Aptacode.TaskPlex.Interpolators;
-using Aptacode.TaskPlex.Interpolators.Easers;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {
-    public class PointInterpolator : Interpolator<Point>
+    public class PointInterpolator : Vec2Interpolator<Point>
     {
-        public IEnumerable<Point> Interpolate(Point startValue, Point endValue, int stepCount, EaserFunction easer)
+        public override Point FromVector(Vector2 value)
         {
-            if (stepCount <= 0)
-            {
-                yield break;
-            }
+            return new Point((int) value.X, (int) value.Y);
+        }
 
-            var componentInterpolator = new DoubleInterpolator();
-            var xValueIterator = componentInterpolator.Interpolate(startValue.X, endValue.X, stepCount, easer)
-                .GetEnumerator();
-            var yValueIterator = componentInterpolator.Interpolate(startValue.Y, endValue.Y, stepCount, easer)
-                .GetEnumerator();
-
-            for (var stepIndex = 0; stepIndex < stepCount; stepIndex++)
-            {
-                xValueIterator.MoveNext();
-                yValueIterator.MoveNext();
-
-                yield return new Point(xValueIterator.Current, yValueIterator.Current);
-            }
-
-            xValueIterator.Dispose();
-            yValueIterator.Dispose();
-
-
-            yield return endValue;
+        public override Vector2 ToVector(Point value)
+        {
+            return new Vector2((float) value.X, (float) value.Y);
         }
     }
 }
