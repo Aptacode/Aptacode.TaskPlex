@@ -17,7 +17,7 @@ namespace Aptacode.TaskPlex.WPF.Tasks.Transformation
             params Thickness[] values) : base(target,
             property,
             duration,
-            new ThicknessInterpolator(),
+            new ThicknessLinearInterpolator(),
             easerFunction, useStartValue, values)
         {
         }

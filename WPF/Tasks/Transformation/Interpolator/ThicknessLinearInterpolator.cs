@@ -4,7 +4,7 @@ using Aptacode.TaskPlex.Interpolators.Linear;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {
-    public class ThicknessInterpolator : Vec4LinearInterpolator<Thickness>
+    public class ThicknessLinearInterpolator : Vec4LinearInterpolator<Thickness>
     {
         public override Vector4 ToVector(Thickness value)
         {

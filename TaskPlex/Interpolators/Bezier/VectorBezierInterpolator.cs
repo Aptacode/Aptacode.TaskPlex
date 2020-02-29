@@ -19,7 +19,7 @@ namespace Aptacode.TaskPlex.Interpolators.Bezier
             var curveSegments = new List<(Vector2, Vector2, Vector2, Vector2)>();
             var vecPoints = points.Select(ToVector).ToList();
 
-            for (var i = 2; i + 2 < vecPoints.Count; i += 2)
+            for (var i = 2; i + 1 < vecPoints.Count; i += 2)
             {
                 var point1 = vecPoints[i - 2];
                 var point2 = vecPoints[i - 1];
@@ -35,9 +35,9 @@ namespace Aptacode.TaskPlex.Interpolators.Bezier
             {
                 for (var i = 0; i <= 10; i++)
                 {
-                    var x = X(i / 100f, curveSegment.Item1.X, curveSegment.Item2.X, curveSegment.Item3.X,
+                    var x = X(i / 10f, curveSegment.Item1.X, curveSegment.Item2.X, curveSegment.Item3.X,
                         curveSegment.Item4.X);
-                    var y = Y(i / 100f, curveSegment.Item1.Y, curveSegment.Item2.Y, curveSegment.Item3.Y,
+                    var y = Y(i / 10f, curveSegment.Item1.Y, curveSegment.Item2.Y, curveSegment.Item3.Y,
                         curveSegment.Item4.Y);
 
                     pointsOnCurve.Add(new Vector2(x, y));

@@ -101,10 +101,10 @@ namespace WPFDemo
         {
             var transformation = WPFTransformationFactory.Create(Rectangles[0], "Margin",
                 TimeSpan.FromMilliseconds(600), Easers.EaseInOutCubic, false,
-                new Thickness(400, 40, 0, 0),
-                new Thickness(400, 400, 0, 0),
-                new Thickness(40, 400, 0, 0),
-                new Thickness(40, 40, 0, 0));
+                new Thickness(100, 0, 0, 0),
+                new Thickness(50, 300, 0, 0),
+                new Thickness(300, 50, 0, 0),
+                new Thickness(400, 100, 0, 0));
 
             transformation.SynchronizationContext = SynchronizationContext.Current;
             return transformation;
