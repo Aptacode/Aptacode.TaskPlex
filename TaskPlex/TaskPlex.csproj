@@ -14,9 +14,9 @@
     <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
     <Description>TaskPlex is a lightweight cross platform .net tweening library with a goal of simplifying the creation and use of complex animations.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.1.5</AssemblyVersion>
-    <FileVersion>1.1.1.5</FileVersion>
-    <Version>1.1.1.5</Version>
+    <AssemblyVersion>1.1.1.6</AssemblyVersion>
+    <FileVersion>1.1.1.6</FileVersion>
+    <Version>1.1.1.6</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

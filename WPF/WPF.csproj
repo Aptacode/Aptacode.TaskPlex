@@ -13,10 +13,10 @@
     <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>TaskPlex</Product>
-    <Version>1.1.1.5</Version>
+    <Version>1.1.1.6</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>1.1.1.5</AssemblyVersion>
-    <FileVersion>1.1.1.5</FileVersion>
+    <AssemblyVersion>1.1.1.6</AssemblyVersion>
+    <FileVersion>1.1.1.6</FileVersion>
     <Description>WPF transformations for TaskPlex</Description>
   </PropertyGroup>
 
