@@ -1,30 +1,31 @@
 ﻿using System;
-using Aptacode.TaskPlex.Engine.Tasks;
+using Aptacode.TaskPlex.Engine.Enums;
 
-namespace Aptacode.TaskPlex.Tests
+namespace Aptacode.TaskPlex.Engine.Tasks.Transformations
 {
-    public class DummyTask : BaseTask
+    public class UpdateAtEndTransformation<TClass, TPropertyType> : PropertyTransformation<TClass, TPropertyType>
+        where TClass : class
     {
         private int _tickCount;
 
-        public DummyTask(TimeSpan duration) : base(duration)
+        internal UpdateAtEndTransformation(TClass target,
+            string property,
+            TimeSpan duration,
+            TPropertyType value) : base(target,
+            property,
+            duration,
+            false,
+            value)
         {
         }
-
-        public bool HasSetup { get; set; }
-        public bool HasStarted { get; set; }
-        public bool HasCanceled => CancellationTokenSource.IsCancellationRequested;
-        public bool HasFinished { get; set; }
 
         protected override void Setup()
         {
             _tickCount = 0;
-            HasSetup = true;
         }
 
         protected override void Begin()
         {
-            HasStarted = true;
         }
 
         protected override void Cleanup()
@@ -34,10 +35,9 @@ namespace Aptacode.TaskPlex.Tests
 
         public override void Update()
         {
-            if (CancellationTokenSource.IsCancellationRequested)
+            if (IsCancelled)
             {
                 Finished();
-                return;
             }
 
             if (!IsRunning())
@@ -47,13 +47,15 @@ namespace Aptacode.TaskPlex.Tests
 
             if (++_tickCount >= StepCount)
             {
-                HasFinished = true;
+                SetValue(Values[0]);
                 Finished();
             }
         }
 
         public override void Reset()
         {
+            State = TaskState.Paused;
+            Cleanup();
         }
     }
 }

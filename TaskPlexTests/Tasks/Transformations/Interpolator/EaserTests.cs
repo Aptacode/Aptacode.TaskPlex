@@ -1,4 +1,4 @@
-﻿using Aptacode.TaskPlex.Interpolators.Easers;
+﻿using Aptacode.TaskPlex.Interpolation.Easers;
 using NUnit.Framework;
 
 namespace Aptacode.TaskPlex.Tests.Tasks.Transformations.Interpolator

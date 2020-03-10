@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net4.7.2</TargetFramework>
+    <AssemblyName>Aptacode.TaskPlex.WPF</AssemblyName>
+    <RootNamespace>Aptacode.TaskPlex.WPF</RootNamespace>
+    <Authors>Timothy Jones</Authors>
+    <Company>Aptacode</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Timmoth/Aptacode.TaskPlex</PackageProjectUrl>
+    <PackageIcon>TaskPlexLogo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>TaskPlex</Product>
+    <Version>1.1.1.6</Version>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyVersion>1.1.1.6</AssemblyVersion>
+    <FileVersion>1.1.1.6</FileVersion>
+    <Description>WPF transformations for TaskPlex</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="Resources\**" />
+    <None Include="..\Resources\Images\TaskPlexLogo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+</Project>

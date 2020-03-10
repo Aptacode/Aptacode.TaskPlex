@@ -1,6 +1,6 @@
 ﻿using System;
-using Aptacode.TaskPlex.Enums;
-using Aptacode.TaskPlex.Interfaces;
+using Aptacode.TaskPlex.Engine.Enums;
+using Aptacode.TaskPlex.Engine.Interfaces;
 
 namespace Aptacode.TaskPlex.Tests
 {
