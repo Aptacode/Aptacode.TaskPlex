@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Aptacode.TaskPlex.Interpolation.Linear;
+using System.Numerics;
 using System.Windows;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator

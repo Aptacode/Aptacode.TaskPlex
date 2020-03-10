@@ -28,14 +28,16 @@
     <Compile Remove="Resources\**" />
     <EmbeddedResource Remove="Resources\**" />
     <None Remove="Resources\**" />
-    <None Include="..\Resources\Images\TaskPlexLogo.png">
+    <None Include="..\..\Resources\Images\TaskPlexLogo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.csproj" />
+    <ProjectReference Include="..\..\Core\Engine\Engine.csproj" />
+    <ProjectReference Include="..\..\Core\Interpolation\Interpolation.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

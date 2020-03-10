@@ -13,6 +13,7 @@ using Aptacode.TaskPlex.Engine.Interfaces;
 using Aptacode.TaskPlex.Engine.Tasks;
 using Aptacode.TaskPlex.Interpolation.Easers;
 using Aptacode.TaskPlex.WPF.Tasks.Transformation;
+using Microsoft.Extensions.Logging.Abstractions;
 using Color = System.Drawing.Color;
 
 namespace WPFDemo
