@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Aptacode.TaskPlex.Graphics;
+using Aptacode.TaskPlex.Graphics.Nodes.Attribute;
+using Aptacode.TaskPlex.Graphics.Nodes.Geometry;
+using Aptacode.TaskPlex.Graphics.Nodes.Transform;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
