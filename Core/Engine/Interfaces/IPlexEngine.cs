@@ -18,5 +18,6 @@ namespace Aptacode.TaskPlex.Engine.Interfaces
         void Stop(BaseTask task);
         void Pause(BaseTask task);
         void Resume(BaseTask task);
+        void Update();
     }
 }

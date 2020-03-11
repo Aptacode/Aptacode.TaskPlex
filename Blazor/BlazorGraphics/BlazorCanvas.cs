@@ -6,7 +6,7 @@ using Aptacode.TaskPlex.Graphics.Nodes.Transform;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
-namespace Aptacode.TaskPlex.BlazorGraphics
+namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
 {
     public class BlazorCanvas : ICanvas
     {
@@ -67,9 +67,11 @@ namespace Aptacode.TaskPlex.BlazorGraphics
             _canvas2DContext.StrokeAsync();
         }
 
-        public async Task Setup()
+
+        public void Setup()
         {
-            _canvas2DContext = await _canvasReference.CreateCanvas2DAsync();
+            new TaskFactory().StartNew(async () => { _canvas2DContext = await _canvasReference.CreateCanvas2DAsync(); })
+                .Wait();
         }
     }
 }

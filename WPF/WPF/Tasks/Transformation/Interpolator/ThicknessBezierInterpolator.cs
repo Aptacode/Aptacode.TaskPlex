@@ -1,6 +1,6 @@
-﻿using Aptacode.TaskPlex.Interpolation.Bezier;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Windows;
+using Aptacode.TaskPlex.Interpolation.Bezier;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {

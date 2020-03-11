@@ -31,7 +31,7 @@ namespace WPFDemo
         public MainWindow()
         {
             InitializeComponent();
-            _plexEngine = new PlexEngine(new NullLoggerFactory(), new SystemTimerUpdater(RefreshRate.High));
+            _plexEngine = new PlexEngine(new NullLoggerFactory(), RefreshRate.High);
             _plexEngine.Start();
             Rectangles = new ObservableCollection<Rectangle>();
             DataContext = this;

@@ -16,5 +16,6 @@ namespace Aptacode.TaskPlex.Graphics
         void Apply(ScaleNode scaleNode);
         void Apply(ArcNode arcNode);
         void Apply(LineNode lineNode);
+        void Setup();
     }
 }

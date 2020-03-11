@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Graphics\Graphics.csproj" />
     <ProjectReference Include="..\Interpolation\Interpolation.csproj" />
   </ItemGroup>
 

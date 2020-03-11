@@ -1,6 +1,6 @@
-﻿using Aptacode.TaskPlex.Interpolation.Linear;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Windows.Media;
+using Aptacode.TaskPlex.Interpolation.Linear;
 
 namespace Aptacode.TaskPlex.WPF.Tasks.Transformation.Interpolator
 {

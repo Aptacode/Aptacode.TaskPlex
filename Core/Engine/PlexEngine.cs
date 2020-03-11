@@ -16,16 +16,15 @@ namespace Aptacode.TaskPlex.Engine
     public class PlexEngine : IPlexEngine
     {
         private readonly ILogger _logger;
+        private readonly RefreshRate _refreshRate;
         private readonly ConcurrentDictionary<BaseTask, int> _tasks;
-        private readonly IUpdater _taskUpdater;
 
         /// <summary>
         ///     Manages the execution of tasks
         /// </summary>
-        public PlexEngine(ILoggerFactory loggerFactory, IUpdater taskUpdater)
+        public PlexEngine(ILoggerFactory loggerFactory, RefreshRate refreshRate)
         {
-            _taskUpdater = taskUpdater;
-            _taskUpdater.OnUpdate += UpdateTasks;
+            _refreshRate = refreshRate;
             _logger = loggerFactory.CreateLogger<PlexEngine>();
             _logger.LogTrace("Initializing PlexEngine");
             _tasks = new ConcurrentDictionary<BaseTask, int>();
@@ -79,7 +78,6 @@ namespace Aptacode.TaskPlex.Engine
         {
             State = TaskState.Running;
             _logger.LogTrace("Start");
-            _taskUpdater.Start();
         }
 
         /// <summary>
@@ -89,7 +87,6 @@ namespace Aptacode.TaskPlex.Engine
         {
             State = TaskState.Stopped;
             _logger.LogTrace("Canceled all tasks");
-            _taskUpdater.Stop();
             _tasks.Keys.ToList().ForEach(task => task.Cancel());
         }
 
@@ -143,11 +140,24 @@ namespace Aptacode.TaskPlex.Engine
             try
             {
                 //Run the task asynchronously with the Coordinators cancellation token source and refresh rate
-                task.Start(new CancellationTokenSource(), _taskUpdater.RefreshRate);
+                task.Start(new CancellationTokenSource(), _refreshRate);
             }
             catch (Exception ex)
             {
                 _logger.LogDebug($"Task Failed: {ex}");
+            }
+        }
+
+        public void Update()
+        {
+            if (State != TaskState.Running)
+            {
+                return;
+            }
+
+            foreach (var tasksKey in _tasks.Keys)
+            {
+                Task.Run(tasksKey.Update);
             }
         }
 
@@ -162,19 +172,6 @@ namespace Aptacode.TaskPlex.Engine
 
             task.OnFinished -= Task_OnFinished;
             task.OnCancelled -= Task_OnFinished;
-        }
-
-        private void UpdateTasks(object sender, EventArgs e)
-        {
-            if (State != TaskState.Running)
-            {
-                return;
-            }
-
-            foreach (var tasksKey in _tasks.Keys)
-            {
-                Task.Run(tasksKey.Update);
-            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Aptacode.TaskPlex.Engine;
+using Aptacode.TaskPlex.Engine.Enums;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace Aptacode.TaskPlex.Tests
         public void Setup()
         {
             _dummyUpdater = new DummyUpdater();
-            _plexEngine = new PlexEngine(new NullLoggerFactory(), _dummyUpdater);
+            _plexEngine = new PlexEngine(new NullLoggerFactory(), RefreshRate.Normal);
             _plexEngine.Start();
         }
 
