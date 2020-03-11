@@ -3,7 +3,7 @@
   <img width="640" height="320" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/TaskPlexBanner.png">
 </p>
 
-TaskPlex is a lightweight cross platform .net tweening library with a goal of simplifying the creation and use of complex animations.
+### A lightweight cross platform .net animation & render engine.
 
 NuGet package:
 
@@ -81,35 +81,3 @@ A group of tasks to be applied at the same time
 #### Composite example
 An animation composed of a Parallel and Sequential groups
 ![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/ComplexTransformation.gif)
-
-
-### Easers
-Easer functions are used to determine the rate at which a transformations value changes. The graphs below show the rate at which an interpolator affected by each easer approaches its end value over time.
-
-<p align="center">
-  <img width="700" height="600" src="https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/Images/easers.png">
-</p>
-
-### Easer demos
-
-#### Linear
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/Linear.gif)
-
-#### EaseIn
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseIn.gif)
-
-#### EaseOut
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseOut.gif)
-
-#### EaseInOut
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/EaseInOut.gif)
-
-#### Elastic
-
-![Alt Text](https://raw.githubusercontent.com/Timmoth/Aptacode.TaskPlex/master/Resources/demos/Elastic.gif)
-
-
