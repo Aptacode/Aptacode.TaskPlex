@@ -1,30 +1,27 @@
 ﻿using System;
-using Aptacode.TaskPlex.Stories;
+using Aptacode.TaskPlex.Enums;
 
-namespace Aptacode.TaskPlex.Tests
+namespace Aptacode.TaskPlex.Stories
 {
-    public class DummyStory : BaseStory
+    public class WaitStory : BaseStory
     {
         private int _tickCount;
 
-        public DummyStory(TimeSpan duration) : base(duration)
+        /// <summary>
+        ///     Wait for a specified amount of time
+        /// </summary>
+        /// <param name="stepCount"></param>
+        public WaitStory(TimeSpan duration) : base(duration)
         {
         }
-
-        public bool HasSetup { get; set; }
-        public bool HasStarted { get; set; }
-        public bool HasCanceled => CancellationTokenSource.IsCancellationRequested;
-        public bool HasFinished { get; set; }
 
         protected override void Setup()
         {
             _tickCount = 0;
-            HasSetup = true;
         }
 
         protected override void Begin()
         {
-            HasStarted = true;
         }
 
         protected override void Cleanup()
@@ -34,7 +31,7 @@ namespace Aptacode.TaskPlex.Tests
 
         public override void Update()
         {
-            if (CancellationTokenSource.IsCancellationRequested)
+            if (IsCancelled)
             {
                 Finished();
                 return;
@@ -47,13 +44,14 @@ namespace Aptacode.TaskPlex.Tests
 
             if (++_tickCount >= StepCount)
             {
-                HasFinished = true;
                 Finished();
             }
         }
 
         public override void Reset()
         {
+            State = TaskState.Paused;
+            Cleanup();
         }
     }
 }

@@ -8,12 +8,12 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
 {
-    public class BlazorCanvas : ICanvas
+    public class WPfCanvas : ICanvas
     {
         private readonly BECanvasComponent _canvasReference;
         private Canvas2DContext _canvas2DContext;
 
-        public BlazorCanvas(BECanvasComponent canvasReference)
+        public WPfCanvas(BECanvasComponent canvasReference)
         {
             _canvasReference = canvasReference;
         }
@@ -61,9 +61,9 @@ namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
 
         public void Apply(LineNode lineNode)
         {
-            _canvas2DContext.BeginPath();
+            _canvas2DContext.BeginPathAsync();
             _canvas2DContext.MoveToAsync(lineNode.Start.X, lineNode.Start.Y);
-            _canvas2DContext.LineTo(lineNode.End.X, lineNode.End.Y);
+            _canvas2DContext.LineToAsync(lineNode.End.X, lineNode.End.Y);
             _canvas2DContext.StrokeAsync();
         }
 
@@ -72,6 +72,10 @@ namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
         {
             new TaskFactory().StartNew(async () => { _canvas2DContext = await _canvasReference.CreateCanvas2DAsync(); })
                 .Wait();
+        }
+
+        public void Update(Scene scene)
+        {
         }
     }
 }

@@ -4,47 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFDemo"
+        xmlns:wpfGraphics="clr-namespace:WPFGraphics;assembly=WPFGraphics"
         mc:Ignorable="d"
         Title="MainWindow" Height="520" Width="720">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
-            <RowDefinition />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <StackPanel Orientation="Horizontal">
-            <ComboBox Margin="10" Width="200" SelectionChanged="OnDemoSelectionChanged" x:Name="ComboBox">
-                <ComboBoxItem Content="SingleTransformation" />
-                <ComboBoxItem Content="SequentialTransformations" />
-                <ComboBoxItem Content="SequentialTransformation2" />
-                <ComboBoxItem Content="ParallelTransformations" />
-                <ComboBoxItem Content="ParallelTransformation2" />
-                <ComboBoxItem Content="ParallelTransformation3" />
-                <ComboBoxItem Content="RepeatTransformations" />
-
-                <ComboBoxItem Content="Transformation_Linear" />
-                <ComboBoxItem Content="Transformation_EaseIn" />
-                <ComboBoxItem Content="Transformation_EaseOut" />
-                <ComboBoxItem Content="Transformation_EaseInOut" />
-                <ComboBoxItem Content="Transformation_Elastic" />
-            </ComboBox>
-
-            <Button Margin="10" Width="100" Click="PlayButtonClicked">Play</Button>
-            <Button Margin="10" Width="100" Click="PauseButtonClicked">Pause</Button>
-            <Button Margin="10" Width="100" Click="ButtonBase_OnClick">Reset</Button>
-        </StackPanel>
-
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Rectangles}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ContentPresenter Content="{Binding }" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Button Click="ButtonBase_OnClick" Grid.Row="0">start</Button>
+        <Border BorderBrush="Black" BorderThickness="2" Grid.Row="1" Margin="10">
+            <wpfGraphics:TaskPlexCanvas x:Name="TaskPlexCanvas" />
+        </Border>
     </Grid>
 </Window>

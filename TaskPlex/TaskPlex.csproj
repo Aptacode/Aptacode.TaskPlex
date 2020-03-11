@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net4.7.2;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>Aptacode.TaskPlex</AssemblyName>
+    <RootNamespace>Aptacode.TaskPlex</RootNamespace>
+    <Authors>Timothy Jones</Authors>
+    <Company>Aptacode</Company>
+    <Product>TaskPlex</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Timmoth/Aptacode.TaskPlex</PackageProjectUrl>
+    <PackageIcon>TaskPlexLogo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/Timmoth/Aptacode.TaskPlex</RepositoryUrl>
+    <Description>A lightweight cross platform .net animation and render engine.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.1.1.7</AssemblyVersion>
+    <FileVersion>1.1.1.7</FileVersion>
+    <Version>1.1.1.7</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Resources\Images\TaskPlexLogo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aptacode.Interpolatr" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Graphics\Graphics.csproj" />
+  </ItemGroup>
+
+</Project>
