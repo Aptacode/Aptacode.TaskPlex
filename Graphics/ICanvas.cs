@@ -6,9 +6,10 @@ namespace Aptacode.TaskPlex.Graphics
 {
     public interface ICanvas
     {
+        void Setup();
+        void Update(Scene scene);
         void Push();
         void Pop();
-
         void Apply(RectangleNode node);
         void Apply(SetColorNode node);
         void Apply(TranslateNode node);
@@ -16,7 +17,5 @@ namespace Aptacode.TaskPlex.Graphics
         void Apply(ScaleNode scaleNode);
         void Apply(ArcNode arcNode);
         void Apply(LineNode lineNode);
-        void Setup();
-        void Update(Scene scene);
     }
 }

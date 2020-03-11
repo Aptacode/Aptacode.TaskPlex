@@ -5,15 +5,15 @@ namespace Aptacode.TaskPlex.Stories
 {
     public abstract class GroupStory : BaseStory
     {
-        protected GroupStory(TimeSpan duration, List<BaseStory> tasks) : base(duration)
+        protected GroupStory(TimeSpan duration, List<BaseStory> stories) : base(duration)
         {
-            Tasks = tasks;
+            Stories = stories;
         }
 
-        internal List<BaseStory> Tasks { get; }
+        internal List<BaseStory> Stories { get; }
 
         /// <summary>
-        ///     Add a task to the group
+        /// Add a story to the group
         /// </summary>
         /// <param name="story"></param>
         public void Add(BaseStory story)
@@ -23,11 +23,11 @@ namespace Aptacode.TaskPlex.Stories
                 return;
             }
 
-            Tasks.Add(story);
+            Stories.Add(story);
         }
 
         /// <summary>
-        ///     Remove a task from the group
+        /// Remove a story from the group
         /// </summary>
         /// <param name="story"></param>
         public void Remove(BaseStory story)
@@ -37,7 +37,7 @@ namespace Aptacode.TaskPlex.Stories
                 return;
             }
 
-            Tasks.Remove(story);
+            Stories.Remove(story);
         }
     }
 }

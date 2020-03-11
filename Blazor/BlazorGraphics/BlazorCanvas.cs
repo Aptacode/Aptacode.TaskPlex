@@ -6,14 +6,14 @@ using Aptacode.TaskPlex.Graphics.Nodes.Transform;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
-namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
+namespace Aptacode.TaskPlex.BlazorGraphics
 {
-    public class WPfCanvas : ICanvas
+    public class BlazorCanvas : ICanvas
     {
         private readonly BECanvasComponent _canvasReference;
         private Canvas2DContext _canvas2DContext;
 
-        public WPfCanvas(BECanvasComponent canvasReference)
+        public BlazorCanvas(BECanvasComponent canvasReference)
         {
             _canvasReference = canvasReference;
         }
@@ -76,6 +76,7 @@ namespace Aptacode.TaskPlex.Blazor.BlazorGraphics
 
         public void Update(Scene scene)
         {
+            scene.Root.Update(this);
         }
     }
 }

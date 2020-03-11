@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aptacode.Interpolatr" Version="1.0.0" />
     <PackageReference Include="Blazor.Extensions.Canvas" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.2.0-preview1.20073.1" PrivateAssets="all" />
@@ -20,9 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Engine\Engine.csproj" />
-    <ProjectReference Include="..\..\Core\Graphics\Graphics.csproj" />
-    <ProjectReference Include="..\..\Core\Interpolation\Interpolation.csproj" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Graphics\Graphics.csproj" />
+    <ProjectReference Include="..\..\TaskPlex\TaskPlex.csproj" />
     <ProjectReference Include="..\BlazorGraphics\BlazorGraphics.csproj" />
   </ItemGroup>
 

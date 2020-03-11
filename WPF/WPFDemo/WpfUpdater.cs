@@ -51,7 +51,7 @@ namespace WPFDemo
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if (Application.Current.Dispatcher != null)
+            if (Application.Current?.Dispatcher != null)
             {
                 Application.Current.Dispatcher.Invoke(() => OnUpdate?.Invoke(this, EventArgs.Empty));
             }

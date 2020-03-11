@@ -77,7 +77,7 @@ namespace Aptacode.TaskPlex.Stories
 
         public override void Reset()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
             Cleanup();
             Child.Reset();
         }

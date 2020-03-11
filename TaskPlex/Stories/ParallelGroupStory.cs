@@ -7,56 +7,56 @@ namespace Aptacode.TaskPlex.Stories
 {
     public class ParallelGroupStory : GroupStory
     {
-        private int _completedTaskCount;
+        private int _completedStoryCount;
 
         /// <summary>
         ///     Execute the specified tasks in parallel
         /// </summary>
-        public ParallelGroupStory(List<BaseStory> tasks) : base(tasks.Max(task => task.Duration), tasks)
+        public ParallelGroupStory(List<BaseStory> stories) : base(stories.Max(story => story.Duration), stories)
         {
         }
 
         public override void Pause()
         {
-            Tasks.ForEach(task => task.Pause());
+            Stories.ForEach(story => story.Pause());
             base.Pause();
         }
 
         public override void Resume()
         {
-            Tasks.ForEach(task => task.Resume());
+            Stories.ForEach(story => story.Resume());
             base.Resume();
         }
 
         protected override void Setup()
         {
-            _completedTaskCount = 0;
-            foreach (var baseTask in Tasks)
+            _completedStoryCount = 0;
+            foreach (var story in Stories)
             {
-                baseTask.OnFinished += IsFinished;
-                baseTask.OnCancelled += IsFinished;
+                story.OnFinished += IsFinished;
+                story.OnCancelled += IsFinished;
             }
         }
 
         protected override void Begin()
         {
-            Tasks.ForEach(task => task.Start(CancellationTokenSource, RefreshRate));
+            Stories.ForEach(story => story.Start(CancellationTokenSource, RefreshRate));
         }
 
         protected override void Cleanup()
         {
-            _completedTaskCount = 0;
+            _completedStoryCount = 0;
 
-            foreach (var baseTask in Tasks)
+            foreach (var story in Stories)
             {
-                baseTask.OnFinished -= IsFinished;
-                baseTask.OnCancelled -= IsFinished;
+                story.OnFinished -= IsFinished;
+                story.OnCancelled -= IsFinished;
             }
         }
 
         private void IsFinished(object sender, EventArgs args)
         {
-            _completedTaskCount++;
+            _completedStoryCount++;
         }
 
         public override void Update()
@@ -72,19 +72,19 @@ namespace Aptacode.TaskPlex.Stories
                 return;
             }
 
-            if (_completedTaskCount >= Tasks.Count)
+            if (_completedStoryCount >= Stories.Count)
             {
                 Finished();
             }
 
-            Tasks.ForEach(task => task.Update());
+            Stories.ForEach(story => story.Update());
         }
 
         public override void Reset()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
             Cleanup();
-            Tasks.ForEach(task => task.Reset());
+            Stories.ForEach(story => story.Reset());
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Aptacode.TaskPlex.Stories.Transformations.Interpolation
 
         public override void Reset()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
             Cleanup();
         }
     }

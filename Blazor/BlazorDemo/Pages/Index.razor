@@ -4,33 +4,37 @@
 @using Microsoft.AspNetCore.Components;
 @using Microsoft.AspNetCore.Components.Rendering;
 @using System.Numerics;
-@using Aptacode.TaskPlex.Blazor.BlazorGraphics
-@using Aptacode.TaskPlex.Engine
-@using Aptacode.TaskPlex.Graphics.Nodes.Geometry;
-@using Aptacode.TaskPlex.Graphics.Nodes.Transform;
-@using Aptacode.TaskPlex.Graphics.Nodes.Attribute;
+@using Aptacode.TaskPlex.BlazorGraphics
+@using Aptacode.Interpolatr;
+@using Aptacode.TaskPlex;
+@using Aptacode.TaskPlex.Enums;
 @using Aptacode.TaskPlex.Graphics;
-@using global::Blazor.Extensions
-@using Models;
+@using Aptacode.TaskPlex.Graphics.Nodes.Attribute;
+@using Aptacode.TaskPlex.Graphics.Nodes.Geometry;
+@using Aptacode.TaskPlex.Stories;
+@using Aptacode.TaskPlex.Stories.Transformations.Interpolation;
+@using Blazor.Extensions.Canvas;
+@using Blazor.Extensions;
+
 
 @page "/"
 
-    <div style="position:fixed;min-height:100%;min-width:100%;height:100%;width:100%;top:0%;left:0%;resize:none;">
-        <button class="btn btn-primary" @onclick="@Start">Start</button>
-        <button class="btn btn-primary" @onclick="@Apply">Apply</button>
+<div style="position:fixed;min-height:100%;min-width:100%;height:100%;width:100%;top:0%;left:0%;resize:none;">
+    <button class="btn btn-primary" @onclick="@Start">Start</button>
+    <button class="btn btn-primary" @onclick="@Apply">Apply</button>
 
-        <BECanvas Width="720" Height="480" @ref="_canvasReference"></BECanvas>
-    </div>
+    <BECanvas Width="720" Height="480" @ref="_canvasReference"></BECanvas>
+</div>
 
 @code
 {
 
-    protected BECanvasComponent _canvasReference;
+    protected BECanvasComponent  _canvasReference;
 
     private BlazorCanvas canvas;
-    private Scene scene;
-    private StoryBoard storyBoard;
-    private CoreEngine engine;
+    private CoreEngine _engine;
+    private Scene _scene;
+    private StoryBoard _storyBoard;
 
     public Index()
     {
@@ -41,14 +45,69 @@
     {
         canvas = new BlazorCanvas(_canvasReference);
 
-        scene = SceneLoader.Load();
-        storyBoard = SceneLoader.LoadStoryBoard(scene);
-        engine = new CoreEngine(new SystemTimerUpdater(), canvas, scene, storyBoard, new PlexEngine(new NullLoggerFactory(), Engine.Enums.RefreshRate.Normal));
-        engine.Start();
+        Setup();
+        _engine.Start();
+    }
+
+
+    public void Setup()
+    {
+        CreateScene();
+        CreateStoryBoard();
+
+        _engine = new CoreEngine(new SystemTimerUpdater(), canvas, _scene, _storyBoard,
+            new StoryManager(new NullLoggerFactory(), RefreshRate.Normal));
+    }
+
+  public void CreateScene()
+        {
+            _scene = new Scene();
+
+            var clearNode = new RectangleNode() { Position = new Vector2(0,0), Size = new Vector2(1000,1000) };
+            var fillNode = new SetColorNode {Color = Color.Green};
+            
+            for (var i = 0; i < 10; i++)
+            {
+                fillNode.Children.Add(
+                    new RectangleNode { Name = $"Rect{i}", Position = new Vector2(i * 50, 50), Size = new Vector2(40, 40) });
+            }
+
+            clearNode.Children.Add(fillNode);
+            _scene.Root.Children.Add(clearNode);
+        }
+
+    public void CreateStoryBoard()
+    {
+        _storyBoard = new StoryBoard(_scene);
+
+        var storyList = new List<BaseStory>();
+
+        for (var i = 0; i < 10; i++)
+        {
+            var rect = _scene[$"Rect{i}"] as RectangleNode;
+
+            var move = new Vec2Transformation<RectangleNode>(rect, "Position",
+                TimeSpan.FromMilliseconds(40 + i * 10), DefaultEasers.EaseInOutCubic, true, new Vector2(rect.Position.X, 200));
+
+            storyList.Add(move);
+        }
+
+        for (var i = 9; i >= 0; i--)
+        {
+            var rect = _scene[$"Rect{i}"] as RectangleNode;
+
+            var move = new Vec2Transformation<RectangleNode>(rect, "Position",
+                TimeSpan.FromMilliseconds(40 + (10 - i) * 10), DefaultEasers.EaseInOutCubic, true, new Vector2(rect.Position.X, rect.Position.Y));
+
+            storyList.Add(move);
+        }
+
+        _storyBoard["MoveAll"] = StoryBuilder.Sequential(storyList.ToArray());
     }
 
     private void Apply()
     {
-        engine.Apply("Load");
+        _engine.Apply("MoveAll");
     }
+
 }

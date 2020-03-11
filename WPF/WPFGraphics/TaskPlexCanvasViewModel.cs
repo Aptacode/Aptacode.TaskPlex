@@ -27,19 +27,16 @@ namespace WPFGraphics
 
         public void Update(Scene scene)
         {
-            Dispatcher.CurrentDispatcher.Invoke(() =>
-            {
-                _brushStack.Clear();
-                _brush = Brushes.Black;
+            _brushStack.Clear();
+            _brush = Brushes.Black;
 
-                // Retrieve the DrawingContext in order to create new drawing content.
-                _drawingContext = _visual.RenderOpen();
+            // Retrieve the DrawingContext in order to create new drawing content.
+            _drawingContext = _visual.RenderOpen();
 
-                scene.Root.Update(this);
+            scene.Root.Update(this);
 
-                // Persist the drawing content.
-                _drawingContext.Close();
-            });
+            // Persist the drawing content.
+            _drawingContext.Close();
         }
 
         public void Push()

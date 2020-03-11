@@ -9,17 +9,15 @@ namespace Aptacode.TaskPlex.Stories
         protected BaseStory(TimeSpan duration)
         {
             Duration = duration;
-            State = TaskState.Ready;
+            State = StoryState.Ready;
             CancellationTokenSource = new CancellationTokenSource();
         }
 
         public RefreshRate RefreshRate { get; set; }
         public TimeSpan Duration { get; set; }
         public int StepCount { get; private set; }
-
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
-
-        public TaskState State { get; protected set; }
+        public StoryState State { get; protected set; }
         public bool IsCancelled => CancellationTokenSource.IsCancellationRequested;
 
         public event EventHandler<EventArgs> OnStarted;
@@ -29,7 +27,7 @@ namespace Aptacode.TaskPlex.Stories
         public event EventHandler<EventArgs> OnCancelled;
 
         /// <summary>
-        ///     Start the task with the given ParentCancellationTokenSource
+        /// Setup and run the story using the parents cancellationTokenSource & refreshRate
         /// </summary>
         /// <returns></returns>
         public void Start(CancellationTokenSource cancellationTokenSource, RefreshRate refreshRate)
@@ -38,14 +36,14 @@ namespace Aptacode.TaskPlex.Stories
             StepCount = (int) Duration.TotalMilliseconds / (int) RefreshRate;
             CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
             Setup();
-            State = TaskState.Running;
+            State = StoryState.Running;
             OnStarted?.Invoke(this, EventArgs.Empty);
             Begin();
         }
 
         protected void Finished()
         {
-            State = TaskState.Stopped;
+            State = StoryState.Stopped;
             Cleanup();
 
             if (!CancellationTokenSource.IsCancellationRequested)
@@ -63,23 +61,23 @@ namespace Aptacode.TaskPlex.Stories
         /// </summary>
         public void Cancel()
         {
-            State = TaskState.Stopped;
+            State = StoryState.Stopped;
             CancellationTokenSource.Cancel();
         }
 
         public virtual void Pause()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
         }
 
         public virtual void Resume()
         {
-            State = TaskState.Running;
+            State = StoryState.Running;
         }
 
         public bool IsRunning()
         {
-            return State == TaskState.Running;
+            return State == StoryState.Running;
         }
 
         #region AbstractMethods

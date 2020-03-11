@@ -7,7 +7,6 @@ namespace Aptacode.TaskPlex.Interfaces
     {
         RefreshRate RefreshRate { get; }
         event EventHandler OnUpdate;
-
         void Start(RefreshRate refreshRate);
         void Start();
         void Stop();

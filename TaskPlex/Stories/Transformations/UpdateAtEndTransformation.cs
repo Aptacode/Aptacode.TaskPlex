@@ -54,7 +54,7 @@ namespace Aptacode.TaskPlex.Stories.Transformations
 
         public override void Reset()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
             Cleanup();
         }
     }

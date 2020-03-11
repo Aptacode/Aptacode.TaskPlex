@@ -7,66 +7,66 @@ namespace Aptacode.TaskPlex.Stories
 {
     public class SequentialGroupStory : GroupStory
     {
-        private int _finishedTaskCount;
+        private int _finishedStoryCount;
 
         /// <summary>
         ///     Execute the specified tasks sequentially in the order they occur in the input list
         /// </summary>
-        /// <param name="tasks"></param>
-        public SequentialGroupStory(List<BaseStory> tasks) : base(TimeSpan.FromMilliseconds(tasks.Aggregate(0,
-            (current, task) => current + (int) task.Duration.TotalMilliseconds)), tasks)
+        /// <param name="stories"></param>
+        public SequentialGroupStory(List<BaseStory> stories) : base(TimeSpan.FromMilliseconds(stories.Aggregate(0,
+            (current, story) => current + (int)story.Duration.TotalMilliseconds)), stories)
         {
         }
 
         public override void Pause()
         {
-            Tasks.ForEach(t => t.Pause());
+            Stories.ForEach(story => story.Pause());
         }
 
         public override void Resume()
         {
-            Tasks.ForEach(t => t.Resume());
+            Stories.ForEach(story => story.Resume());
         }
 
         protected override void Setup()
         {
-            _finishedTaskCount = 0;
-            foreach (var baseTask in Tasks)
+            _finishedStoryCount = 0;
+            foreach (var story in Stories)
             {
-                baseTask.OnFinished += BaseTask_OnFinished;
-                baseTask.OnCancelled += BaseTask_OnFinished;
+                story.OnFinished += BaseTask_OnFinished;
+                story.OnCancelled += BaseTask_OnFinished;
             }
         }
 
         protected override void Begin()
         {
-            Tasks.First().Start(CancellationTokenSource, RefreshRate);
+            Stories.First().Start(CancellationTokenSource, RefreshRate);
         }
 
         private void BaseTask_OnFinished(object sender, EventArgs e)
         {
-            if (!(sender is BaseStory task))
+            if (!(sender is BaseStory story))
             {
                 return;
             }
 
-            _finishedTaskCount++;
+            _finishedStoryCount++;
 
-            var nextTaskIndex = Tasks.IndexOf(task) + 1;
-            if (nextTaskIndex < Tasks.Count)
+            var nextStoryIndex = Stories.IndexOf(story) + 1;
+            if (nextStoryIndex < Stories.Count)
             {
-                Tasks[nextTaskIndex].Start(CancellationTokenSource, RefreshRate);
+                Stories[nextStoryIndex].Start(CancellationTokenSource, RefreshRate);
             }
         }
 
         protected override void Cleanup()
         {
-            _finishedTaskCount = 0;
+            _finishedStoryCount = 0;
 
-            foreach (var baseTask in Tasks)
+            foreach (var story in Stories)
             {
-                baseTask.OnFinished -= BaseTask_OnFinished;
-                baseTask.OnCancelled -= BaseTask_OnFinished;
+                story.OnFinished -= BaseTask_OnFinished;
+                story.OnCancelled -= BaseTask_OnFinished;
             }
         }
 
@@ -83,19 +83,19 @@ namespace Aptacode.TaskPlex.Stories
                 return;
             }
 
-            if (_finishedTaskCount >= Tasks.Count)
+            if (_finishedStoryCount >= Stories.Count)
             {
                 Finished();
             }
 
-            Tasks.ForEach(task => task.Update());
+            Stories.ForEach(story => story.Update());
         }
 
         public override void Reset()
         {
-            State = TaskState.Paused;
+            State = StoryState.Paused;
             Cleanup();
-            Tasks.ForEach(task => task.Reset());
+            Stories.ForEach(story => story.Reset());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Aptacode.TaskPlex.Enums
 {
-    public enum TaskState
+    public enum StoryState
     {
         Ready,
         Running,

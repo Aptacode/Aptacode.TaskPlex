@@ -58,16 +58,17 @@ namespace WPFDemo
         {
             _scene = new Scene();
 
+            var clearNode = new RectangleNode() { Position = new Vector2(0,0), Size = new Vector2(1000,1000) };
             var fillNode = new SetColorNode {Color = Color.Green};
-
-
+            
             for (var i = 0; i < 10; i++)
             {
                 fillNode.Children.Add(
                     new RectangleNode { Name = $"Rect{i}", Position = new Vector2(i * 50, 50), Size = new Vector2(40, 40) });
             }
 
-            _scene.Root.Children.Add(fillNode);
+            clearNode.Children.Add(fillNode);
+            _scene.Root.Children.Add(clearNode);
         }
 
         public void CreateStoryBoard()

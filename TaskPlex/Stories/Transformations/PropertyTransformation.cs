@@ -38,40 +38,11 @@ namespace Aptacode.TaskPlex.Stories.Transformations
             UseStartValue = useStartValue;
         }
 
-        public SynchronizationContext SynchronizationContext { get; set; }
-
         public TClass Target { get; }
         public string Property { get; }
 
-        protected TPropertyType GetValue()
-        {
-            if (SynchronizationContext == null)
-            {
-                return _getter(Target);
-            }
+        protected TPropertyType GetValue() => _getter(Target);
 
-            var result = new SynchronizedResult();
-
-            SynchronizationContext.Send(o => ((SynchronizedResult) o).Result = _getter(Target), result);
-
-            return result.Result;
-        }
-
-        protected void SetValue(TPropertyType value)
-        {
-            if (SynchronizationContext == null)
-            {
-                _setter(Target, value);
-            }
-            else
-            {
-                SynchronizationContext.Post(o => _setter(Target, value), value);
-            }
-        }
-
-        private class SynchronizedResult
-        {
-            internal TPropertyType Result { get; set; }
-        }
+        protected void SetValue(TPropertyType value) => _setter(Target, value);
     }
 }
