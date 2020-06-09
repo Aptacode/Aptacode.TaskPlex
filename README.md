@@ -9,6 +9,7 @@ NuGet package:
 
 [![NuGet](https://img.shields.io/nuget/v/Aptacode.TaskPlex.svg?style=flat)](https://www.nuget.org/packages/Aptacode.TaskPlex/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/49f864590655493d96b68cbe6c221d87)](https://www.codacy.com/manual/Timmoth/Aptacode.TaskPlex?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Timmoth/Aptacode.TaskPlex&amp;utm_campaign=Badge_Grade)
+![last commit](https://img.shields.io/github/last-commit/Timmoth/Aptacode.TaskPlex?style=flat-square&cacheSeconds=86000)
 
 ## User Guide
 
